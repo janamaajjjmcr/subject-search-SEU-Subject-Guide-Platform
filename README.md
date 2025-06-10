@@ -67,7 +67,8 @@
 4. انقر على "البحث في التليجرام" للانتقال للقناة
 
 ## الرابط المباشر
-الموقع منشور ومتاح على: **https://fxrg.github.io/subject-search-/https://auenedfw.manus.space**
+الموقع منشور ومتاح على:https://fxrg.github.io/subject-search-
+
 
 ## المقارنة مع النسخة الأصلية
 - ✅ نفس الوظائف بالضبط
