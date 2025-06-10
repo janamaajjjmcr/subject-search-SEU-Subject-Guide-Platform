@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البحث عن المواد - subject Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>البحث عن المواد</h1>
+                </div>
+                <p class="subtitle">ابحث عن المواد الدراسية بسهولة</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="search-section">
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="ابحث عن اسم المادة أو الكود (مثل: DS230, CS240, IT351)"
+                            class="search-input"
+                        >
+                        <button id="clearBtn" class="clear-btn" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div id="searchResults" class="search-results"></div>
+                <div id="noResults" class="no-results" style="display: none;">
+                    <i class="fas fa-search"></i>
+                    <h3>لا توجد نتائج</h3>
+                    <p>لم يتم العثور على أي مواد تطابق بحثك</p>
+                </div>
+                <div id="initialMessage" class="initial-message">
+                    <i class="fas fa-book-open"></i>
+                    <h3>ابدأ البحث</h3>
+                    <p>اكتب اسم المادة أو الكود للبحث عن الدورات المتاحة</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 نظام البحث عن المواد. جميع الحقوق محفوظة.</p>
+            <p>الموقع من تطوير إدارة القروب: <a href="https://t.me/Majeedseu" target="_blank">@Majeedseu</a></p>
+            <p>الموقع مازال بنسخته الاولى V0.0.1 </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,132 @@
+[
+    {
+        "subject_name": "Object Oriented Programming",
+        "description":"مادة OOP (Object-Oriented Programming) تعلمنا مفاهيم البرمجة بالكائنات باستخدام لغة Java، مثل الكلاسات، الوراثة، التغليف، والتعدد الشكلي، وتركز على بناء برامج منظمة وقابلة لإعادة الاستخدام.",
+        "DS": "230",
+        "CS": "230",
+        "IT": "232",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #ObjectOrientedProgramming"
+        
+    },
+    {
+        "subject_name": "Operating Systems",
+       "description": "مادة أنظمة التشغيل تشرح كيف يدير النظام الموارد مثل الذاكرة والمعالج وتشغيل البرامج، وتعرفنا على العمليات والخيوط وأنظمة الملفات.",
+        "DS": "351",
+        "CS": "351",
+        "IT": "241",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #OperatingSystems"
+    },
+    {
+        "subject_name": "Introduction to Database",
+        "description": "مادة قواعد البيانات تعلّمنا كيف نخزّن البيانات وننظمها باستخدام الجداول والعلاقات، ونتعامل معها بلغة SQL",
+
+        "DS": "350",
+        "CS": "350",
+        "IT": "244",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #IntroductiontoDatabase"
+    },
+    {
+        "subject_name": "Data Structure",
+        "description": "مادة Data Structure تعلمنا كيف نخزن البيانات ونعالجها بطرق فعّالة باستخدام هياكل مثل المصفوفات، القوائم، الستاك الطوابير، الأشجار، والجراف، وتعتبر أساس مهم لتصميم الخوارزميات.",
+        "DS": "240",
+        "CS": "240",
+        "IT": "245",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DataStructure"
+    },
+    {
+        "subject_name": "Computer Architecture and Organization",
+        "description": "مادة Computer Architecture and Organization تشرح البنية الأساسية للكمبيوتر. كلها نظري، وتركّز على فهم كيف يشتغل الجهاز من جوّا. مادة تفهمك كيف الكمبيوتر يفكر.",
+        "DS": "243",
+        "CS": "241",
+        "IT": null,
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #ComputerArchitectureandOrganization"
+    },
+    {
+        "subject_name": "System Analysis and Design",
+        "description": "مادة تعلمنا كيف نحلل نظام ونصممه قبل البرمجة، ندرس المتطلبات ونرسم مخططات توضح كيف النظام يشتغل.",
+        "DS": "361",
+        "CS": "352",
+        "IT": "353",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #SystemAnalysisandDesign"
+    },
+    {
+        "subject_name": "Computer Networks",
+        "description": "مادة تشرح كيف الأجهزة تتواصل مع بعض في الشبكات، مثل الراوترات والبروتوكولات وطبقات الاتصال.",
+        "DS": "360",
+        "CS": "360",
+        "IT": "351",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #ComputerNetworks"
+    },
+    {
+        "subject_name": "Human Computer Interactions",
+        "description": "مادة تركز على تصميم واجهات المستخدم وتجربة المستخدم (UX/UI)، وكيف نخلي البرامج أسهل وأوضح للناس.",
+        "DS": null,
+        "CS": "470",
+        "IT": "352",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #HumanComputerInteractions"
+    },
+    {
+        "subject_name": "Artificial Intelligence",
+        "description": "مادة تعطيك مقدمة عن الذكاء الاصطناعي، مثل طرق اتخاذ القرار، حل المشكلات، البحث، التعلّم، وتطبيقات AI بشكل عام.",
+        "DS": "363",
+        "CS": "362",
+        "IT": null,
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #ArtificialIntelligence"
+    },
+    {
+        "subject_name": "Web Programming / Technologies",
+        "description": "مادة Web Programming تعلمنا الأساسيات المهمة لتطوير الويب، نبدأ بـ HTML وCSS لتصميم الصفحات، بعدها JavaScript وJSON للتفاعل، ونتعرف على XML وSQL وPHP للتعامل مع البيانات والخوادم.",
+        "DS": "362",
+        "CS": "361",
+        "IT": "361",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #WebProgrammingTechnologies"
+    },
+    {
+        "subject_name": "Entrepreneurship and Innovation",
+        "description": "مادة تعلمك كيف تبدأ مشروع أو فكرة تقنية، وتغطي الابتكار، دراسات الجدوى، ونماذج العمل.",
+        "DS": null,
+        "CS": "364",
+        "IT": "364",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #EntrepreneurshipandInnovation"
+    },
+    {
+        "subject_name": "Decision Support Systems",
+        "description": "مادة تشرح كيف تُستخدم الأنظمة لمساعدة الناس في اتخاذ قرارات أفضل، خصوصًا في بيئات الأعمال باستخدام البيانات والتحليل.",
+        "DS": "474",
+        "CS": null,
+        "IT": "475",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DecisionSupportSystems"
+    },
+    {
+        "subject_name": "Project Management",
+        "description": "مادة تعلمك كيف تدير مشروع من البداية للنهاية، من التخطيط، توزيع المهام، المتابعة، والإنهاء، باستخدام أدوات مثل Gantt وPERT.",
+        "DS": "353",
+        "CS": "480",
+        "IT": "362",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #ProjectManagement"
+    },
+    {
+        "subject_name": "Design and Analysis of Algorithms",
+        "description": "مادة تركز على تصميم وتحليل الخوارزميات، مثل البحث، الترتيب، والتقسيم والحل، وتعلمنا كيف نقيس كفاءة الكود ونحسب الـ time complexity.",
+        "DS": "352",
+        "CS": "353",
+        "IT": null,
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
+    },
+    {
+        "subject_name": "Professional Ethics",
+        "description": "مادة تشرح القوانين والسلوكيات اللي لازم يلتزم فيها المتخصص في التقنية، زي الخصوصية، الحقوق، والمسؤولية المهنية في العمل.",
+        "DS": "481",
+        "CS": "481",
+        "IT": "485",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #ProfessionalEthics"
+    },
+    {
+        "subject_name":"Advanced Data Science Programming",
+        "description":"مادة برمجة بايثون تتكلم عن مواضيع زي اساسيات بايثون الويب سكرابنق مكاتب الداتا ساينس الخ المادة ممتعة جدا بس تحتاج تطبيق مستمر",
+        "DS":"242",
+        "CS":null,
+        "IT":null,
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
+    }
+]
