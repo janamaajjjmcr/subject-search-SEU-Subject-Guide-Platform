@@ -169,7 +169,7 @@ class CourseSearchApp {
     </a>
     <div class="search-instruction" style="margin-top: 1rem; padding: 0.8rem; background: rgba(102, 126, 234, 0.1); border-radius: 8px; font-size: 0.9rem; color: #555;">
         <i class="fas fa-info-circle" style="margin-left: 0.5rem; color: #667eea;"></i>
-        للبحث عن ملفات المادة وتجميعات الفاينلز السابقة، استخدم الرمز: <b>${telegramSearchQuery}</b> في قناة التليجرام.
+        للبحث عن ملفات المادة وتجميعات الفاينلز السابقة، من بحث القناة اكتب: <b>${telegramSearchQuery}</b> في قناة التليجرام.
     </div>
 `;
 
