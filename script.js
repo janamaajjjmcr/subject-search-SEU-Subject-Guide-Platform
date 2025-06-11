@@ -89,22 +89,25 @@ class CourseSearchApp {
             }
 
             // Check for specialization code match (e.g., DS230, CS240, IT351)
-            const specializations = ['DS', 'CS', 'IT' , 'math'];
-            for (const spec of specializations) {
-                if (course[spec]) {
-                    const fullCode = `${spec.toLowerCase()}${course[spec]}`;
-                    if (fullCode.includes(searchLower)) {
-                        return true;
-                    }
-                }
-            }
+           const specializations = ['DS', 'CS', 'IT' , 'MATH' , 'SCI' , 'STAT' , 'ISLAM'];
+           for (const spec of specializations) {
+              if (course[spec]) {
+                const fullCode = `${spec}${course[spec]}`.toLowerCase();
+                if (fullCode.includes(searchLower)) {
+                    return true;
+        }
+    }
+}
 
             // Check for just the code match (e.g., 230, 240, 351)
             if (
                 (course.DS && course.DS.includes(searchTerm)) ||
                 (course.CS && course.CS.includes(searchTerm)) ||
                 (course.IT && course.IT.includes(searchTerm))||
-                (course.math && course.math.includes(searchTerm))
+                (course.MATH && course.MATH.includes(searchTerm))||
+                (course.SCI && course.SCI.includes(searchTerm))||
+                (course.STAT && course.STAT.includes(searchTerm))||
+                (course.ISLAM && course.ISLAM.includes(searchTerm))
             ) {
                 return true;
             }
@@ -140,6 +143,10 @@ class CourseSearchApp {
         if (course.DS) codes.push({ label: 'DS', code: course.DS });
         if (course.CS) codes.push({ label: 'CS', code: course.CS });
         if (course.IT) codes.push({ label: 'IT', code: course.IT });
+        if (course.MATH) codes.push({ label: 'MATH', code: course.MATH });
+        if (course.SCI) codes.push({ label: 'SCI', code: course.SCI });
+        if (course.STAT) codes.push({ label: 'STAT', code: course.STAT });
+        if (course.ISLAM) codes.push({ label: 'ISLAM', code: course.ISLAM });
 
         const codesHTML = codes.map(({ label, code }) => 
             `<span class="code-badge">${label}${code}</span>`

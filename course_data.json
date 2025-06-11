@@ -127,5 +127,35 @@
         "CS":null,
         "IT":null,
         "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
+    },
+    {
+        "subject_name":"Discrete Mathematics",
+        "description":" يركز هاذا المقرر على المفاهيم الاساسية للرياضيات المتقطعة, والتي تستخدم لفهم وحل المشكلات المنطقية والحسابية في علوم الحاسب. تشمل مواضيع  المقرر:  المنطق الرقمي , الجمل المركبة , الجداول الصدقية(تروث تيبل) الاثباتات الرياضية , الكميات , قوانين دي مورغان .  يهدف المقرر إلى تعزيز الفكير المنطقي والتحليل الرياضي ويمثل اساسا مهمآ لفهم الخوارزميات",
+        "MATH":"150",
+         "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms" 
+    },
+    {
+        "subject_name" :"General Physics I",
+        "description":"يركز هاذا المقرر على المفاهيم الاساسية في الفيزياء, ويغطي مواضيع مثل الحركة , السرعة , التسارع , قوانين نيوتين , الطاقة , الشغل , القدرة , والزخم. كما يتناول المبادئ المرتبطة بالدوران والجاذبية . يهدف المقرر إالى تطوير الفهم الفيزيائي لظواهر الحياة اليومية, وتنمية المهارات التحليلية من خلال المسائل الكمية والتجريبية",
+        "SCI" : "101",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms" 
+
+    },
+    {
+        "subject_name":"Linear Algebra",
+        "MATH":"251",
+        "description":"يركز المقرر على اساسيات المصفوفات والمتجهات, وطرق العمليات عليها مثل الجمع والضرب, وحل الانظمة الخطية .  المحددات، الفضاءات الاتجاهية، المتجهات، الاستقلال الخطي، التحويلات الخطية، والقيم الذاتية والمتجهات الذاتية. وركزت المادة على التطبيقات الرياضية التي يحتاجها الطالب في مجالات مثل الرسوميات والذكاء الاصطناعي",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms" 
+    
+    },
+    {
+        "subject_name":"Principles of Programming Languages",
+        "description":"يركز المقرر على دراسة المبادئ الاساسية التي تقوم عليها لغات البرمجة, ويهدف إالى تحليل وفهم المفاهيم المشتركة بين محتلف اللغات البرمجية. تشمل مواضيع مثل الانماط النحوية(syntax) والدلالية (semnatics), انواع البيانات , النطاق (scop),البرمجة الاجرائية والوظيفية والمنطقية , وتقييم الاداء والمقارنة بين اللغات .     يهدف المقرر إالى تمكين الطلاب من اختيار وفهم لغات البرمجة المختلفة بوعي",
+        "CS":"363",
+        "DS":null,
+        "IT" : null,
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
+
     }
+
 ]
