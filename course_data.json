@@ -156,6 +156,30 @@
         "IT" : null,
         "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
 
+    },
+    {
+        "subject_name":"General Physics II",
+        "description":"يركز هاذا المقرر على المفاهيم الاساسية بالكهرباء والمغناطيسية , ويعد استكمالآ لمقرر الفزياء العامة 1. تشمل المواضيع : الدوائر الكهربائية  , التيار الكهربائي ,والموجات الكهرومغناطيسية, والقانون كولوم . يهدف المقرر إلى تمكين تمكين الطلاب من فهم وتحليل الظواهر الكهرومغناطسية ",
+        "SCI":"201",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
+    },
+    {
+        "subject_name":"Theory of Computing",
+        "description":"يتناول هاذا المقرر المفاهيم الاساسية في نظرية الحوسبة, مثل الالات المحددة (Finite Automata), القواعد واللغات الشكلية , والات تورنغ(Turing Machines) . يهدف المقرر إالى فهم حدود ما يمكن حوسبته, وما إذا كانت المسائل قابلة للحل باستخدام الحاسوب, مما يشكل الاساس النظري لعلوم الحاسب",
+        "CS":"242",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
+    },
+    {
+        "subject_name":"Calculus",
+        "description":"يركز المقرر على مفاهيم التفاضل والتكامل يغطي المواضيع الاساسية والمتقدمة في التحليل الرياضي . يشمل المقرر : المشتقات وتطبيقاتها , المشتقات الجزئية  , التكاملات المحددة وغير المحددة , المتسلسلات , اختبارات التقارب, الدوال متعددة المتغيرات   . يهدف المقرر إالى تزويد الطلاب لفهم شامل التفاضل والتكامل وتطبيقاتها في حل المسائل الرياضية في العلوم والهندسة.",
+        "MATH":"241",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
+    },
+    {
+        "subject_name":"Discrete Mathematics for Computer Science",
+        "description":"يتناول هاذا المقرر المفاهيم الرياضية والخوارزميات الاساسية المستخدمة بعلوم الحاسب. تشمل المواضيع : المصفوفات , التباديل والتوافيق , قوانين الاحتمالات , الخوارزميات  الترتيبية , الاشجار , الرسوم البيانية , والكتابة الرمزية للخوارزميات . يتم التركيز على ربط النظريات الرياضية بتطبيقاتها في البرمجة , مع التطرق لمفاهيم سبق في مقررات اخرى بشكل اعمق وموسع.",
+        "CS":"243",
+        "telegram_search_instruction": "Search on Telegram channel @computingg using: #DesignandAnalysisofAlgorithms"
     }
 
 ]
