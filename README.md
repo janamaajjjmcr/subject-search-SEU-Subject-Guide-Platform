@@ -1,6 +1,6 @@
 # 🎓 SEU Subject Guide Platform
 
-A modern, interactive academic companion for students at **Saudi Electronic University (SEU)**.  
+A modern, interactive academic companion for students at **Saudi Electronic University (SEU)**. 
 Built to help students understand their **majors**, explore **courses**, and access curated **resources** — all in one place.
 
 > 🛠️ Inspired by the original concept by [Turki](https://fxrg.github.io/subject-search-/), and fully reimagined and expanded with a focus on usability, clarity, and student success.
