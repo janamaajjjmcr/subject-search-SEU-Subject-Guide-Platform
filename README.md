@@ -63,10 +63,10 @@ This platform was designed to:
 
 ## 🙏 Credits
 
-- **Original Concept**: [Turki](https://fxrg.github.io/subject-search-/)  
+- **Original Concept**: [Turki](https://github.com/fxrg)  
   A simple but powerful idea that laid the foundation for this project.
 
-- **Redesign & Development**: [Jana](https://github.com/vinii74)  
+- **Redesign & Development**: [Jana](https://github.com/janamaajjjmcr)  
   Expanded the project into a complete, student-focused platform, built with love, code, and the desire to help others ❤️
 
 ---
