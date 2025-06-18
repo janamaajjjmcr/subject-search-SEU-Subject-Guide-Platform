@@ -3,64 +3,1633 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>البحث عن المواد - subject Search</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h1>البحث عن المواد</h1>
-                </div>
-                <p class="subtitle">ابحث عن المواد الدراسية بسهولة</p>
-            </div>
-        </header>
+    <title>كلية الحوسبة | جامعة SEU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cosmic: '#0F0F1A',
+                        midnight: '#1A1A2E',
+                        nebula: '#2D2D4D',
+                        stardust: '#E0E0FF',
+                        plasma: '#6C63FF',
+                        quantum: '#4D44DB',
+                        photon: '#A5A6FF',
+                        aurora: '#00D1B2',
+                        supernova: '#FF8E3C',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'gradient-x': 'gradientX 15s ease infinite',
+                        'spin': 'spin 1s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        gradientX: {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        },
+                        spin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        :root {
+            --primary: #0F0F1A;
+            --secondary: #1A1A2E;
+            --accent: #6C63FF;
+            --text: #E0E0FF;
+        }
 
-        <main class="main-content">
-            <div class="search-section">
-                <div class="search-container">
-                    <div class="search-input-wrapper">
-                        <i class="fas fa-search search-icon"></i>
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="ابحث عن اسم المادة أو الكود (مثل: DS230, CS240, IT351)"
-                            class="search-input"
-                        >
-                        <button id="clearBtn" class="clear-btn" style="display: none;">
-                            <i class="fas fa-times"></i>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent) 0%, #A5A6FF 50%, #00D1B2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: gradientX 8s ease infinite;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(109, 99, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 40px 0 rgba(108, 99, 255, 0.3);
+            border-color: rgba(109, 99, 255, 0.4);
+        }
+
+        .glow-border {
+            position: relative;
+        }
+
+        .glow-border::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.6), rgba(0, 209, 178, 0.3));
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+                    mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .glow-border:hover::after {
+            opacity: 1;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--accent) 0%, #00D1B2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-bg:hover {
+            background: linear-gradient(135deg, #4D44DB 0%, #00B39E 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #2D2D4D 100%);
+            background-size: 200% 200%;
+            animation: gradientX 15s ease infinite;
+        }
+        
+        .course-card {
+            background: linear-gradient(145deg, var(--secondary) 0%, #2D2D4D 100%);
+            border: 1px solid rgba(109, 99, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            min-height: 350px;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(108, 99, 255, 0.2);
+            border-color: rgba(109, 99, 255, 0.3);
+        }
+        
+        .video-thumbnail {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        
+        .video-thumbnail:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.3);
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--accent) 0%, #00D1B2 100%);
+            transition: width 0.4s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .pattern-overlay {
+            background-image: radial-gradient(rgba(109, 99, 255, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .search-bar {
+            background: rgba(26, 26, 46, 0.5);
+            border: 1px solid rgba(109, 99, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar::placeholder {
+            color: rgba(224, 224, 255, 0.6);
+        }
+        
+        .search-bar:focus {
+            border-color: rgba(109, 99, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(109, 99, 255, 0.2);
+        }
+        
+        .resource-card {
+            background: rgba(45, 45, 77, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+            min-height: 80px;
+        }
+        
+        .resource-card:hover {
+            background: rgba(45, 45, 77, 0.7);
+            transform: translateY(-3px);
+        }
+        
+        .level-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            color: white;
+        }
+        
+        .level-badge.level-3 {
+            background: linear-gradient(135deg, #6C63FF 0%, #4D44DB 100%);
+        }
+        
+        .level-badge.level-4 {
+            background: linear-gradient(135deg, #00D1B2 0%, #00B39E 100%);
+        }
+        
+        .level-badge.level-5 {
+            background: linear-gradient(135deg, #FF8E3C 0%, #FF6E00 100%);
+        }
+        
+        .level-badge.level-6 {
+            background: linear-gradient(135deg, #A5A6FF 0%, #7C7CFD 100%);
+        }
+        
+        .level-badge.level-7 {
+            background: linear-gradient(135deg, #FF66C4 0%, #E84CA0 100%);
+        }
+        
+        .level-badge.level-8 {
+            background: linear-gradient(135deg, #00D1B2 0%, #6C63FF 100%);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text);
+            opacity: 0.6;
+        }
+        
+        #loading-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, #00D1B2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .search-results-highlight {
+            background-color: rgba(108, 99, 255, 0.3);
+            color: white;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="backdrop-blur-lg bg-cosmic/90 border-b border-nebula/20 py-6 px-4 sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0 flex items-center">
+                <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center mr-4">
+                    <i class="fas fa-laptop-code text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold font-playfair">
+                        <span class="gradient-text"> جامعة SEU </span>
+                    </h1>
+                    <p class="text-stardust/70 mt-1 font-medium">كلية الحوسبة </p>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="flex items-center space-x-4">
+                <nav class="flex space-x-1 md:space-x-8">
+                    <a href="#" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">الرئيسية</a>
+                    <a href="#cs" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">علوم الحاسب</a>
+                    <a href="#ds" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">علوم البيانات</a>
+                    <a href="#it" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">تقنية المعلومات</a>
+                    <a href="#overview" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">لماذا تختارنا</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative text-white py-32 px-4 overflow-hidden hero-gradient">
+        <div class="absolute inset-0 pattern-overlay"></div>
+        <div class="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-plasma/20 to-transparent"></div>
+        <div class="floating absolute -top-20 -left-20 w-96 h-96 rounded-full bg-plasma/10 blur-3xl"></div>
+        <div class="floating absolute -bottom-20 -right-20 w-96 h-96 rounded-full bg-aurora/10 blur-3xl"></div>
+        
+        <div class="container mx-auto relative z-10">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 font-playfair leading-tight">
+                    <span class="gradient-text">نصنع المستقبل</span><br>من خلال التكنولوجيا
+                </h1>
+                <p class="text-xl md:text-2xl text-stardust/80 mb-10 max-w-3xl mx-auto">
+مبادرة طلابية لدعم الطلاب وتسهيل عملية الدراسة للجميع، من خلال توفير مصادر لفهم المواد الدراسية مع نبذة عن كل مادة والتخصصات الحاسوبية المختلفة
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button class="gradient-bg text-white py-4 px-8 rounded-full font-medium transition duration-300 text-lg flex items-center justify-center" onclick="alert('مرحباً بك في جامعة SEU! سنساعدك في رحلتك التعليمية.')">
+                        <i class="fas fa-play-circle mr-2"></i> ابدأ الرحلة
+                    </button>
+                    <a href="#overview" class="bg-nebula/20 hover:bg-nebula/30 border border-nebula/50 text-white py-4 px-8 rounded-full font-medium transition duration-300 text-lg flex items-center justify-center">
+                        <i class="fas fa-book-open mr-2"></i> استكشف البرامج
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto animate-fade-in" style="animation-delay: 0.2s">
+                <div class="glass-card rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold gradient-text mb-2">SEU</div>
+                </div>
+                <div class="glass-card rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold gradient-text mb-2">IT</div>
+                </div>
+                <div class="glass-card rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold gradient-text mb-2">CS</div>
+                </div>
+                <div class="glass-card rounded-xl p-6 text-center">
+                    <div class="text-3xl font-bold gradient-text mb-2">DS</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Majors Overview -->
+    <main class="flex-grow container mx-auto py-16 px-4">
+        <!-- Search Bar -->
+        <div class="mb-16 animate-fade-in relative">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS 230)..." 
+                           class="search-bar w-full py-4 px-6 pl-14 rounded-lg focus:outline-none transition duration-300">
+                    <div class="search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div id="loading-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <section id="search-results" class="hidden mb-24">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold font-playfair">
+                    نتائج البحث: <span id="search-term-display" class="gradient-text"></span>
+                </h2>
+                <button onclick="clearSearch()" class="flex items-center text-photon hover:text-white transition duration-300">
+                    <i class="fas fa-times mr-2"></i> مسح البحث
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="search-results-container">
+                <!-- Search results will be populated here -->
+            </div>
+        </section>
+
+        <!-- Computer Science Section -->
+        <section id="cs" class="mb-24 animate-fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">علوم الحاسب</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+مجال عام يتضمن العديد من التخصصات مثل الخوارزميات، الذكاء الاصطناعي، نظم التشغيل، هندسة البرمجيات، والشبكات. يتميز بتوسعه الواسع الذي يشمل تطبيقات متنوعة في مختلف المجالات.
+                    </p>
+                </div>
+                <a href="javascript:void(0)" class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('cs')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Course Card 1 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="CS230">
+                    <span class="level-badge level-3">المستوى 3</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-code text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">CS230</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">البرمجة الشيئية</h4>
+                        <p class="text-stardust/70 mb-6">مفاهيم البرمجة الشيئية باستخدام الجافا بما في ذلك الفئات، الكائنات، الوراثة، وتعدد الأشكال.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">متوسط</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('CS230', 'البرمجة الشيئية')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Course Card 2 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="CS231">
+                    <span class="level-badge level-3">المستوى 3</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-aurora/10 blur-xl group-hover:bg-aurora/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-project-diagram text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">CS231</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">تصميم المنطق الرقمي</h4>
+                        <p class="text-stardust/70 mb-6">مقدمة في تصميم الدوائر الرقمية والبوابات المنطقية وتصميم المعالجات.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">متوسط</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('CS231', 'تصميم المنطق الرقمي')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Course Card 3 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="CS240">
+                    <span class="level-badge level-4">المستوى 4</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-supernova/10 blur-xl group-hover:bg-supernova/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-brain text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">CS240</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">هياكل البيانات</h4>
+                        <p class="text-stardust/70 mb-6">دراسة هياكل البيانات الأساسية والخوارزميات لتنظيم ومعالجة البيانات بكفاءة.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">متقدم</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('CS240', 'هياكل البيانات')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                         </button>
                     </div>
                 </div>
             </div>
-
-            <div class="results-section">
-                <div id="searchResults" class="search-results"></div>
-                <div id="noResults" class="no-results" style="display: none;">
-                    <i class="fas fa-search"></i>
-                    <h3>لا توجد نتائج</h3>
-                    <p>لم يتم العثور على أي مواد تطابق بحثك</p>
+        </section>
+        
+        <!-- Data Science Section -->
+        <section id="ds" class="mb-24 animate-fade-in" style="animation-delay: 0.1s">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">علوم البيانات</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+مجال يركز على تحليل البيانات واستخلاص الأنماط والمعلومات المفيدة منها باستخدام تقنيات مثل التعلم الآلي والإحصاء، بهدف دعم اتخاذ القرارات وتحقيق رؤى استراتيجية.
+                    </p>
                 </div>
-                <div id="initialMessage" class="initial-message">
-                    <i class="fas fa-book-open"></i>
-                    <h3>ابدأ البحث</h3>
-                    <p>اكتب اسم المادة أو الكود للبحث عن الدورات المتاحة</p>
+                <a href="javascript:void(0)" class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('ds')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Course Card 1 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="DS230">
+                    <span class="level-badge level-3">المستوى 3</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-chart-bar text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">DS230</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">البرمجة الشيئية</h4>
+                        <p class="text-stardust/70 mb-6">مفاهيم البرمجة الشيئية باستخدام الجافا في سياق علوم البيانات.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">مبتدئ</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('DS230', 'البرمجة الشيئية')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Course Card 2 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="DS231">
+                    <span class="level-badge level-3">المستوى 3</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-aurora/10 blur-xl group-hover:bg-aurora/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-robot text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">DS231</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">برمجة علوم البيانات</h4>
+                        <p class="text-stardust/70 mb-6">مقدمة في برمجة علوم البيانات باستخدام بايثون ومكتباتها الأساسية.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">متوسط</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('DS231', 'برمجة علوم البيانات')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Course Card 3 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="DS240">
+                    <span class="level-badge level-4">المستوى 4</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-supernova/10 blur-xl group-hover:bg-supernova/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-database text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">DS240</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">هياكل البيانات</h4>
+                        <p class="text-stardust/70 mb-6">هياكل البيانات المتقدمة والخوارزميات اللازمة لمعالجة البيانات الضخمة.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">متقدم</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('DS240', 'هياكل البيانات')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </main>
+        </section>
+        
+        <!-- Information Technology Section -->
+        <section id="it" class="mb-24 animate-fade-in" style="animation-delay: 0.2s">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">تقنية المعلومات</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        تركز على إدارة واستخدام تكنولوجيا المعلومات في الشركات والمؤسسات. تشمل مجالات مثل الشبكات، إدارة الأنظمة، أمن المعلومات، ودعم تكنولوجيا المعلومات.
+                    </p>
+                </div>
+                <a href="javascript:void(0)" class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('it')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Course Card 1 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="IT231">
+                    <span class="level-badge level-3">المستوى 3</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-network-wired text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">IT231</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">مقدمة في تقنية المعلومات</h4>
+                        <p class="text-stardust/70 mb-6">مقدمة في مفاهيم تقنية المعلومات وأنظمة المعلومات الأساسية.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">مبتدئ</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('IT231', 'مقدمة في تقنية المعلومات')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Course Card 2 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="IT232">
+                    <span class="level-badge level-3">المستوى 3</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-aurora/10 blur-xl group-hover:bg-aurora/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-server text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">IT232</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">البرمجة الشيئية</h4>
+                        <p class="text-stardust/70 mb-6">مفاهيم البرمجة الشيئية باستخدام الجافا في سياق تقنية المعلومات.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">متوسط</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('IT232', 'البرمجة الشيئية')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Course Card 3 -->
+                <div class="course-card glow-border rounded-2xl p-8 group overflow-hidden relative" data-course-code="IT233">
+                    <span class="level-badge level-3">المستوى 3</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-supernova/10 blur-xl group-hover:bg-supernova/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                            <i class="fas fa-cloud text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">IT233</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">تنظيم الحاسب</h4>
+                        <p class="text-stardust/70 mb-6">مقدمة في تنظيم الحاسب وهندسة المعمارية وأنظمة التشغيل.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">متقدم</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                        </div>
+                        <button onclick="openModal('IT233', 'تنظيم الحاسب')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Overview Section -->
+        <section id="overview" class="animate-fade-in relative overflow-hidden" style="animation-delay: 0.3s">
+            <div class="glass-card rounded-3xl p-12 relative overflow-hidden">
+                <!-- Background elements -->
+                <div class="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-plasma/10 blur-3xl"></div>
+                <div class="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-aurora/10 blur-3xl"></div>
+                
+                <div class="relative z-10">
+                    <div class="text-center mb-16">
+                        <span class="gradient-bg text-white text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">لماذا تختارنا</span>
+                        <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-6">
+                            <span class="gradient-text">أفضل كلية</span>
+                        </h2>
+                        <p class="text-stardust/80 max-w-3xl mx-auto text-lg">
+كلية الحوسبة توفر مزيجًا من التعليم الأكاديمي المتخصص والخبرة العملية التي تؤهل الطلاب لمواكبة التطورات السريعة في صناعة التكنولوجيا.                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="glow-border bg-nebula/20 rounded-2xl p-8 group">
+                            <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">DS</h3>
+                            <p class="text-stardust/70 mb-6"> مجال يركز على تحليل البيانات واستخلاص الأنماط والمعلومات المفيدة منها باستخدام تقنيات مثل التعلم الآلي والإحصاء، بهدف دعم اتخاذ القرارات وتحقيق رؤى استراتيجية.</p>
+                            <a href="#" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="glow-border bg-nebula/20 rounded-2xl p-8 group">
+                            <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-briefcase text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">CS</h3>
+                            <p class="text-stardust/70 mb-6">مجال شامل يهتم بدراسة كافة جوانب الحوسبة، بدءًا من البرمجة وتصميم البرمجيات وصولًا إلى تطوير الأنظمة الحاسوبية والشبكات. هو مجال عام يتضمن العديد من التخصصات مثل الخوارزميات، الذكاء الاصطناعي، نظم التشغيل، هندسة البرمجيات، والشبكات. يتميز بتوسعه الواسع الذي يشمل تطبيقات متنوعة في مختلف المجالات.</p>
+                            <a href="#" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="glow-border bg-nebula/20 rounded-2xl p-8 group">
+                            <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-flask text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">IT</h3>
+                            <p class="text-stardust/70 mb-6">تركز على إدارة واستخدام تكنولوجيا المعلومات في الشركات والمؤسسات. تشمل مجالات مثل الشبكات، إدارة الأنظمة، أمن المعلومات، ودعم تكنولوجيا المعلومات.</p>
+                            <a href="#" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        <footer class="footer">
-            <p>&copy; 2025 نظام البحث عن المواد. جميع الحقوق محفوظة.</p>
-            <p>الموقع من تطوير إدارة القروب: <a href="https://t.me/Majeedseu" target="_blank">@Majeedseu</a></p>
-            <p>الموقع مازال بنسخته الاولى V2.1.0 </p>
-        </footer>
+    <!-- Footer -->
+    <footer id="footer" class="bg-midnight border-t border-nebula/20 py-16 px-4">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center mr-3">
+                            <i class="fas fa-laptop-code text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold font-playfair">
+                            <span class="gradient-text">جامعة SEU</span>
+                        </h3>
+                    </div>
+                    <p class="text-stardust/70 mb-6">
+                        تمكين الجيل القادم من مبتكري التكنولوجيا من خلال التميز في التعليم والبحث.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6">البرامج</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#cs" class="text-stardust/70 hover:text-photon transition duration-300">علوم الحاسب</a></li>
+                        <li><a href="#ds" class="text-stardust/70 hover:text-photon transition duration-300">علوم البيانات</a></li>
+                        <li><a href="#it" class="text-stardust/70 hover:text-photon transition duration-300">تقنية المعلومات</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6">الموارد</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-stardust/70 hover:text-photon transition duration-300">طلاب افضل كلية </a></li>
+                    </ul>
+                </div>
+                
+                <div id="footer-group">
+                    <h4 class="text-lg font-bold text-white mb-6">قروب الكلية</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <a href="https://t.me/Computing_and_Informatics" target="_blank" class="text-stardust/70 hover:text-photon transition duration-300">
+                                قروب الكلية على تلجرام
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-nebula/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-stardust/50 text-sm mb-4 md:mb-0">
+                    © 2025 كلية الحوسبة - جامعة SEU. جميع الحقوق محفوظة.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 id="modalCourseCode" class="text-3xl font-bold gradient-text mb-2"></h2>
+                    <h3 id="modalCourseTitle" class="text-xl font-bold text-white"></h3>
+                    <p class="text-stardust/70"><span id="modalCourseMajor"></span> • 3 ساعات</p>
+                </div>
+                <button onclick="closeModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-3">وصف المادة</h3>
+                <p id="modalCourseDesc" class="text-stardust/70 mb-6"></p>
+
+                <a href="https://drive.google.com/drive/u/2/folders/171QmzC3gsixrvVAUKqi2AWA0RAYLgxZC" target="_blank" class="gradient-bg text-white py-2 px-6 rounded-full font-medium transition duration-300 inline-flex items-center">
+                    <i class="fas fa-download mr-2"></i> تحميل المنهج
+                </a>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-4">الموارد التعليمية</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="course-resources">
+                    <!-- Resources will be populated here -->
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-4">مواد إضافية</h3>
+                <ul class="text-stardust/70 space-y-2">
+                    <li class="flex items-center">
+                        <i class="fas fa-book mr-2 text-photon"></i>
+                        <a href="https://drive.google.com/drive/u/2/folders/171QmzC3gsixrvVAUKqi2AWA0RAYLgxZC" target="_blank" class="hover:text-white">كتاب مقرر موصى به</a>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-link mr-2 text-photon"></i>
+                        <a href="https://t.me/Computing_and_Informatics" target="_blank" class="hover:text-white">منصة التعلم التفاعلية</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- All Courses Modal -->
+    <div id="allCoursesModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold gradient-text mb-2" id="allCoursesTitle"></h2>
+                </div>
+                <button onclick="closeAllCoursesModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="allCoursesContainer">
+                <!-- Courses will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Course data with all materials
+        const courses = {
+            // علوم الحاسب
+            "CS230": {
+                title: "البرمجة الشيئية",
+                desc: "هذه المادة تقدم مفاهيم البرمجة الشيئية باستخدام لغة الجافا. سيتعلم الطلاب التفكير الحسابي واستراتيجيات حل المشكلات والمفاهيم البرمجية الأساسية بما في ذلك المتغيرات وهياكل التحكم والدوال وهياكل البيانات. سيعزز المشاريع العملية المفاهيم من خلال التطبيقات العملية.",
+                credits: 3,
+                prereq: "لا يوجد",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. سارة جونسون",
+                hours: "الإثنين/الأربعاء 2-4 مساءً أو حسب الموعد",
+                major: "علوم الحاسب",
+                level: 3,
+                resources: [
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL1DUmTEdeA6K7rdxKiWJq6JIxTvHalY8f" },
+                    { type: "youtube", text: "عادل نسيم", link: "https://youtube.com/playlist?list=PLCInYL3l2AajYlZGzU_LVrHdoouf8W6ZN" },
+                    { type: "telegram", text: "بلاك بورد", link: "https://t.me/computingg/754" },
+                    { type: "drive", text: "ملف PDF", link: "https://t.me/computingg/1786" }
+                ]
+            },
+            "CS231": {
+                title: "تصميم المنطق الرقمي",
+                desc: "طرق تنظيم البيانات الأساسية وتقنيات تحليل الخوارزميات. تشمل المصفوفات، القوائم المرتبطة، الطوابير، الركام، الأشجار، الرسوم البيانية، خوارزميات الفرز والبحث. سيقوم الطلاب بتنفيذ هذه الهياكل وتحليل تعقيدها الحسابي.",
+                credits: 3,
+                prereq: "CS230 أو ما يعادلها",
+                schedule: "فصل الخريف والربيع",
+                instructor: "بروفيسور مايكل تشين",
+                hours: "الثلاثاء/الخميس 1-3 مساءً",
+                major: "علوم الحاسب",
+                level: 3,
+                resources: [
+                    { type: "youtube", text: "زاهي حداد", link: "https://youtube.com/playlist?list=PL21KuaIMCPGoiDogGSxbBtnkmBMM_-6o3" },
+                    { type: "telegram", text: "بلاك بورد", link: "https://t.me/computingg/1801" },
+                    { type: "youtube", text: "Neso Academy", link: "https://youtube.com/playlist?list=PLBlnK6fEyqRjMH3mWf6kwqiTbT798eAOm" }
+                ]
+            },
+            "CS240": {
+                title: "هياكل البيانات",
+                desc: "استكشاف تعلم الآلة، الشبكات العصبية، وتصميم الأنظمة الذكية. تشمل مفاهيم الذكاء الاصطناعي الأساسية بما في ذلك خوارزميات البحث، تمثيل المعرفة، تقنيات تعلم الآلة، والتطبيقات في رؤية الحاسوب ومعالجة اللغة الطبيعية.",
+                credits: 3,
+                prereq: "CS231 و MATH210",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. إيميلي رودريجيز",
+                hours: "الأربعاء 10 صباحًا - 12 ظهرًا",
+                major: "علوم الحاسب",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "Hard-Core", link: "https://youtube.com/playlist?list=PLwCMLs3sjOY4UQq4vXgGPwGLVX1Y5faaS" },
+                    { type: "youtube", text: "عادل نسيم", link: "https://youtube.com/playlist?list=PLCInYL3l2AajqOUW_2SwjWeMwf4vL4RSp" },
+                    { type: "youtube", text: "عبد الباري", link: "https://youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O" }
+                ]
+            },
+            "CS241": {
+                title: "معمارية وتنظيم الحاسب",
+                desc: "دراسة معماريّة الحاسوب وتنظيمه، بما في ذلك تصميم المعالج، الذاكرة، ونظام الإدخال والإخراج.",
+                credits: 3,
+                prereq: "CS231",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. أحمد سلام",
+                hours: "السبت/الاثنين 9-11 صباحًا",
+                major: "علوم الحاسب",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "أحمد سلام", link: "https://youtube.com/playlist?list=PLMm8EjqH1EFVEVWSiBdCoBEJHffjHUScZ" },
+                    { type: "youtube", text: "Neso Academy", link: "https://youtube.com/playlist?list=PLBlnK6fEyqRgLLlzdgiTUKULKJPYc0A4q" }
+                ]
+            },
+            "CS242": {
+                title: "نظرية الحوسبة",
+                desc: "دراسة أساسيات نظرية الحوسبة بما في ذلك الآلات الحاسوبية، اللغات الصورية، والتعقيد الحسابي.",
+                credits: 3,
+                prereq: "CS231",
+                schedule: "فصل الربيع فقط",
+                instructor: "بروفيسور ليلى أحمد",
+                hours: "الثلاثاء/الخميس 2-4 مساءً",
+                major: "علوم الحاسب",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "Neso Academy", link: "https://youtube.com/playlist?list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev" },
+                    { type: "youtube", text: "أنس شاهوان", link: "https://youtube.com/playlist?list=PLrCBCI_Do84iJ-kiE1F2trKik2Ts4XelM" }
+                ]
+            },
+            "CS350": {
+                title: "مقدمة في قواعد البيانات",
+                desc: "مقدمة شاملة لأنظمة قواعد البيانات، تصميم قواعد البيانات، واستخدام لغة SQL للاستعلام عن البيانات.",
+                credits: 3,
+                prereq: "CS240",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. محمد الدسوقي",
+                hours: "الأحد/الثلاثاء 1-3 مساءً",
+                major: "علوم الحاسب",
+                level: 5,
+                resources: [
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL37D52B7714788190" },
+                    { type: "youtube", text: "هشام المغربي", link: "https://youtube.com/playlist?list=PLiRL7CfiWlYG7rPyYpynLWU_0qcAqOPJS" }
+                ]
+            },
+            "CS351": {
+                title: "نظم التشغيل",
+                desc: "دراسة متعمقة لنظم التشغيل الحديثة، إدارة العمليات، الذاكرة، الملفات، وأمن النظام.",
+                credits: 3,
+                prereq: "CS241",
+                schedule: "فصل الخريف فقط",
+                instructor: "د. حسن الأنصاري",
+                hours: "السبت/الأربعاء 10-12 صباحًا",
+                major: "علوم الحاسب",
+                level: 5,
+                resources: [
+                    { type: "youtube", text: "د. حسن الأنصاري", link: "https://youtube.com/playlist?list=PLKlTaCM87WvrO0RElCsK30uS-ylzRLgFM" },
+                    { type: "youtube", text: "مصطفى الجميلي", link: "https://youtube.com/playlist?list=PLHKTPL-jkzUqgHIBdC2I16QqZCSDN_6oS" }
+                ]
+            },
+            "CS353": {
+                title: "تصميم وتحليل الخوارزميات",
+                desc: "دراسة متقدمة لتصميم الخوارزميات وتحليل كفاءتها باستخدام تقنيات متعددة.",
+                credits: 3,
+                prereq: "CS240",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. عمر خالد",
+                hours: "الاثنين/الأربعاء 3-5 مساءً",
+                major: "علوم الحاسب",
+                level: 5,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://www.youtube.com/watch?v=kqUhl6BuD5c&list=PLN6rtDw1g64maZpDgDLBfcuZSCxVJCAdW" },
+                    { type: "telegram", text: "قناة المواد", link: "https://t.me/computingg/628" }
+                ]
+            },
+            "CS360": {
+                title: "شبكات الحاسب",
+                desc: "دراسة أساسيات شبكات الحاسوب، بروتوكولات الشبكات، وتصميم أنظمة الشبكات.",
+                credits: 3,
+                prereq: "CS241",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. سامي راشد",
+                hours: "الثلاثاء/الخميس 9-11 صباحًا",
+                major: "علوم الحاسب",
+                level: 6,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://youtube.com/playlist?list=PLN6rtDw1g64koqqpL2rD1iWTQCen4BFFN" },
+                    { type: "youtube", text: "NetworkChuck", link: "https://youtube.com/@networkchuck" }
+                ]
+            },
+            "CS361": {
+                title: "برمجة الويب",
+                desc: "مقدمة شاملة لتقنيات برمجة الويب بما في ذلك HTML, CSS, JavaScript وتقنيات الخادم.",
+                credits: 3,
+                prereq: "CS240",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. ليلى مصطفى",
+                hours: "الأحد/الثلاثاء 2-4 مساءً",
+                major: "علوم الحاسب",
+                level: 6,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://www.youtube.com/watch?v=E_dFmgd7nH0&list=PLN6rtDw1g64nAVVBdAsU9PNgEk4Zpvtrd" },
+                    { type: "youtube", text: "اتحاد تقنية المعلومات", link: "https://youtube.com/playlist?list=PLdUHNiwJgn86h5v-yeBWtFjjK6-ue5nEw" }
+                ]
+            },
+            "CS362": {
+                title: "الذكاء الاصطناعي",
+                desc: "دراسة أساسيات الذكاء الاصطناعي وتطبيقاته في حل المشكلات المعقدة.",
+                credits: 3,
+                prereq: "CS240 و MATH220",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. أحمد فؤاد",
+                hours: "الاثنين/الأربعاء 10-12 صباحًا",
+                major: "علوم الحاسب",
+                level: 6,
+                resources: [
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLFINw1G-wi0nSBXG9rWmQLKJi7VTsTKSF" }
+                ]
+            },
+            "CS480": {
+                title: "إدارة المشاريع",
+                desc: "دراسة منهجيات إدارة المشاريع التقنية وأدوات التخطيط والتنفيذ.",
+                credits: 3,
+                prereq: "سنة رابعة",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. نادية سليمان",
+                hours: "السبت/الثلاثاء 1-3 مساءً",
+                major: "علوم الحاسب",
+                level: 8,
+                resources: [
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLLHG16Mhq91ZoDysym0xjxEXJ5VoDtIPq" },
+                    { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCgeaQIhyr82_XjtLWXbgaLq" }
+                ]
+            },
+            
+            // علوم البيانات
+            "DS230": {
+                title: "البرمجة الشيئية",
+                desc: "مقدمة في معالجة البيانات والتصور والتحليل الإحصائي باستخدام بايثون و R. تشمل تنظيف البيانات، التحليل الاستكشافي للبيانات، الاختبارات الإحصائية الأساسية، وتقنيات التصور للتواصل الفعال للبيانات.",
+                credits: 3,
+                prereq: "لا يوجد",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. جيمس ويلسون",
+                hours: "الإثنين 3-5 مساءً، الجمعة 10 صباحًا - 12 ظهرًا",
+                major: "علوم البيانات",
+                level: 3,
+                resources: [
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL1DUmTEdeA6K7rdxKiWJq6JIxTvHalY8f" },
+                    { type: "youtube", text: "عادل نسيم", link: "https://youtube.com/playlist?list=PLCInYL3l2AajYlZGzU_LVrHdoouf8W6ZN" }
+                ]
+            },
+            "DS231": {
+                title: "برمجة علوم البيانات",
+                desc: "تقنيات التعلم تحت الإشراف وبدون إشراف مع تطبيقات في العالم الحقيقي. تشمل الانحدار، التصنيف، التجميع، تخفيض الأبعاد، وتقييم النماذج. سيعمل الطلاب مع مجموعات بيانات حقيقية لبناء نماذج تنبؤية.",
+                credits: 3,
+                prereq: "DS230 و MATH220",
+                schedule: "فصل الخريف فقط",
+                instructor: "بروفيسور ليزا تشانغ",
+                hours: "الثلاثاء 1-3 مساءً، الخميس 4-6 مساءً",
+                major: "علوم البيانات",
+                level: 3,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://youtube.com/playlist?list=PLN6rtDw1g64lRIl-Mg6OGrWoB6HKzpoAR" }
+                ]
+            },
+            "DS240": {
+                title: "هياكل البيانات",
+                desc: "معالجة البيانات الموزعة مع Hadoop، Spark، ومنصات السحابة. تشمل نموذج MapReduce، أنظمة الملفات الموزعة، قواعد بيانات NoSQL، ومعالجة التدفق. سيقوم الطلاب بنشر التطبيقات على البنية التحتية السحابية.",
+                credits: 3,
+                prereq: "DS231 أو CS231",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. روبرت كيم",
+                hours: "الإثنين/الأربعاء 11 صباحًا - 1 ظهرًا",
+                major: "علوم البيانات",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://youtube.com/playlist?list=PLN6rtDw1g64n1ISQpjhGcZe0hikxFuk8j" }
+                ]
+            },
+            "DS243": {
+                title: "معمارية وتنظيم الحاسب",
+                desc: "دراسة معماريّة الحاسوب وتنظيمه، بما في ذلك تصميم المعالج، الذاكرة، ونظام الإدخال والإخراج.",
+                credits: 3,
+                prereq: "DS231",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. أحمد سلام",
+                hours: "السبت/الاثنين 9-11 صباحًا",
+                major: "علوم البيانات",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "أحمد سلام", link: "https://youtube.com/playlist?list=PLMm8EjqH1EFVEVWSiBdCoBEJHffjHUScZ" },
+                    { type: "youtube", text: "Neso Academy", link: "https://youtube.com/playlist?list=PLBlnK6fEyqRgLLlzdgiTUKULKJPYc0A4q" }
+                ]
+            },
+            "DS350": {
+                title: "مقدمة في قواعد البيانات",
+                desc: "مقدمة شاملة لأنظمة قواعد البيانات، تصميم قواعد البيانات، واستخدام لغة SQL للاستعلام عن البيانات.",
+                credits: 3,
+                prereq: "DS240",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. محمد الدسوقي",
+                hours: "الأحد/الثلاثاء 1-3 مساءً",
+                major: "علوم البيانات",
+                level: 5,
+                resources: [
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL37D52B7714788190" },
+                    { type: "youtube", text: "هشام المغربي", link: "https://youtube.com/playlist?list=PLiRL7CfiWlYG7rPyYpynLWU_0qcAqOPJS" }
+                ]
+            },
+            "DS351": {
+                title: "نظم التشغيل",
+                desc: "دراسة متعمقة لنظم التشغيل الحديثة، إدارة العمليات، الذاكرة، الملفات، وأمن النظام.",
+                credits: 3,
+                prereq: "DS243",
+                schedule: "فصل الخريف فقط",
+                instructor: "د. حسن الأنصاري",
+                hours: "السبت/الأربعاء 10-12 صباحًا",
+                major: "علوم البيانات",
+                level: 5,
+                resources: [
+                    { type: "youtube", text: "د. حسن الأنصاري", link: "https://youtube.com/playlist?list=PLKlTaCM87WvrO0RElCsK30uS-ylzRLgFM" },
+                    { type: "youtube", text: "مصطفى الجميلي", link: "https://youtube.com/playlist?list=PLHKTPL-jkzUqgHIBdC2I16QqZCSDN_6oS" }
+                ]
+            },
+            "DS352": {
+                title: "تصميم وتحليل الخوارزميات",
+                desc: "دراسة متقدمة لتصميم الخوارزميات وتحليل كفاءتها باستخدام تقنيات متعددة.",
+                credits: 3,
+                prereq: "DS240",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. عمر خالد",
+                hours: "الاثنين/الأربعاء 3-5 مساءً",
+                major: "علوم البيانات",
+                level: 5,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://www.youtube.com/watch?v=kqUhl6BuD5c&list=PLN6rtDw1g64maZpDgDLBfcuZSCxVJCAdW" },
+                    { type: "telegram", text: "قناة المواد", link: "https://t.me/computingg/628" }
+                ]
+            },
+            "DS353": {
+                title: "إدارة المشاريع",
+                desc: "دراسة منهجيات إدارة المشاريع التقنية وأدوات التخطيط والتنفيذ.",
+                credits: 3,
+                prereq: "سنة رابعة",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. نادية سليمان",
+                hours: "السبت/الثلاثاء 1-3 مساءً",
+                major: "علوم البيانات",
+                level: 8,
+                resources: [
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLLHG16Mhq91ZoDysym0xjxEXJ5VoDtIPq" },
+                    { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCgeaQIhyr82_XjtLWXbgaLq" }
+                ]
+            },
+            "DS360": {
+                title: "شبكات الحاسب",
+                desc: "دراسة أساسيات شبكات الحاسوب، بروتوكولات الشبكات، وتصميم أنظمة الشبكات.",
+                credits: 3,
+                prereq: "DS243",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. سامي راشد",
+                hours: "الثلاثاء/الخميس 9-11 صباحًا",
+                major: "علوم البيانات",
+                level: 6,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://youtube.com/playlist?list=PLN6rtDw1g64koqqpL2rD1iWTQCen4BFFN" },
+                    { type: "youtube", text: "NetworkChuck", link: "https://youtube.com/@networkchuck" }
+                ]
+            },
+            "DS362": {
+                title: "برمجة الويب",
+                desc: "مقدمة شاملة لتقنيات برمجة الويب بما في ذلك HTML, CSS, JavaScript وتقنيات الخادم.",
+                credits: 3,
+                prereq: "DS240",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. ليلى مصطفى",
+                hours: "الأحد/الثلاثاء 2-4 مساءً",
+                major: "علوم البيانات",
+                level: 6,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://www.youtube.com/watch?v=E_dFmgd7nH0&list=PLN6rtDw1g64nAVVBdAsU9PNgEk4Zpvtrd" },
+                    { type: "youtube", text: "اتحاد تقنية المعلومات", link: "https://youtube.com/playlist?list=PLdUHNiwJgn86h5v-yeBWtFjjK6-ue5nEw" }
+                ]
+            },
+            "DS363": {
+                title: "الذكاء الاصطناعي",
+                desc: "دراسة أساسيات الذكاء الاصطناعي وتطبيقاته في حل المشكلات المعقدة.",
+                credits: 3,
+                prereq: "DS240 و MATH220",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. أحمد فؤاد",
+                hours: "الاثنين/الأربعاء 10-12 صباحًا",
+                major: "علوم البيانات",
+                level: 6,
+                resources: [
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLFINw1G-wi0nSBXG9rWmQLKJi7VTsTKSF" }
+                ]
+            },
+            "DS474": {
+                title: "نظم دعم القرار",
+                desc: "دراسة متقدمة لنظم دعم القرار وتطبيقاتها في مجال الأعمال والتحليل.",
+                credits: 3,
+                prereq: "سنة سابعة",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. خالد زهران",
+                hours: "الثلاثاء/الخميس 1-3 مساءً",
+                major: "علوم البيانات",
+                level: 7,
+                resources: [
+                    { type: "telegram", text: "مجموعة المواد", link: "https://t.me/+YyMgQZTUDIllMjk0" }
+                ]
+            },
+            
+            // تقنية المعلومات
+            "IT231": {
+                title: "مقدمة في تقنية المعلومات ونظم المعلومات",
+                desc: "مقدمة في مفاهيم تقنية المعلومات وأنظمة المعلومات الأساسية.",
+                credits: 3,
+                prereq: "لا يوجد",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. أحمد محمد",
+                hours: "الإثنين/الأربعاء 10-12 صباحًا",
+                major: "تقنية المعلومات",
+                level: 3,
+                resources: [
+                    { type: "drive", text: "رابط درايف", link: "https://drive.google.com/drive/folders/1uRuezMgYKX11zZ_DYHvcJk6uLMvgjdty" },
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLCrQEWclqqR16WoUXlDm-vjmMgCp7iYV9" }
+                ]
+            },
+            "IT232": {
+                title: "البرمجة الشيئية",
+                desc: "دراسة مفاهيم البرمجة الشيئية وتطبيقاتها باستخدام لغة الجافا.",
+                credits: 3,
+                prereq: "IT231",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. سامي علي",
+                hours: "الثلاثاء/الخميس 1-3 مساءً",
+                major: "تقنية المعلومات",
+                level: 3,
+                resources: [
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL1DUmTEdeA6K7rdxKiWJq6JIxTvHalY8f" },
+                    { type: "youtube", text: "عادل نسيم", link: "https://youtube.com/playlist?list=PLCInYL3l2AajYlZGzU_LVrHdoouf8W6ZN" },
+                    { type: "telegram", text: "بلاك بورد", link: "https://t.me/computingg/754" },
+                    { type: "drive", text: "ملف PDF", link: "https://t.me/computingg/1786" }
+                ]
+            },
+            "IT233": {
+                title: "تنظيم الحاسب",
+                desc: "مقدمة في تنظيم الحاسوب وهندسة المعمارية وأنظمة التشغيل.",
+                credits: 3,
+                prereq: "IT231",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. رامي سعيد",
+                hours: "السبت/الاثنين 9-11 صباحًا",
+                major: "تقنية المعلومات",
+                level: 3,
+                resources: [
+                    { type: "drive", text: "رابط درايف", link: "https://drive.google.com/drive/folders/1HDSzFL1pZWdjEjKSIwsq9RDSQS4ninE6" },
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLCrQEWclqqR1U2mmJ9Rwf_oRfYuSdEicG" },
+                    { type: "drive", text: "مصادر إضافية", link: "https://drive.google.com/drive/folders/1Ax_QnzIz_scw8XGffIXUoNXdLJVtj0Oz" }
+                ]
+            },
+            "IT241": {
+                title: "نظم التشغيل",
+                desc: "دراسة نظم التشغيل المختلفة وإدارتها وتفاعلها مع العتاد.",
+                credits: 3,
+                prereq: "IT233",
+                schedule: "فصل الخريف فقط",
+                instructor: "د. حسن الأنصاري",
+                hours: "الأحد/الثلاثاء 9-11 صباحًا",
+                major: "تقنية المعلومات",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "د. حسن الأنصاري", link: "https://youtube.com/playlist?list=PLKlTaCM87WvrO0RElCsK30uS-ylzRLgFM" },
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLCrQEWclqqR0ME3itbAEYSc1DD7ZhMiW9" },
+                    { type: "youtube", text: "مصطفى الجميلي", link: "https://youtube.com/playlist?list=PLHKTPL-jkzUqgHIBdC2I16QqZCSDN_6oS" },
+                    { type: "youtube", text: "د. أحمد حجاج", link: "https://youtube.com/playlist?list=PLxIvc-MGOs6ib0oK1z9C46DeKd9rRcSMY" }
+                ]
+            },
+            "IT244": {
+                title: "مقدمة في قواعد البيانات",
+                desc: "مقدمة شاملة لأنظمة قواعد البيانات، تصميم قواعد البيانات، واستخدام لغة SQL للاستعلام عن البيانات.",
+                credits: 3,
+                prereq: "IT232",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. محمد الدسوقي",
+                hours: "الأحد/الثلاثاء 1-3 مساءً",
+                major: "تقنية المعلومات",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL37D52B7714788190" },
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL1DUmTEdeA6IvvAfktWt3WQC_nTrcx6ey" },
+                    { type: "youtube", text: "هشام المغربي", link: "https://youtube.com/playlist?list=PLiRL7CfiWlYG7rPyYpynLWU_0qcAqOPJS" },
+                    { type: "telegram", text: "ملفات الدورة", link: "https://t.me/computingg/1757" },
+                    { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCgypXf3z8gSzhqH4sFhlm0a" }
+                ]
+            },
+            "IT245": {
+                title: "هياكل البيانات",
+                desc: "دراسة هياكل البيانات الأساسية والخوارزميات لتنظيم ومعالجة البيانات بكفاءة.",
+                credits: 3,
+                prereq: "IT232",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. نادر حسين",
+                hours: "الاثنين/الأربعاء 2-4 مساءً",
+                major: "تقنية المعلومات",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "عادل نسيم", link: "https://youtube.com/playlist?list=PLCInYL3l2AajqOUW_2SwjWeMwf4vL4RSp" },
+                    { type: "youtube", text: "Hard-Code", link: "https://youtube.com/playlist?list=PLwCMLs3sjOY4UQq4vXgGPwGLVX1Y5faaS" },
+                    { type: "youtube", text: "عبد الباري", link: "https://youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O" },
+                    { type: "youtube", text: "محمد الدسوقي", link: "https://youtube.com/playlist?list=PL1DUmTEdeA6K2yGIRxMvK9nTfRIiWXAWV" },
+                    { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCj8mmBziGGbICMd6NtjMWvS" }
+                ]
+            },
+            "IT351": {
+                title: "شبكات الحاسب",
+                desc: "دراسة أساسيات شبكات الحاسوب، بروتوكولات الشبكات، وتصميم أنظمة الشبكات.",
+                credits: 3,
+                prereq: "IT241",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. سامي راشد",
+                hours: "الثلاثاء/الخميس 9-11 صباحًا",
+                major: "تقنية المعلومات",
+                level: 5,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://youtube.com/playlist?list=PLN6rtDw1g64koqqpL2rD1iWTQCen4BFFN" },
+                    { type: "youtube", text: "اتحاد تقنية المعلومات", link: "https://youtube.com/playlist?list=PLdUHNiwJgn85w-kMChdZJbK6fqFS4tF-1" },
+                    { type: "youtube", text: "NetworkChuck", link: "https://youtube.com/@networkchuck" },
+                    { type: "youtube", text: "Jeremy's IT Lab", link: "https://youtube.com/playlist?list=PLxbwE86jKRgMpuZuLBivzlM8s2Dk5lXBQ" }
+                ]
+            },
+            "IT354": {
+                title: "نظم إدارة قواعد البيانات",
+                desc: "دراسة متقدمة لنظم إدارة قواعد البيانات وتطبيقاتها في المؤسسات.",
+                credits: 3,
+                prereq: "IT244",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. مريم عبد الله",
+                hours: "السبت/الأربعاء 1-3 مساءً",
+                major: "تقنية المعلومات",
+                level: 5,
+                resources: [
+                    { type: "telegram", text: "ملفات الدورة", link: "https://t.me/computingg/1820" },
+                    { type: "drive", text: "رابط درايف", link: "https://drive.google.com/drive/u/2/folders/1XzOKRUdyPA3vmzLgrSFHEM0qjjRA0xeP" }
+                ]
+            },
+            "IT361": {
+                title: "تقنيات الويب",
+                desc: "دراسة متقدمة لتقنيات تطوير الويب الحديثة وأطر العمل.",
+                credits: 3,
+                prereq: "IT245",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. عماد حسن",
+                hours: "الأحد/الثلاثاء 2-4 مساءً",
+                major: "تقنية المعلومات",
+                level: 6,
+                resources: [
+                    { type: "youtube", text: "محمد الغنامي", link: "https://www.youtube.com/watch?v=E_dFmgd7nH0&list=PLN6rtDw1g64nAVVBdAsU9PNgEk4Zpvtrd" },
+                    { type: "youtube", text: "اتحاد تقنية المعلومات", link: "https://youtube.com/playlist?list=PLdUHNiwJgn86h5v-yeBWtFjjK6-ue5nEw" },
+                    { type: "youtube", text: "معمل تقنيات الويب", link: "https://youtube.com/playlist?list=PLdUHNiwJgn84cCmXTnHp8YY3omvoFBoSP" }
+                ]
+            },
+            "IT362": {
+                title: "إدارة المشاريع",
+                desc: "دراسة منهجيات إدارة المشاريع التقنية وأدوات التخطيط والتنفيذ.",
+                credits: 3,
+                prereq: "سنة رابعة",
+                schedule: "فصل الخريف والربيع",
+                instructor: "د. نادية سليمان",
+                hours: "السبت/الثلاثاء 1-3 مساءً",
+                major: "تقنية المعلومات",
+                level: 8,
+                resources: [
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLLHG16Mhq91ZoDysym0xjxEXJ5VoDtIPq" },
+                    { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCgeaQIhyr82_XjtLWXbgaLq" }
+                ]
+            },
+            "IT363": {
+                title: "إدارة الشبكات",
+                desc: "دراسة متقدمة لإدارة شبكات الحاسوب وتقنيات الأمان والصيانة.",
+                credits: 3,
+                prereq: "IT351",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. خالد زهران",
+                hours: "الاثنين/الأربعاء 3-5 مساءً",
+                major: "تقنية المعلومات",
+                level: 6,
+                resources: [
+                    { type: "mega", text: "ملفات الدورة", link: "https://mega.nz/folder/YZRW3AAa#nr3yZdWDbtMn6PsQyV2RJA" }
+                ]
+            },
+            "IT365": {
+                title: "أنظمة المؤسسات",
+                desc: "دراسة أنظمة المؤسسات المتكاملة وتطبيقاتها في إدارة الأعمال.",
+                credits: 3,
+                prereq: "IT354",
+                schedule: "فصل الخريف فقط",
+                instructor: "د. هاني محمود",
+                hours: "الثلاثاء/الخميس 10-12 صباحًا",
+                major: "تقنية المعلومات",
+                level: 6,
+                resources: [
+                    { type: "telegram", text: "مجموعة المواد", link: "https://t.me/+rRc8RDyJwgM0NjNk" }
+                ]
+            },
+            "IT475": {
+                title: "نظم دعم القرار",
+                desc: "دراسة متقدمة لنظم دعم القرار وتطبيقاتها في مجال الأعمال والتحليل.",
+                credits: 3,
+                prereq: "سنة سابعة",
+                schedule: "فصل الربيع فقط",
+                instructor: "د. خالد زهران",
+                hours: "الثلاثاء/الخميس 1-3 مساءً",
+                major: "تقنية المعلومات",
+                level: 7,
+                resources: [
+                    { type: "telegram", text: "مجموعة المواد", link: "https://t.me/+YyMgQZTUDIllMjk0" }
+                ]
+            }
+        };
+
+        // Function to open the modal with course details
+        function openModal(courseCode, courseTitle) {
+            const course = courses[courseCode];
+            if (!course) {
+                alert("المادة غير موجودة في النظام");
+                return;
+            }
+            
+            document.getElementById("modalCourseCode").textContent = courseCode;
+            document.getElementById("modalCourseTitle").textContent = courseTitle;
+            document.getElementById("modalCourseDesc").textContent = course.desc;
+            document.getElementById("modalCourseMajor").textContent = course.major;
+            
+            // Populate resources
+            const resourcesContainer = document.getElementById('course-resources');
+            resourcesContainer.innerHTML = '';
+            
+            if (course.resources && course.resources.length > 0) {
+                course.resources.forEach(resource => {
+                    let icon = '';
+                    let platform = '';
+                    switch(resource.type) {
+                        case 'youtube':
+                            icon = '<i class="fab fa-youtube text-xl text-red-500 mr-2"></i>';
+                            platform = 'يوتيوب';
+                            break;
+                        case 'drive':
+                            icon = '<i class="fab fa-google-drive text-xl text-blue-500 mr-2"></i>';
+                            platform = 'جوجل درايف';
+                            break;
+                        case 'telegram':
+                            icon = '<i class="fab fa-telegram text-xl text-blue-400 mr-2"></i>';
+                            platform = 'تلجرام';
+                            break;
+                        case 'mega':
+                            icon = '<i class="fas fa-cloud-download-alt text-xl text-purple-500 mr-2"></i>';
+                            platform = 'ميجا';
+                            break;
+                        default:
+                            icon = '<i class="fas fa-link text-xl text-photon mr-2"></i>';
+                            platform = 'رابط';
+                    }
+                    
+                    const resourceCard = document.createElement('div');
+                    resourceCard.className = 'resource-card';
+                    resourceCard.innerHTML = `
+                        <a href="${resource.link}" target="_blank" class="flex items-center">
+                            ${icon}
+                            <div>
+                                <h4 class="font-bold text-white">${resource.text}</h4>
+                                <p class="text-stardust/70 text-sm">${platform}</p>
+                            </div>
+                        </a>
+                    `;
+                    resourcesContainer.appendChild(resourceCard);
+                });
+            } else {
+                resourcesContainer.innerHTML = '<p class="text-stardust/70">لا تتوفر موارد لهذه المادة حالياً.</p>';
+            }
+            
+            document.getElementById("courseModal").classList.remove("hidden");
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById("courseModal").classList.add("hidden");
+        }
+        
+        // Function to show all courses for a major
+        function showAllCourses(major) {
+            let title = '';
+            switch(major) {
+                case 'cs':
+                    title = 'علوم الحاسب';
+                    break;
+                case 'ds':
+                    title = 'علوم البيانات';
+                    break;
+                case 'it':
+                    title = 'تقنية المعلومات';
+                    break;
+            }
+            
+            document.getElementById('allCoursesTitle').textContent = `جميع مواد ${title}`;
+            
+            const container = document.getElementById('allCoursesContainer');
+            container.innerHTML = '';
+            
+            Object.keys(courses).forEach(code => {
+                const course = courses[code];
+                if ((major === 'cs' && course.major === 'علوم الحاسب') ||
+                    (major === 'ds' && course.major === 'علوم البيانات') ||
+                    (major === 'it' && course.major === 'تقنية المعلومات')) {
+                    
+                    const level = course.level || 3;
+                    
+                    const courseCard = document.createElement('div');
+                    courseCard.className = 'course-card glow-border rounded-2xl p-6 group overflow-hidden relative';
+                    courseCard.innerHTML = `
+                        <span class="level-badge level-${level}">المستوى ${level}</span>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-bold text-white mb-1">${code}</h3>
+                            <h4 class="text-lg font-bold text-white mb-3">${course.title}</h4>
+                            <p class="text-stardust/70 text-sm mb-4 line-clamp-3">${course.desc}</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">3 ساعات</span>
+                            </div>
+                            <button onclick="closeAllCoursesModal(); openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 text-sm font-medium">
+                                تفاصيل المادة <i class="fas fa-arrow-left ml-1"></i>
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(courseCard);
+                }
+            });
+            
+            document.getElementById("allCoursesModal").classList.remove("hidden");
+        }
+        
+        // Function to close all courses modal
+        function closeAllCoursesModal() {
+            document.getElementById("allCoursesModal").classList.add("hidden");
+        }
+
+        // Function to search courses
+        function searchCourses() {
+            const searchTerm = document.getElementById("courseSearch").value.trim().toUpperCase();
+            if (!searchTerm) {
+                clearSearch();
+                return;
+            }
+
+            // Show loading bar
+            const loadingBar = document.getElementById('loading-bar');
+            loadingBar.style.width = '100%';
+            
+            // Show spinner
+            const searchIcon = document.querySelector('.search-icon');
+            searchIcon.innerHTML = '<div class="loading-spinner"></div>';
+            
+            // Hide all original sections
+            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='overview']").forEach(section => {
+                section.classList.add("hidden");
+            });
+            
+            // Show search results section
+            const searchResultsSection = document.getElementById("search-results");
+            searchResultsSection.classList.remove("hidden");
+            
+            // Update search term display
+            document.getElementById("search-term-display").textContent = searchTerm;
+            
+            // Clear previous results
+            const searchResultsContainer = document.getElementById("search-results-container");
+            searchResultsContainer.innerHTML = '';
+            
+            // Search in all courses
+            let found = false;
+            Object.keys(courses).forEach(code => {
+                if (code.includes(searchTerm)) {
+                    found = true;
+                    const course = courses[code];
+                    const level = course.level || 3;
+                    
+                    // Highlight matching text in description
+                    const desc = course.desc;
+                    
+                    const courseCard = document.createElement('div');
+                    courseCard.className = 'course-card glow-border rounded-2xl p-8 group overflow-hidden relative';
+                    courseCard.innerHTML = `
+                        <span class="level-badge level-${level}">المستوى ${level}</span>
+                        <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-laptop-code text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-3">${code}</h3>
+                            <h4 class="text-xl font-bold text-white mb-4">${course.title}</h4>
+                            <p class="text-stardust/70 mb-6">${desc.substring(0, 100)}...</p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                            </div>
+                            <button onclick="openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </button>
+                        </div>
+                    `;
+                    searchResultsContainer.appendChild(courseCard);
+                }
+            });
+            
+            if (!found) {
+                searchResultsContainer.innerHTML = '<p class="text-stardust/70 text-center col-span-3 py-12">لا توجد مواد تطابق بحثك.</p>';
+            }
+            
+            // Hide loading bar after a short delay
+            setTimeout(() => {
+                loadingBar.style.width = '0%';
+                searchIcon.innerHTML = '<i class="fas fa-search"></i>';
+            }, 500);
+        }
+        
+        // Function to clear search
+        function clearSearch() {
+            document.getElementById("courseSearch").value = '';
+            document.getElementById("search-results").classList.add("hidden");
+            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='overview']").forEach(section => {
+                section.classList.remove("hidden");
+            });
+        }
+
+        // Add event listeners
+        document.getElementById('courseSearch').addEventListener('input', function() {
+            searchCourses();
+        });
+        
+        // Add event listener for Enter key in search
+        document.getElementById("courseSearch").addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCourses();
+            }
+        });
+    </script>
 </body>
 </html>
-
