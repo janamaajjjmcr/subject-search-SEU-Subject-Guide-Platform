@@ -63,7 +63,7 @@ This platform was designed to:
 
 ## 🙏 Credits
 
-- **Original Concept**: [Turki](https://github.com/fxrg)  
+- **Original Concept**: [Turki](https://github.com/turki013)  
   A simple but powerful idea that laid the foundation for this project.
 
 - **Redesign & Development**: [Jana](https://github.com/janamaajjjmcr)  
