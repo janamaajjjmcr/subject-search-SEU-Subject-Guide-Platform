@@ -334,7 +334,6 @@
                     <a href="#cs" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">علوم الحاسب</a>
                     <a href="#ds" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">علوم البيانات</a>
                     <a href="#it" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">تقنية المعلومات</a>
-                    <a href="#General" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">المواد العامة</a>
                     <a href="#overview" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">لماذا تختارنا</a>
                 </nav>
             </div>
@@ -390,7 +389,7 @@
         <div class="mb-16 animate-fade-in relative">
             <div class="max-w-2xl mx-auto">
                 <div class="relative">
-                    <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS 230)..." 
+                    <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS230)..." 
                            class="search-bar w-full py-4 px-6 pl-14 rounded-lg focus:outline-none transition duration-300">
                     <div class="search-icon">
                         <i class="fas fa-search"></i>
@@ -744,7 +743,6 @@
                         <li><a href="#cs" class="text-stardust/70 hover:text-photon transition duration-300">علوم الحاسب</a></li>
                         <li><a href="#ds" class="text-stardust/70 hover:text-photon transition duration-300">علوم البيانات</a></li>
                         <li><a href="#it" class="text-stardust/70 hover:text-photon transition duration-300">تقنية المعلومات</a></li>
-                        <li><a href="#General" class="text-stardust/70 hover:text-photon transition duration-300">المواد العامة </a></li>
                     </ul>
                 </div>
                 
@@ -843,10 +841,6 @@
                 title: "البرمجة الشيئية",
                 desc: "هذه المادة تقدم مفاهيم البرمجة الشيئية باستخدام لغة الجافا. سيتعلم الطلاب التفكير الحسابي واستراتيجيات حل المشكلات والمفاهيم البرمجية الأساسية بما في ذلك المتغيرات وهياكل التحكم والدوال وهياكل البيانات. سيعزز المشاريع العملية المفاهيم من خلال التطبيقات العملية.",
                 credits: 3,
-                prereq: "لا يوجد",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. سارة جونسون",
-                hours: "الإثنين/الأربعاء 2-4 مساءً أو حسب الموعد",
                 major: "علوم الحاسب",
                 level: 3,
                 resources: [
@@ -860,10 +854,6 @@
                 title: "تصميم المنطق الرقمي",
                 desc: "طرق تنظيم البيانات الأساسية وتقنيات تحليل الخوارزميات. تشمل المصفوفات، القوائم المرتبطة، الطوابير، الركام، الأشجار، الرسوم البيانية، خوارزميات الفرز والبحث. سيقوم الطلاب بتنفيذ هذه الهياكل وتحليل تعقيدها الحسابي.",
                 credits: 3,
-                prereq: "CS230 أو ما يعادلها",
-                schedule: "فصل الخريف والربيع",
-                instructor: "بروفيسور مايكل تشين",
-                hours: "الثلاثاء/الخميس 1-3 مساءً",
                 major: "علوم الحاسب",
                 level: 3,
                 resources: [
@@ -871,15 +861,38 @@
                     { type: "telegram", text: "بلاك بورد", link: "https://t.me/computingg/1801" },
                     { type: "youtube", text: "Neso Academy", link: "https://youtube.com/playlist?list=PLBlnK6fEyqRjMH3mWf6kwqiTbT798eAOm" }
                 ]
+            
+            },
+            "SCI101": {
+                title: "الفيزياء العامة 1",
+                desc: "يركز هذا المقرر على المفاهيم الأساسية في الفيزياء، ويغطي مواضيع مثل الحركة، السرعة، التسارع، قوانين نيوتن، الطاقة، الشغل، القدرة، والزخم. كما يتناول المبادئ المرتبطة بالدوران والجاذبية. يهدف المقرر إلى تطوير الفهم الفيزيائي لظواهر الحياة اليومية، وتنمية المهارات التحليلية من خلال المسائل الكمية والتجريبية.",
+                credits: 3,
+                major: "المواد العامة",
+                level: 3,
+                resources: [
+                    { type: "drive", text: "رابط درايف", link: "https://drive.google.com/drive/folders/1Q1oDAOO_W_1umavYv4XjsosGrJSByLi5?usp=drive_link" },
+                    { type: "youtube", text: "khalled physics", link: "https://youtube.com/playlist?list=PLZ0T_ivlaIL_v8r6BcgY7K4gJn9Zo9K9c&si=3KUlEtgGtGW3rdUF" },
+                    { type: "youtube", text: "SEU شروحات", link: "https://youtube.com/playlist?list=PLucw93gpJmChI6MZ4pd5P8ikVnOxk5Pps&feature=shared" }
+                ]
+            },
+            "MATH150": {
+                title: "الرياضيات المتقطعة",
+                desc: "يركز هذا المقرر على المفاهيم الأساسية للرياضيات المتقطعة، والتي تستخدم لفهم وحل المشكلات المنطقية والحسابية في علوم الحاسب. تشمل مواضيع المقرر: المنطق الرقمي، الجمل المركبة، الجداول الصدقية (تروث تيبل)، الاثباتات الرياضية، الكميات، قوانين دي مورغان. يهدف المقرر إلى تعزيز الفكير المنطقي والتحليل الرياضي ويمثل أساساً مهماً لفهم الخوارزميات.",
+                credits: 3,
+                major: "المواد العامة",
+                level: 3,
+                resources: [
+                    { type: "youtube", text: "Rula Mohammad", link: "https://youtube.com/playlist?list=PLB6X_agqE9hq0xeyZSTNLF0PxA41Dp5pg&si=xFu-5ZGfMPuPSbaQ" },
+                    { type: "youtube", text: "Dr. Ahmed Hagag", link: "https://youtube.com/playlist?list=PLxIvc-MGOs6gZlMVYOOEtUHJmfUquCjwz&si=DP9dGGEtu6jMkIxH" },
+                    { type: "youtube", text: "Liberty University", link: "https://youtube.com/playlist?list=PLqDICNnMuD4l0UEEl7lwVin_4Q_qKg8qh&si=MV7yyLHp3T814kr3" },
+                    { type: "youtube", text: "Kimberly Brehm", link: "https://www.youtube.com/watch?v=A3Ffwsnad0k&list=PLl-gb0E4MII28GykmtuBXNUNoej-vY5Rz" },
+                    { type: "youtube", text: "Mohammed Ebrahim Saad", link: "https://youtube.com/playlist?list=PLZyQU-WOzZF1rmALoJZthmDKPsqxCV4mW&si=UOwd8LhP2pfJsZZ-" }
+                ]
             },
             "CS240": {
                 title: "هياكل البيانات",
                 desc: "استكشاف تعلم الآلة، الشبكات العصبية، وتصميم الأنظمة الذكية. تشمل مفاهيم الذكاء الاصطناعي الأساسية بما في ذلك خوارزميات البحث، تمثيل المعرفة، تقنيات تعلم الآلة، والتطبيقات في رؤية الحاسوب ومعالجة اللغة الطبيعية.",
                 credits: 3,
-                prereq: "CS231 و MATH210",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. إيميلي رودريجيز",
-                hours: "الأربعاء 10 صباحًا - 12 ظهرًا",
                 major: "علوم الحاسب",
                 level: 4,
                 resources: [
@@ -892,10 +905,6 @@
                 title: "معمارية وتنظيم الحاسب",
                 desc: "دراسة معماريّة الحاسوب وتنظيمه، بما في ذلك تصميم المعالج، الذاكرة، ونظام الإدخال والإخراج.",
                 credits: 3,
-                prereq: "CS231",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. أحمد سلام",
-                hours: "السبت/الاثنين 9-11 صباحًا",
                 major: "علوم الحاسب",
                 level: 4,
                 resources: [
@@ -907,10 +916,6 @@
                 title: "نظرية الحوسبة",
                 desc: "دراسة أساسيات نظرية الحوسبة بما في ذلك الآلات الحاسوبية، اللغات الصورية، والتعقيد الحسابي.",
                 credits: 3,
-                prereq: "CS231",
-                schedule: "فصل الربيع فقط",
-                instructor: "بروفيسور ليلى أحمد",
-                hours: "الثلاثاء/الخميس 2-4 مساءً",
                 major: "علوم الحاسب",
                 level: 4,
                 resources: [
@@ -918,14 +923,45 @@
                     { type: "youtube", text: "أنس شاهوان", link: "https://youtube.com/playlist?list=PLrCBCI_Do84iJ-kiE1F2trKik2Ts4XelM" }
                 ]
             },
+            "CS243": {
+                title: "الرياضيات المتقطعة لعلوم الحاسب",
+                desc: "يتناول هذا المقرر المفاهيم الرياضية والخوارزميات الأساسية المستخدمة في علوم الحاسب. تشمل المواضيع: المصفوفات، التباديل والتوافيق، قوانين الاحتمالات، الخوارزميات الترتيبية، الأشجار، الرسوم البيانية، والكتابة الرمزية للخوارزميات. يتم التركيز على ربط النظريات الرياضية بتطبيقاتها في البرمجة.",
+                credits: 3,
+                major: "علوم الحاسب",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://www.youtube.com/playlist?list=PLp2eAGIFKMEWb3PjNdXskeTm7q0f8nEJ8" },
+                    { type: "youtube", text: "Discrete Math Videos", link: "https://youtube.com/@discretemathvideos204?si=rCjUWlXkxm7diKUA" }
+                ]
+            },
+            "SCI201": {
+                title: "الفيزياء العامة 2",
+                desc: "يركز هذا المقرر على المفاهيم الأساسية بالكهرباء والمغناطيسية، ويعد استكمالاً لمقرر الفزياء العامة 1. تشمل المواضيع: الدوائر الكهربائية، التيار الكهربائي، الموجات الكهرومغناطيسية، وقانون كولوم. يهدف المقرر إلى تمكين الطلاب من فهم وتحليل الظواهر الكهرومغناطيسية.",
+                credits: 3,
+                major: "المواد العامة",
+                level: 4,
+                resources: [
+                    { type: "telegram", text: "قوائم بلاك بورد", link: "https://t.me/computingg/1478" }
+                ]
+            },
+             "MATH251": {
+                title: "الجبر الخطي",
+                desc: "يركز المقرر على أساسيات المصفوفات والمتجهات، وطرق العمليات عليها مثل الجمع والضرب، وحل الأنظمة الخطية. المحددات، الفضاءات الاتجاهية، المتجهات، الاستقلال الخطي، التحويلات الخطية، والقيم الذاتية والمتجهات الذاتية. ويركز المادة على التطبيقات الرياضية التي يحتاجها الطالب في مجالات مثل الرسوميات والذكاء الاصطناعي.",
+                credits: 3,
+                major: "المواد العامة",
+                level: 5,
+                resources: [
+                    { type: "telegram", text: "Youtube Link", link: "https://t.me/computingg/1498" },
+                    { type: "youtube", text: "Students IT SEU", link: "https://youtube.com/@studentsitseu4882?feature=shared" },
+                    { type: "youtube", text: "Youtube Link", link: "https://youtu.be/1WpLJ_0tLi4?si=UC0-RWWB0pPgdDGs" },
+                    { type: "youtube", text: "Youtube Link", link: "https://www.youtube.com/watch?v=2qtYd2I0ADM&list=PLFXDF1B2B6Xfav1OHi_2WNTc1oRvl53jB&index=1" },
+                    { type: "youtube", text: "Professor Dave Explains", link: "https://youtube.com/playlist?list=PLybg94GvOJ9En46TNCXL2n6SiqRc_iMB8&feature=shared" }
+                ]
+            },
             "CS350": {
                 title: "مقدمة في قواعد البيانات",
                 desc: "مقدمة شاملة لأنظمة قواعد البيانات، تصميم قواعد البيانات، واستخدام لغة SQL للاستعلام عن البيانات.",
                 credits: 3,
-                prereq: "CS240",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. محمد الدسوقي",
-                hours: "الأحد/الثلاثاء 1-3 مساءً",
                 major: "علوم الحاسب",
                 level: 5,
                 resources: [
@@ -937,10 +973,6 @@
                 title: "نظم التشغيل",
                 desc: "دراسة متعمقة لنظم التشغيل الحديثة، إدارة العمليات، الذاكرة، الملفات، وأمن النظام.",
                 credits: 3,
-                prereq: "CS241",
-                schedule: "فصل الخريف فقط",
-                instructor: "د. حسن الأنصاري",
-                hours: "السبت/الأربعاء 10-12 صباحًا",
                 major: "علوم الحاسب",
                 level: 5,
                 resources: [
@@ -948,14 +980,20 @@
                     { type: "youtube", text: "مصطفى الجميلي", link: "https://youtube.com/playlist?list=PLHKTPL-jkzUqgHIBdC2I16QqZCSDN_6oS" }
                 ]
             },
+            "CS352": {
+                title: "تحليل وتصميم النظم",
+                desc: "يركز هذا المقرر على تحليل وتصميم نظم المعلومات بهدف تطوير أنظمة فعالة تلبي احتياجات المؤسسات. يتعلم الطلاب كيفية جمع المتطلبات، استخدام النماذج التخطيطية مثل DFD وERD، تصميم واجهات المستخدم، وفهم دورة حياة تطوير النظام (SDLC). كما يغطي المقرر منهجيات التطوير المختلفة مثل Waterfall وAgile، ويوفر مهارات عملية في التوثيق والتحليل المنهجي.",
+                credits: 3,
+                major: "علوم الحاسب",
+                level: 5,
+                resources: [
+                    { type: "telegram", text: "أرشيف الكلية", link: "https://t.me/computingg" }
+                ]
+            },
             "CS353": {
                 title: "تصميم وتحليل الخوارزميات",
                 desc: "دراسة متقدمة لتصميم الخوارزميات وتحليل كفاءتها باستخدام تقنيات متعددة.",
                 credits: 3,
-                prereq: "CS240",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. عمر خالد",
-                hours: "الاثنين/الأربعاء 3-5 مساءً",
                 major: "علوم الحاسب",
                 level: 5,
                 resources: [
@@ -967,10 +1005,6 @@
                 title: "شبكات الحاسب",
                 desc: "دراسة أساسيات شبكات الحاسوب، بروتوكولات الشبكات، وتصميم أنظمة الشبكات.",
                 credits: 3,
-                prereq: "CS241",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. سامي راشد",
-                hours: "الثلاثاء/الخميس 9-11 صباحًا",
                 major: "علوم الحاسب",
                 level: 6,
                 resources: [
@@ -982,10 +1016,6 @@
                 title: "برمجة الويب",
                 desc: "مقدمة شاملة لتقنيات برمجة الويب بما في ذلك HTML, CSS, JavaScript وتقنيات الخادم.",
                 credits: 3,
-                prereq: "CS240",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. ليلى مصطفى",
-                hours: "الأحد/الثلاثاء 2-4 مساءً",
                 major: "علوم الحاسب",
                 level: 6,
                 resources: [
@@ -997,24 +1027,45 @@
                 title: "الذكاء الاصطناعي",
                 desc: "دراسة أساسيات الذكاء الاصطناعي وتطبيقاته في حل المشكلات المعقدة.",
                 credits: 3,
-                prereq: "CS240 و MATH220",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. أحمد فؤاد",
-                hours: "الاثنين/الأربعاء 10-12 صباحًا",
                 major: "علوم الحاسب",
                 level: 6,
                 resources: [
                     { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLFINw1G-wi0nSBXG9rWmQLKJi7VTsTKSF" }
                 ]
             },
+            "CS363": {
+                title: "مبادئ لغات البرمجة",
+                desc: "يركز المقرر على دراسة المبادئ الاساسية التي تقوم عليها لغات البرمجة, ويهدف إالى تحليل وفهم المفاهيم المشتركة بين محتلف اللغات البرمجية. تشمل مواضيع مثل الانماط النحوية(syntax) والدلالية (semnatics), انواع البيانات , النطاق (scop),البرمجة الاجرائية والوظيفية والمنطقية , وتقييم الاداء والمقارنة بين اللغات .     يهدف المقرر إالى تمكين الطلاب من اختيار وفهم لغات البرمجة المختلفة بوعي",
+                credits: 3,
+                major: "علوم الحاسب",
+                level: 6,
+                resources:[
+                    {type: "youtube" , text:"قائمة تشغيل يوتيوب محتوى الميد فقط" , link:"https://www.youtube.com/playlist?list=PLnGJt0oPFzgynecY-TtS0HmW7HgBD0CFw"}],
+
+            },
+            "CS364":{
+                title: "ريادة الأعمال والابتكار",
+                desc: "يركز هاذا المقرر إلى تعريف الطلاب بمفاهيم ريادة الأعمال والابتكار، ودورهما في تطوير المشاريع وخلق القيمة. يتناول مواضيع مثل خصائص رواد الأعمال، توليد الأفكار، دراسات الجدوى، نماذج الأعمال، تسويق المنتجات المبتكرة، والحلول الإبداعية للمشكلات. كما يركز على كيفية تحويل الأفكار إلى مشاريع واقعية، وتنمية روح المبادرة لدى الطلاب.",
+                credits: 3,
+                major: "علوم الحاسب",
+                level: 6,
+                resources: [
+                    {type:"Telegram" , text:"لايوجد شروحات ولكن هاذا ارشيف الكلية يمكنك البحث عن تجميعات المادة" , link:"https://t.me/computingg"}],
+            },
+            "CS470": {
+                title: "التفاعلات بين الإنسان والحاسوب",
+                desc: "يركز هذا المقرر على التفاعل بين الإنسان والحاسوب، ويهدف إلى تصميم واجهات استخدام فعالة وسهلة للمستخدم. يشمل مواضيع مثل تصميم التفاعل، قابلية الاستخدام، النماذج الذهنية، العوامل البشرية، تقييم الواجهات، وتجربة المستخدم (UX)، مع التركيز على الجوانب النفسية والسلوكية للمستخدمين.",
+                credits: 3,
+                major: "علوم الحاسب",
+                level: 7,
+                resources: [
+                    { type: "telegram", text: "أرشيف الكلية", link: "https://t.me/computingg" }
+                ]
+            },
             "CS480": {
                 title: "إدارة المشاريع",
                 desc: "دراسة منهجيات إدارة المشاريع التقنية وأدوات التخطيط والتنفيذ.",
                 credits: 3,
-                prereq: "سنة رابعة",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. نادية سليمان",
-                hours: "السبت/الثلاثاء 1-3 مساءً",
                 major: "علوم الحاسب",
                 level: 8,
                 resources: [
@@ -1022,58 +1073,12 @@
                     { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCgeaQIhyr82_XjtLWXbgaLq" }
                 ]
             },
-
-        "CS363": {
-        "title": "مبادئ لغات البرمجة",
-        "desc": "يركز المقرر على دراسة المبادئ الاساسية التي تقوم عليها لغات البرمجة, ويهدف إالى تحليل وفهم المفاهيم المشتركة بين محتلف اللغات البرمجية. تشمل مواضيع مثل الانماط النحوية(syntax) والدلالية (semnatics), انواع البيانات , النطاق (scop),البرمجة الاجرائية والوظيفية والمنطقية , وتقييم الاداء والمقارنة بين اللغات .     يهدف المقرر إالى تمكين الطلاب من اختيار وفهم لغات البرمجة المختلفة بوعي",
-        "credits": 3,
-        "prereq": null,
-        "schedule": null,
-        "instructor": null,
-        "hours": null,
-        "major": "علوم الحاسب",
-        "level": 6,
-        "resources":[
-         {type: "youtube" , text:"قائمة تشغيل يوتيوب محتوى الميد فقط" , link:"https://www.youtube.com/playlist?list=PLnGJt0oPFzgynecY-TtS0HmW7HgBD0CFw"}],
-
-        },
-
-        "CS364":{
-        "title": "ريادة الأعمال والابتكار",
-        "desc": "يركز هاذا المقرر إلى تعريف الطلاب بمفاهيم ريادة الأعمال والابتكار، ودورهما في تطوير المشاريع وخلق القيمة. يتناول مواضيع مثل خصائص رواد الأعمال، توليد الأفكار، دراسات الجدوى، نماذج الأعمال، تسويق المنتجات المبتكرة، والحلول الإبداعية للمشكلات. كما يركز على كيفية تحويل الأفكار إلى مشاريع واقعية، وتنمية روح المبادرة لدى الطلاب.",
-        "credits": null,
-        "prereq": null,
-        "schedule": null,
-        "instructor": null,
-        "hours": null,
-        "major": "علوم الحاسب",
-        "level": 6,
-        "resources": [{type:"Telegram" , text:"لايوجد شروحات ولكن هاذا ارشيف الكلية يمكنك البحث عن تجميعات المادة" , link:"https://t.me/computingg"}],
-        },
-
-        "CS481": {
-        "title": "أخلاقيات مهنية",
-        "desc": "يركّز هذا المقرر على المبادئ الأخلاقية والمهنية المتعلقة بمجال الحوسبة وتكنولوجيا المعلومات. يتناول قضايا مثل الخصوصية، الأمن، المسؤولية الاجتماعية، الملكية الفكرية، والسلوك المهني، مع التركيز على كيفية اتخاذ قرارات أخلاقية في المواقف التقنية المختلفة.",
-        "credits": null,
-        "prereq": null,
-        "schedule": null,
-        "instructor": null,
-        "hours": 3,
-        "major": "علوم الحاسب",
-        "level": 8,
-        "resources": [{type:"Telegram" , text:"لايوجد شروحات للمادة ولكنك يمكنك البحث بالارشيف عن تجميعات" , link:"https://t.me/computingg"}],
-        },
-
-         
+            
             // علوم البيانات
             "DS230": {
                 title: "البرمجة الشيئية",
                 desc: "مقدمة في معالجة البيانات والتصور والتحليل الإحصائي باستخدام بايثون و R. تشمل تنظيف البيانات، التحليل الاستكشافي للبيانات، الاختبارات الإحصائية الأساسية، وتقنيات التصور للتواصل الفعال للبيانات.",
                 credits: 3,
-                prereq: "لا يوجد",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. جيمس ويلسون",
-                hours: "الإثنين 3-5 مساءً، الجمعة 10 صباحًا - 12 ظهرًا",
                 major: "علوم البيانات",
                 level: 3,
                 resources: [
@@ -1085,10 +1090,6 @@
                 title: "برمجة علوم البيانات",
                 desc: "تقنيات التعلم تحت الإشراف وبدون إشراف مع تطبيقات في العالم الحقيقي. تشمل الانحدار، التصنيف، التجميع، تخفيض الأبعاد، وتقييم النماذج. سيعمل الطلاب مع مجموعات بيانات حقيقية لبناء نماذج تنبؤية.",
                 credits: 3,
-                prereq: "DS230 و MATH220",
-                schedule: "فصل الخريف فقط",
-                instructor: "بروفيسور ليزا تشانغ",
-                hours: "الثلاثاء 1-3 مساءً، الخميس 4-6 مساءً",
                 major: "علوم البيانات",
                 level: 3,
                 resources: [
@@ -1099,24 +1100,26 @@
                 title: "هياكل البيانات",
                 desc: "معالجة البيانات الموزعة مع Hadoop، Spark، ومنصات السحابة. تشمل نموذج MapReduce، أنظمة الملفات الموزعة، قواعد بيانات NoSQL، ومعالجة التدفق. سيقوم الطلاب بنشر التطبيقات على البنية التحتية السحابية.",
                 credits: 3,
-                prereq: "DS231 أو CS231",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. روبرت كيم",
-                hours: "الإثنين/الأربعاء 11 صباحًا - 1 ظهرًا",
                 major: "علوم البيانات",
                 level: 4,
                 resources: [
                     { type: "youtube", text: "محمد الغنامي", link: "https://youtube.com/playlist?list=PLN6rtDw1g64n1ISQpjhGcZe0hikxFuk8j" }
                 ]
             },
+            "DS242": {
+                title: "برمجة علوم البيانات المتقدمة",
+                desc: "مادة برمجة بايثون تتكلم عن مواضيع زي اساسيات بايثون الويب سكرابنق مكاتب الداتا ساينس الخ المادة ممتعة جدا بس تحتاج تطبيق مستمر",
+                credits: 3,
+                major: "علوم البيانات",
+                level: 4,
+                resources: [
+                    { type: "telegram", text: "أرشيف الكلية", link: "https://t.me/computingg" }
+                ]
+            },
             "DS243": {
                 title: "معمارية وتنظيم الحاسب",
                 desc: "دراسة معماريّة الحاسوب وتنظيمه، بما في ذلك تصميم المعالج، الذاكرة، ونظام الإدخال والإخراج.",
                 credits: 3,
-                prereq: "DS231",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. أحمد سلام",
-                hours: "السبت/الاثنين 9-11 صباحًا",
                 major: "علوم البيانات",
                 level: 4,
                 resources: [
@@ -1124,14 +1127,37 @@
                     { type: "youtube", text: "Neso Academy", link: "https://youtube.com/playlist?list=PLBlnK6fEyqRgLLlzdgiTUKULKJPYc0A4q" }
                 ]
             },
+            "MATH241": {
+                title: "التفاضل والتكامل",
+                desc: "يركز المقرر على مفاهيم التفاضل والتكامل، يغطي المواضيع الأساسية والمتقدمة في التحليل الرياضي. يشمل المقرر: المشتقات وتطبيقاتها، المشتقات الجزئية، التكاملات المحددة وغير المحددة، المتسلسلات، اختبارات التقارب، الدوال متعددة المتغيرات. يهدف المقرر إلى تزويد الطلاب بفهم شامل للتفاضل والتكامل وتطبيقاتها في حل المسائل الرياضية في العلوم والهندسة.",
+                credits: 3,
+                major: "علوم البيانات",
+                level: 4,
+                resources: [
+                    { type: "youtube", text: "Professor Leonard Part 1", link: "https://youtube.com/playlist?list=PLF797E961509B4EB5&si=HP2hT9j5dDcGrigM" },
+                    { type: "youtube", text: "Professor Leonard Part 2", link: "https://youtube.com/playlist?list=PLDesaqWTN6EQ2J4vgsN1HyBeRADEh4Cw-&feature=shared" },
+                    { type: "youtube", text: "Professor Leonard Part 3", link: "https://youtube.com/playlist?list=PLDesaqWTN6ESk16YRmzuJ8f6-rnuy0Ry7&feature=shared" },
+                    { type: "youtube", text: "Youtube Link", link: "https://youtube.com/playlist?list=PLfhQ90MyYJQFxw4bfxWA9yJc7K1KV33Fi&feature=shared" }
+                ]
+            },
+            "MATH251": {
+                title: "الجبر الخطي",
+                desc: "يركز المقرر على أساسيات المصفوفات والمتجهات، وطرق العمليات عليها مثل الجمع والضرب، وحل الأنظمة الخطية. المحددات، الفضاءات الاتجاهية، المتجهات، الاستقلال الخطي، التحويلات الخطية، والقيم الذاتية والمتجهات الذاتية. ويركز المادة على التطبيقات الرياضية التي يحتاجها الطالب في مجالات مثل الرسوميات والذكاء الاصطناعي.",
+                credits: 3,
+                major: "المواد العامة",
+                level: 4,
+                resources: [
+                    { type: "telegram", text: "Youtube Link", link: "https://t.me/computingg/1498" },
+                    { type: "youtube", text: "Students IT SEU", link: "https://youtube.com/@studentsitseu4882?feature=shared" },
+                    { type: "youtube", text: "Youtube Link", link: "https://youtu.be/1WpLJ_0tLi4?si=UC0-RWWB0pPgdDGs" },
+                    { type: "youtube", text: "Youtube Link", link: "https://www.youtube.com/watch?v=2qtYd2I0ADM&list=PLFXDF1B2B6Xfav1OHi_2WNTc1oRvl53jB&index=1" },
+                    { type: "youtube", text: "Professor Dave Explains", link: "https://youtube.com/playlist?list=PLybg94GvOJ9En46TNCXL2n6SiqRc_iMB8&feature=shared" }
+                ]
+            },
             "DS350": {
                 title: "مقدمة في قواعد البيانات",
                 desc: "مقدمة شاملة لأنظمة قواعد البيانات، تصميم قواعد البيانات، واستخدام لغة SQL للاستعلام عن البيانات.",
                 credits: 3,
-                prereq: "DS240",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. محمد الدسوقي",
-                hours: "الأحد/الثلاثاء 1-3 مساءً",
                 major: "علوم البيانات",
                 level: 5,
                 resources: [
@@ -1143,10 +1169,6 @@
                 title: "نظم التشغيل",
                 desc: "دراسة متعمقة لنظم التشغيل الحديثة، إدارة العمليات، الذاكرة، الملفات، وأمن النظام.",
                 credits: 3,
-                prereq: "DS243",
-                schedule: "فصل الخريف فقط",
-                instructor: "د. حسن الأنصاري",
-                hours: "السبت/الأربعاء 10-12 صباحًا",
                 major: "علوم البيانات",
                 level: 5,
                 resources: [
@@ -1158,10 +1180,6 @@
                 title: "تصميم وتحليل الخوارزميات",
                 desc: "دراسة متقدمة لتصميم الخوارزميات وتحليل كفاءتها باستخدام تقنيات متعددة.",
                 credits: 3,
-                prereq: "DS240",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. عمر خالد",
-                hours: "الاثنين/الأربعاء 3-5 مساءً",
                 major: "علوم البيانات",
                 level: 5,
                 resources: [
@@ -1173,25 +1191,27 @@
                 title: "إدارة المشاريع",
                 desc: "دراسة منهجيات إدارة المشاريع التقنية وأدوات التخطيط والتنفيذ.",
                 credits: 3,
-                prereq: "سنة رابعة",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. نادية سليمان",
-                hours: "السبت/الثلاثاء 1-3 مساءً",
                 major: "علوم البيانات",
-                level: 8,
+                level: 5,
                 resources: [
                     { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLLHG16Mhq91ZoDysym0xjxEXJ5VoDtIPq" },
                     { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCgeaQIhyr82_XjtLWXbgaLq" }
+                ]
+            },
+            "SCI201": {
+                title: "الفيزياء العامة 2",
+                desc: "يركز هذا المقرر على المفاهيم الأساسية بالكهرباء والمغناطيسية، ويعد استكمالاً لمقرر الفزياء العامة 1. تشمل المواضيع: الدوائر الكهربائية، التيار الكهربائي، الموجات الكهرومغناطيسية، وقانون كولوم. يهدف المقرر إلى تمكين الطلاب من فهم وتحليل الظواهر الكهرومغناطيسية.",
+                credits: 3,
+                major: "المواد العامة",
+                level: 5,
+                resources: [
+                    { type: "telegram", text: "قوائم بلاك بورد", link: "https://t.me/computingg/1478" }
                 ]
             },
             "DS360": {
                 title: "شبكات الحاسب",
                 desc: "دراسة أساسيات شبكات الحاسوب، بروتوكولات الشبكات، وتصميم أنظمة الشبكات.",
                 credits: 3,
-                prereq: "DS243",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. سامي راشد",
-                hours: "الثلاثاء/الخميس 9-11 صباحًا",
                 major: "علوم البيانات",
                 level: 6,
                 resources: [
@@ -1199,14 +1219,20 @@
                     { type: "youtube", text: "NetworkChuck", link: "https://youtube.com/@networkchuck" }
                 ]
             },
+            "DS361": {
+                title: "تحليل وتصميم النظم",
+                desc: "يركز هذا المقرر على تحليل وتصميم نظم المعلومات بهدف تطوير أنظمة فعالة تلبي احتياجات المؤسسات. يتعلم الطلاب كيفية جمع المتطلبات، استخدام النماذج التخطيطية مثل DFD وERD، تصميم واجهات المستخدم، وفهم دورة حياة تطوير النظام (SDLC). كما يغطي المقرر منهجيات التطوير المختلفة مثل Waterfall وAgile، ويوفر مهارات عملية في التوثيق والتحليل المنهجي.",
+                credits: 3,
+                major: "علوم البيانات",
+                level: 6,
+                resources: [
+                    { type: "telegram", text: "أرشيف الكلية", link: "https://t.me/computingg" }
+                ]
+            },
             "DS362": {
                 title: "برمجة الويب",
                 desc: "مقدمة شاملة لتقنيات برمجة الويب بما في ذلك HTML, CSS, JavaScript وتقنيات الخادم.",
                 credits: 3,
-                prereq: "DS240",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. ليلى مصطفى",
-                hours: "الأحد/الثلاثاء 2-4 مساءً",
                 major: "علوم البيانات",
                 level: 6,
                 resources: [
@@ -1218,10 +1244,6 @@
                 title: "الذكاء الاصطناعي",
                 desc: "دراسة أساسيات الذكاء الاصطناعي وتطبيقاته في حل المشكلات المعقدة.",
                 credits: 3,
-                prereq: "DS240 و MATH220",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. أحمد فؤاد",
-                hours: "الاثنين/الأربعاء 10-12 صباحًا",
                 major: "علوم البيانات",
                 level: 6,
                 resources: [
@@ -1232,55 +1254,18 @@
                 title: "نظم دعم القرار",
                 desc: "دراسة متقدمة لنظم دعم القرار وتطبيقاتها في مجال الأعمال والتحليل.",
                 credits: 3,
-                prereq: "سنة سابعة",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. خالد زهران",
-                hours: "الثلاثاء/الخميس 1-3 مساءً",
                 major: "علوم البيانات",
                 level: 7,
                 resources: [
                     { type: "telegram", text: "مجموعة المواد", link: "https://t.me/+YyMgQZTUDIllMjk0" }
                 ]
             },
-
-        "DS481": {
-        title: "أخلاقيات مهنية",
-        desc: "يركّز هذا المقرر على المبادئ الأخلاقية والمهنية المتعلقة بمجال الحوسبة وتكنولوجيا المعلومات. يتناول قضايا مثل الخصوصية، الأمن، المسؤولية الاجتماعية، الملكية الفكرية، والسلوك المهني، مع التركيز على كيفية اتخاذ قرارات أخلاقية في المواقف التقنية المختلفة.",
-        credits: null,
-        prereq: null,
-        schedule: null,
-        instructor: null,
-        hours: 3,
-        major: "علم البيانات",
-        level: 8,
-        resources: [{type:"Telegram" , text:"لايوجد شروحات للمادة ولكنك يمكنك البحث بالارشيف عن تجميعات" , link:"https://t.me/computingg"}]
-        },
-        "DS242": {
-        title: "برمجة بايثون المتقدمة لعلوم البيانات",
-        desc: "مادة برمجة بايثون تتكلم عن مواضيع زي اساسيات بايثون الويب سكرابنق مكاتب الداتا ساينس الخ المادة ممتعة جدا بس تحتاج تطبيق مستمر",
-        credits: null,
-        prereq: null,
-        schedule: null,
-        instructor: null,
-        hours: 3,
-        major: "علم بيانات",
-        level: 4,
-        resources: [{type:"youtube" , text:"سلسلة الزيرو لتعلم البايثون ", link:"https://youtu.be/mvZHDpCHphk?si=lobhEU3CEn9ZeGxr"} ,
-                       {type:"youtube" , text:"سلسلة بايثون لعلم البيانات" , link:"https://youtu.be/23DF2V1z9UE?si=27qUOEWrBdp6ync4"}]
-        },
-
-
-
             
             // تقنية المعلومات
             "IT231": {
                 title: "مقدمة في تقنية المعلومات ونظم المعلومات",
                 desc: "مقدمة في مفاهيم تقنية المعلومات وأنظمة المعلومات الأساسية.",
                 credits: 3,
-                prereq: "لا يوجد",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. أحمد محمد",
-                hours: "الإثنين/الأربعاء 10-12 صباحًا",
                 major: "تقنية المعلومات",
                 level: 3,
                 resources: [
@@ -1292,10 +1277,6 @@
                 title: "البرمجة الشيئية",
                 desc: "دراسة مفاهيم البرمجة الشيئية وتطبيقاتها باستخدام لغة الجافا.",
                 credits: 3,
-                prereq: "IT231",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. سامي علي",
-                hours: "الثلاثاء/الخميس 1-3 مساءً",
                 major: "تقنية المعلومات",
                 level: 3,
                 resources: [
@@ -1309,10 +1290,6 @@
                 title: "تنظيم الحاسب",
                 desc: "مقدمة في تنظيم الحاسوب وهندسة المعمارية وأنظمة التشغيل.",
                 credits: 3,
-                prereq: "IT231",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. رامي سعيد",
-                hours: "السبت/الاثنين 9-11 صباحًا",
                 major: "تقنية المعلومات",
                 level: 3,
                 resources: [
@@ -1325,10 +1302,6 @@
                 title: "نظم التشغيل",
                 desc: "دراسة نظم التشغيل المختلفة وإدارتها وتفاعلها مع العتاد.",
                 credits: 3,
-                prereq: "IT233",
-                schedule: "فصل الخريف فقط",
-                instructor: "د. حسن الأنصاري",
-                hours: "الأحد/الثلاثاء 9-11 صباحًا",
                 major: "تقنية المعلومات",
                 level: 4,
                 resources: [
@@ -1342,10 +1315,6 @@
                 title: "مقدمة في قواعد البيانات",
                 desc: "مقدمة شاملة لأنظمة قواعد البيانات، تصميم قواعد البيانات، واستخدام لغة SQL للاستعلام عن البيانات.",
                 credits: 3,
-                prereq: "IT232",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. محمد الدسوقي",
-                hours: "الأحد/الثلاثاء 1-3 مساءً",
                 major: "تقنية المعلومات",
                 level: 4,
                 resources: [
@@ -1360,10 +1329,6 @@
                 title: "هياكل البيانات",
                 desc: "دراسة هياكل البيانات الأساسية والخوارزميات لتنظيم ومعالجة البيانات بكفاءة.",
                 credits: 3,
-                prereq: "IT232",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. نادر حسين",
-                hours: "الاثنين/الأربعاء 2-4 مساءً",
                 major: "تقنية المعلومات",
                 level: 4,
                 resources: [
@@ -1374,14 +1339,20 @@
                     { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCj8mmBziGGbICMd6NtjMWvS" }
                 ]
             },
+            "SCI201": {
+                title: "الفيزياء العامة 2",
+                desc: "يركز هذا المقرر على المفاهيم الأساسية بالكهرباء والمغناطيسية، ويعد استكمالاً لمقرر الفزياء العامة 1. تشمل المواضيع: الدوائر الكهربائية، التيار الكهربائي، الموجات الكهرومغناطيسية، وقانون كولوم. يهدف المقرر إلى تمكين الطلاب من فهم وتحليل الظواهر الكهرومغناطيسية.",
+                credits: 3,
+                major: "المواد العامة",
+                level: 4,
+                resources: [
+                    { type: "telegram", text: "قوائم بلاك بورد", link: "https://t.me/computingg/1478" }
+                ]
+            },
             "IT351": {
                 title: "شبكات الحاسب",
                 desc: "دراسة أساسيات شبكات الحاسوب، بروتوكولات الشبكات، وتصميم أنظمة الشبكات.",
                 credits: 3,
-                prereq: "IT241",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. سامي راشد",
-                hours: "الثلاثاء/الخميس 9-11 صباحًا",
                 major: "تقنية المعلومات",
                 level: 5,
                 resources: [
@@ -1391,14 +1362,30 @@
                     { type: "youtube", text: "Jeremy's IT Lab", link: "https://youtube.com/playlist?list=PLxbwE86jKRgMpuZuLBivzlM8s2Dk5lXBQ" }
                 ]
             },
+            "IT352": {
+                title: "التفاعلات بين الإنسان والحاسوب",
+                desc: "يركز هذا المقرر على التفاعل بين الإنسان والحاسوب، ويهدف إلى تصميم واجهات استخدام فعالة وسهلة للمستخدم. يشمل مواضيع مثل تصميم التفاعل، قابلية الاستخدام، النماذج الذهنية، العوامل البشرية، تقييم الواجهات، وتجربة المستخدم (UX)، مع التركيز على الجوانب النفسية والسلوكية للمستخدمين.",
+                credits: 3,
+                major: "تقنية المعلومات",
+                level: 5,
+                resources: [
+                    { type: "telegram", text: "أرشيف الكلية", link: "https://t.me/computingg" }
+                ]
+            },
+            "IT353": {
+                title: "تحليل وتصميم النظم",
+                desc: "يركز هذا المقرر على تحليل وتصميم نظم المعلومات بهدف تطوير أنظمة فعالة تلبي احتياجات المؤسسات. يتعلم الطلاب كيفية جمع المتطلبات، استخدام النماذج التخطيطية مثل DFD وERD، تصميم واجهات المستخدم، وفهم دورة حياة تطوير النظام (SDLC). كما يغطي المقرر منهجيات التطوير المختلفة مثل Waterfall وAgile، ويوفر مهارات عملية في التوثيق والتحليل المنهجي.",
+                credits: 3,
+                major: "تقنية المعلومات",
+                level: 5,
+                resources: [
+                    { type: "telegram", text: "أرشيف الكلية", link: "https://t.me/computingg" }
+                ]
+            },
             "IT354": {
                 title: "نظم إدارة قواعد البيانات",
                 desc: "دراسة متقدمة لنظم إدارة قواعد البيانات وتطبيقاتها في المؤسسات.",
                 credits: 3,
-                prereq: "IT244",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. مريم عبد الله",
-                hours: "السبت/الأربعاء 1-3 مساءً",
                 major: "تقنية المعلومات",
                 level: 5,
                 resources: [
@@ -1410,10 +1397,6 @@
                 title: "تقنيات الويب",
                 desc: "دراسة متقدمة لتقنيات تطوير الويب الحديثة وأطر العمل.",
                 credits: 3,
-                prereq: "IT245",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. عماد حسن",
-                hours: "الأحد/الثلاثاء 2-4 مساءً",
                 major: "تقنية المعلومات",
                 level: 6,
                 resources: [
@@ -1426,12 +1409,8 @@
                 title: "إدارة المشاريع",
                 desc: "دراسة منهجيات إدارة المشاريع التقنية وأدوات التخطيط والتنفيذ.",
                 credits: 3,
-                prereq: "سنة رابعة",
-                schedule: "فصل الخريف والربيع",
-                instructor: "د. نادية سليمان",
-                hours: "السبت/الثلاثاء 1-3 مساءً",
                 major: "تقنية المعلومات",
-                level: 8,
+                level: 6,
                 resources: [
                     { type: "youtube", text: "قائمة تشغيل يوتيوب", link: "https://youtube.com/playlist?list=PLLHG16Mhq91ZoDysym0xjxEXJ5VoDtIPq" },
                     { type: "youtube", text: "شروحات SEU", link: "https://youtube.com/playlist?list=PLucw93gpJmCgeaQIhyr82_XjtLWXbgaLq" }
@@ -1441,24 +1420,25 @@
                 title: "إدارة الشبكات",
                 desc: "دراسة متقدمة لإدارة شبكات الحاسوب وتقنيات الأمان والصيانة.",
                 credits: 3,
-                prereq: "IT351",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. خالد زهران",
-                hours: "الاثنين/الأربعاء 3-5 مساءً",
                 major: "تقنية المعلومات",
                 level: 6,
                 resources: [
                     { type: "mega", text: "ملفات الدورة", link: "https://mega.nz/folder/YZRW3AAa#nr3yZdWDbtMn6PsQyV2RJA" }
                 ]
             },
+            "IT364": {
+                title: "ريادة الأعمال والابتكار",
+                desc: "يركز هاذا المقرر إلى تعريف الطلاب بمفاهيم ريادة الأعمال والابتكار، ودورهما في تطوير المشاريع وخلق القيمة. يتناول مواضيع مثل خصائص رواد الأعمال، توليد الأفكار، دراسات الجدوى، نماذج الأعمال، تسويق المنتجات المبتكرة، والحلول الإبداعية للمشكلات. كما يركز على كيفية تحويل الأفكار إلى مشاريع واقعية، وتنمية روح المبادرة لدى الطلاب.",
+                credits: 3,
+                major: "تقنية المعلومات",
+                level: 6,
+                resources: [
+                    {type:"Telegram" , text:"لايوجد شروحات ولكن هاذا ارشيف الكلية يمكنك البحث عن تجميعات المادة" , link:"https://t.me/computingg"}],
+            },
             "IT365": {
                 title: "أنظمة المؤسسات",
                 desc: "دراسة أنظمة المؤسسات المتكاملة وتطبيقاتها في إدارة الأعمال.",
                 credits: 3,
-                prereq: "IT354",
-                schedule: "فصل الخريف فقط",
-                instructor: "د. هاني محمود",
-                hours: "الثلاثاء/الخميس 10-12 صباحًا",
                 major: "تقنية المعلومات",
                 level: 6,
                 resources: [
@@ -1469,69 +1449,12 @@
                 title: "نظم دعم القرار",
                 desc: "دراسة متقدمة لنظم دعم القرار وتطبيقاتها في مجال الأعمال والتحليل.",
                 credits: 3,
-                prereq: "سنة سابعة",
-                schedule: "فصل الربيع فقط",
-                instructor: "د. خالد زهران",
-                hours: "الثلاثاء/الخميس 1-3 مساءً",
                 major: "تقنية المعلومات",
                 level: 7,
                 resources: [
                     { type: "telegram", text: "مجموعة المواد", link: "https://t.me/+YyMgQZTUDIllMjk0" }
                 ]
-            },
-
-        "IT364":{
-        "title": "ريادة الأعمال والابتكار",
-        "desc": "يركز هاذا المقرر إلى تعريف الطلاب بمفاهيم ريادة الأعمال والابتكار، ودورهما في تطوير المشاريع وخلق القيمة. يتناول مواضيع مثل خصائص رواد الأعمال، توليد الأفكار، دراسات الجدوى، نماذج الأعمال، تسويق المنتجات المبتكرة، والحلول الإبداعية للمشكلات. كما يركز على كيفية تحويل الأفكار إلى مشاريع واقعية، وتنمية روح المبادرة لدى الطلاب.",
-        "credits": null,
-        "prereq": null,
-        "schedule": null,
-        "instructor": null,
-        "hours": null,
-        "major": "علوم الحاسب",
-        "level": 6,
-        "resources": [{type:"Telegram" , text:"لايوجد شروحات ولكن هاذا ارشيف الكلية يمكنك البحث عن تجميعات المادة" , link:"https://t.me/computingg"}],
-        },
-        "IT485": {
-        "title": "أخلاقيات مهنية",
-        "desc": "يركّز هذا المقرر على المبادئ الأخلاقية والمهنية المتعلقة بمجال الحوسبة وتكنولوجيا المعلومات. يتناول قضايا مثل الخصوصية، الأمن، المسؤولية الاجتماعية، الملكية الفكرية، والسلوك المهني، مع التركيز على كيفية اتخاذ قرارات أخلاقية في المواقف التقنية المختلفة.",
-        "credits": 3,
-        "prereq": null,
-        "schedule": null,
-        "instructor": null,
-        "hours": null,
-        "major": "تقنية المعلومات",
-        "level": 8,
-        "resources": [{type:"Telegram" , text:"لايوجد شروحات للمادة ولكنك يمكنك البحث بالارشيف عن تجميعات" , link:"https://t.me/computingg"}],
-        },
-        // المواد العامة
-        "SCI201": {
-        "title": "الفيزياء العامة 2",
-        "desc": "يركز هاذا المقرر على المفاهيم الاساسية بالكهرباء والمغناطيسية , ويعد استكمالآ لمقرر الفزياء العامة 1. تشمل المواضيع : الدوائر الكهربائية  , التيار الكهربائي ,والموجات الكهرومغناطيسية, والقانون كولوم . يهدف المقرر إلى تمكين تمكين الطلاب من فهم وتحليل الظواهر الكهرومغناطسية ",
-        "credits": 3,
-        "prereq": "sci101",
-        "schedule": null,
-        "instructor": null,
-        "hours": null,
-        "major": "المواد العامة",
-        "level": 4,
-        "resources": [{type:"Telegram" , text:"قوائم بلاك بورد لشرح المنسقة" , link:"https://t.me/computingg/1478"}],
-        },
-        "MATH251": {
-        "title": "الجبر الخطي",
-        "desc": "يركز المقرر على اساسيات المصفوفات والمتجهات, وطرق العمليات عليها مثل الجمع والضرب, وحل الانظمة الخطية .  المحددات، الفضاءات الاتجاهية، المتجهات، الاستقلال الخطي، التحويلات الخطية، والقيم الذاتية والمتجهات الذاتية. وركزت المادة على التطبيقات الرياضية التي يحتاجها الطالب في مجالات مثل الرسوميات والذكاء الاصطناعي",
-        "credits": null,
-        "prereq": "MATH150",
-        "schedule": null,
-        "instructor": null,
-        "hours": null,
-        "major": "المواد العامة",
-        "level": 4,
-        "resources": [],
-        }
-
-
-
+            }
         };
 
         // Function to open the modal with course details
@@ -1615,65 +1538,48 @@
                 case 'it':
                     title = 'تقنية المعلومات';
                     break;
-                case 'math': 
-                      title = 'المواد العامة';
-                      break;
-                case 'islam': 
-                      title = 'المواد العامة';
-                      break;  
-                case 'eng': 
-                      title = 'المواد العامة';
-                      break;
-                case 'stat': 
-                      title = 'المواد العامة';
-                      break; 
-                case 'sci': 
-                      title = 'المواد العامة';
-                      break;                         
             }
             
-            document.getElementById('allCoursesTitle').textContent = `جميع مواد ${title}`;
+            document.getElementById('allCoursesTitle').textContent = `جميع مواد ${title} والمواد العامة`;
             
             const container = document.getElementById('allCoursesContainer');
             container.innerHTML = '';
             
-            Object.keys(courses).forEach(code => {
-                const course = courses[code];
-                if ((major === 'cs' && course.major === 'علوم الحاسب') ||
-                    (major === 'ds' && course.major === 'علوم البيانات') ||
-                    (major === 'it' && course.major === 'تقنية المعلومات')||
-                    (major === 'math' && course.major == 'المواد العامة')||
-                    (major === 'islam' && course.major == 'المواد العامة')||
-                    (major === 'eng' && course.major == 'المواد العامة')||
-                    (major === 'stat' && course.major == 'المواد العامة')||
-                    (major === 'sci' && course.major == 'المواد العامة')
-                    ) {
-                    
-                    const level = course.level || 3;
-                    
-                    const courseCard = document.createElement('div');
-                    courseCard.className = 'course-card glow-border rounded-2xl p-6 group overflow-hidden relative';
-                    courseCard.innerHTML = `
-                        <span class="level-badge level-${level}">المستوى ${level}</span>
-                        <div class="relative z-10">
-                            <h3 class="text-xl font-bold text-white mb-1">${code}</h3>
-                            <h4 class="text-lg font-bold text-white mb-3">${course.title}</h4>
-                            <p class="text-stardust/70 text-sm mb-4 line-clamp-3">${course.desc}</p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">3 ساعات</span>
-                            </div>
-                            <button onclick="closeAllCoursesModal(); openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 text-sm font-medium">
-                                تفاصيل المادة <i class="fas fa-arrow-left ml-1"></i>
-                            </button>
+            // Filter courses by major and general courses
+            const filteredCourses = Object.entries(courses).filter(([code, course]) => {
+                return course.major === title || course.major === "المواد العامة";
+            });
+            
+            // Sort courses by level
+            filteredCourses.sort((a, b) => a[1].level - b[1].level);
+            
+            // Render courses
+            filteredCourses.forEach(([code, course]) => {
+                const level = course.level || 3;
+                
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card glow-border rounded-2xl p-6 group overflow-hidden relative';
+                courseCard.innerHTML = `
+                    <span class="level-badge level-${level}">المستوى ${level}</span>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold text-white mb-1">${code}</h3>
+                        <h4 class="text-lg font-bold text-white mb-3">${course.title}</h4>
+                        <p class="text-stardust/70 text-sm mb-4 line-clamp-3">${course.desc}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">3 ساعات</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.major}</span>
                         </div>
-                    `;
-                    container.appendChild(courseCard);
-                }
+                        <button onclick="closeAllCoursesModal(); openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 text-sm font-medium">
+                            تفاصيل المادة <i class="fas fa-arrow-left ml-1"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(courseCard);
             });
             
             document.getElementById("allCoursesModal").classList.remove("hidden");
         }
-        
+
         // Function to close all courses modal
         function closeAllCoursesModal() {
             document.getElementById("allCoursesModal").classList.add("hidden");
@@ -1761,7 +1667,7 @@
         function clearSearch() {
             document.getElementById("courseSearch").value = '';
             document.getElementById("search-results").classList.add("hidden");
-            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id=math],section[id=islam] , section[id=eng], section[id=stat],ection[id=sci],section[id='overview']").forEach(section => {
+            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='overview']").forEach(section => {
                 section.classList.remove("hidden");
             });
         }
