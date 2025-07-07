@@ -807,6 +807,188 @@ ul {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
         }
+
+        /* Theme Toggle Button Styles */
+        #theme-toggle-button {
+            font-size: 17px;
+            position: relative;
+            display: inline-block;
+            width: 7em;
+            cursor: pointer;
+            margin-left: 16px;
+        }
+
+        #toggle {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        #container,
+        #patches,
+        #stars,
+        #button,
+        #sun,
+        #moon,
+        #cloud {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 0.25s;
+        }
+
+        #toggle:checked + svg #container {
+            fill: #2b4360;
+        }
+
+        #toggle:checked + svg #button {
+            transform: translate(28px, 2.333px);
+        }
+
+        #sun {
+            opacity: 1;
+        }
+
+        #toggle:checked + svg #sun {
+            opacity: 0;
+        }
+
+        #moon {
+            opacity: 0;
+        }
+
+        #toggle:checked + svg #moon {
+            opacity: 1;
+        }
+
+        #cloud {
+            opacity: 1;
+        }
+
+        #toggle:checked + svg #cloud {
+            opacity: 0;
+        }
+
+        #stars {
+            opacity: 0;
+        }
+
+        #toggle:checked + svg #stars {
+            opacity: 1;
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            --primary: #dfe4eaca;
+            --secondary: #dad0d0;
+            --accent: #6366f1;
+            --text: #000000;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            color: #000000;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .glass-card {
+            background: rgba(233, 228, 228, 0.9);
+            border: 1px solid rgba(92, 95, 221, 0.15);
+            color: #1a202c;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .course-card {
+            background: linear-gradient(145deg, #e6e3e3db 0%, #d6d7d8 100%);
+            border: 1px solid rgba(90, 93, 217, 0.15);
+            color: #1a202c;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .course-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        body.light-mode .hero-gradient {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(240, 249, 255, 0.95) 25%,
+                rgba(224, 231, 255, 0.95) 50%,
+                rgba(254, 243, 242, 0.95) 75%,
+                rgba(241, 245, 249, 0.95) 100%);
+            color: #1a202c;
+        }
+
+        body.light-mode .pattern-overlay {
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.03) 0%, transparent 50%);
+        }
+
+        body.light-mode .text-stardust {
+            color: #000000 !important;
+        }
+
+        body.light-mode .text-white {
+            color: #000000 !important;
+        }
+
+        body.light-mode h1, 
+        body.light-mode h2, 
+        body.light-mode h3, 
+        body.light-mode h4,
+        body.light-mode h5,
+        body.light-mode h6 {
+            color: #000000 !important;
+        }
+
+        body.light-mode p {
+            color: #131212 !important;
+        }
+
+        body.light-mode .nav-link {
+            color: #475569;
+        }
+
+        body.light-mode .nav-link:hover {
+            color: #000000;
+        }
+
+        body.light-mode header {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        body.light-mode .backdrop-blur-lg {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+        }
+
+        body.light-mode .modern-card {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .modern-save {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        /* Light Mode Text Enhancement */
+        body.light-mode .gradient-text {
+            background: linear-gradient(135deg, #000000 0%, #7c3aed 50%, #0891b2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        body.light-mode .level-badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: #4f46e5 !important;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -834,6 +1016,48 @@ ul {
                     <a href="#it" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">تقنية المعلومات</a>
                     <a href="#overview" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">لماذا تختارنا</a>
                 </nav>
+                
+                <!-- Theme Toggle Button -->
+                <label for="toggle" id="theme-toggle-button">
+                    <input type="checkbox" id="toggle">
+                    <svg viewBox="0 0 69.667 44" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="container">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge> 
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/> 
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <g transform="translate(3.5 3.5)">
+                            <rect fill="#83cbd8" transform="translate(0 0)" rx="17.5" height="35" width="60.667" id="container"></rect>
+                            <g transform="translate(2.333 2.333)" id="button">
+                                <g id="sun">
+                                    <circle fill="#f8e664" r="15.167" cy="15.167" cx="15.167"></circle>
+                                    <circle fill="#fcf4b9" transform="translate(8.167 8.167)" r="7" cy="7" cx="7"></circle>
+                                </g>
+                                <g id="moon">
+                                    <circle fill="#cce6ee" transform="translate(-28 0)" r="15.167" cy="15.167" cx="15.167"></circle>
+                                    <g fill="#a6cad0" transform="translate(-24.415 -1.009)" id="patches">
+                                        <circle transform="translate(43.009 4.496)" r="2" cy="2" cx="2"></circle>
+                                        <circle transform="translate(39.366 17.952)" r="2" cy="2" cx="2"></circle>
+                                        <circle transform="translate(33.016 8.044)" r="1" cy="1" cx="1"></circle>
+                                        <circle transform="translate(51.081 18.888)" r="1" cy="1" cx="1"></circle>
+                                    </g>
+                                </g>
+                                <g id="cloud">
+                                    <path fill="#a5c5d0" d="M47.729,6.243A5.507,5.507,0,0,0,36.455,2.972a7.56,7.56,0,0,0-12.946,5.431,6.757,6.757,0,0,0-4.24-.4A1.473,1.473,0,0,0,20.943,9.6a2.926,2.926,0,0,0-.687,1.833,3.736,3.736,0,0,0-1.51.687,3.736,3.736,0,0,0-.687,1.51,2.926,2.926,0,0,0,1.833-.687A1.473,1.473,0,0,0,21.563,11.429a6.757,6.757,0,0,0,4.24.4,7.56,7.56,0,0,0,12.946-5.431A5.507,5.507,0,0,0,47.729,6.243Z"></path>
+                                </g>
+                                <g id="stars">
+                                    <path fill="#ffffff" d="M65.5,18A3.5,3.5,0,0,1,62,21.5,3.5,3.5,0,0,1,58.5,18a3.5,3.5,0,0,1,3.5-3.5A3.5,3.5,0,0,1,65.5,18Z"></path>
+                                    <path fill="#ffffff" d="M23,21a2,2,0,0,1-2,2,2,2,0,0,1-2-2,2,2,0,0,1,2-2A2,2,0,0,1,23,21Z"></path>
+                                    <path fill="#ffffff" d="M59,5a1,1,0,0,1-1,1,1,1,0,0,1-1-1,1,1,0,0,1,1-1A1,1,0,0,1,59,5Z"></path>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </label>
             </div>
         </div>
     </header>
@@ -2483,6 +2707,32 @@ ul {
                     icon.style.right = '50%';
                     icon.style.transform = 'translateX(50%)';
                 }
+            }
+        });
+
+        // Theme Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('toggle');
+            const body = document.body;
+
+            // Check for saved theme preference or default to dark mode
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            if (currentTheme === 'light') {
+                body.classList.add('light-mode');
+                if (themeToggle) themeToggle.checked = true;
+            }
+
+            // Theme toggle event listener
+            if (themeToggle) {
+                themeToggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        body.classList.add('light-mode');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        body.classList.remove('light-mode');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
             }
         });
     </script>
