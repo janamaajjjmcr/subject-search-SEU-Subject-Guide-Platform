@@ -899,19 +899,17 @@ ul {
     <main class="flex-grow container mx-auto py-16 px-4">
         <!-- Search Bar -->
         <div class="mb-16 animate-fade-in relative">
-            <div class="max-w-2xl mx-auto">
-                <div class="relative">
-                    <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS 230)..." 
-                           class="search-bar w-full py-4 px-6 pl-14 rounded-lg focus:outline-none transition duration-300">
-                    <div class="search-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div id="loading-bar"></div>
-                </div>
+            <div class="input-wrapper">
+                <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS 230)..." class="input">
+                <button class="icon">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div id="loading-bar"></div>
             </div>
         </div>
 
         <!-- Search Results Section -->
+
         <section id="search-results" class="hidden mb-24">
             <div class="flex items-center justify-between mb-12">
                 <h2 class="text-4xl md:text-5xl font-bold font-playfair">
