@@ -808,6 +808,82 @@ ul {
             box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
         }
 
+        /* Mobile Menu Styles */
+        #mobile-menu {
+            transition: all 0.3s ease;
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+
+        #mobile-menu:not(.hidden) {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Form Styles */
+        .resource-input {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Theme Toggle */
+        .theme-toggle:checked + div {
+            background-color: var(--accent);
+        }
+
+        .theme-toggle:checked + div > div {
+            transform: translateX(24px);
+        }
+
+        /* Success Animation */
+        .success-message {
+            animation: successPulse 2s ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Responsive Form */
+        @media (max-width: 768px) {
+            .resource-input {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .resource-input select,
+            .resource-input input {
+                width: 100%;
+            }
+        }
+
+        /* Enhanced Modal Animations */
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
         /* Theme Toggle Button Styles */
         #theme-toggle-button {
             font-size: 17px;
@@ -994,70 +1070,102 @@ ul {
 <body class="min-h-screen flex flex-col">
     <!-- Header -->
     <header class="backdrop-blur-lg bg-cosmic/90 border-b border-nebula/20 py-6 px-4 sticky top-0 z-50">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-            <div class="mb-4 md:mb-0 flex items-center">
-                <div class="w-12 h-12 rounded-full gradient-bg-original flex items-center justify-center mr-4">
-                    <i class="fas fa-laptop-code text-white text-xl"></i>
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <!-- Logo/Title -->
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full gradient-bg-original flex items-center justify-center mr-4">
+                        <i class="fas fa-laptop-code text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold font-playfair">
+                            <span class="gradient-text"> جامعة SEU </span>
+                        </h1>
+                        <p class="text-stardust/70 mt-1 font-medium">كلية الحوسبة</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-3xl md:text-4xl font-bold font-playfair">
-                    <span class="gradient-text"> جامعة SEU </span>
-                    </h1>
-                    <p class="text-stardust/70 mt-1 font-medium">كلية الحوسبة </p>
-                </div>
-            </div>
-            
-            <!-- Navigation -->
-            <div class="flex items-center space-x-4">
-                <nav class="flex space-x-1 md:space-x-8">
-                    <a href="#" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">الرئيسية</a>
-                    <a href="#cs" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">علوم الحاسب</a>
-                    <a href="#ds" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">علوم البيانات</a>
-                    <a href="#it" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">تقنية المعلومات</a>
-                    <a href="#overview" class="nav-link text-stardust hover:text-white px-3 py-2 text-sm md:text-base font-medium transition duration-300">لماذا تختارنا</a>
-                </nav>
                 
-                <!-- Theme Toggle Button -->
-                <label for="toggle" id="theme-toggle-button">
-                    <input type="checkbox" id="toggle">
-                    <svg viewBox="0 0 69.667 44" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <filter id="container">
-                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                <feMerge> 
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/> 
-                                </feMerge>
-                            </filter>
-                        </defs>
-                        <g transform="translate(3.5 3.5)">
-                            <rect fill="#83cbd8" transform="translate(0 0)" rx="17.5" height="35" width="60.667" id="container"></rect>
-                            <g transform="translate(2.333 2.333)" id="button">
-                                <g id="sun">
-                                    <circle fill="#f8e664" r="15.167" cy="15.167" cx="15.167"></circle>
-                                    <circle fill="#fcf4b9" transform="translate(8.167 8.167)" r="7" cy="7" cx="7"></circle>
-                                </g>
-                                <g id="moon">
-                                    <circle fill="#cce6ee" transform="translate(-28 0)" r="15.167" cy="15.167" cx="15.167"></circle>
-                                    <g fill="#a6cad0" transform="translate(-24.415 -1.009)" id="patches">
-                                        <circle transform="translate(43.009 4.496)" r="2" cy="2" cx="2"></circle>
-                                        <circle transform="translate(39.366 17.952)" r="2" cy="2" cx="2"></circle>
-                                        <circle transform="translate(33.016 8.044)" r="1" cy="1" cx="1"></circle>
-                                        <circle transform="translate(51.081 18.888)" r="1" cy="1" cx="1"></circle>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-6 space-x-reverse">
+                    <a href="#" class="text-stardust hover:text-white transition duration-300">الرئيسية</a>
+                    <a href="#cs" class="text-stardust hover:text-white transition duration-300">علوم الحاسب</a>
+                    <a href="#ds" class="text-stardust hover:text-white transition duration-300">علوم البيانات</a>
+                    <a href="#it" class="text-stardust hover:text-white transition duration-300">تقنية المعلومات</a>
+                    <button onclick="openAddCourseModal()" class="bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm">
+                        إضافة مادة
+                    </button>
+                    <!-- Theme Toggle Button -->
+                    <label for="toggle" id="theme-toggle-button">
+                        <input type="checkbox" id="toggle">
+                        <svg viewBox="0 0 69.667 44" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <filter id="container">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge> 
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/> 
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <g transform="translate(3.5 3.5)">
+                                <rect fill="#83cbd8" transform="translate(0 0)" rx="17.5" height="35" width="60.667" id="container"></rect>
+                                <g transform="translate(2.333 2.333)" id="button">
+                                    <g id="sun">
+                                        <circle fill="#f8e664" r="15.167" cy="15.167" cx="15.167"></circle>
+                                        <circle fill="#fcf4b9" transform="translate(8.167 8.167)" r="7" cy="7" cx="7"></circle>
+                                    </g>
+                                    <g id="moon">
+                                        <circle fill="#cce6ee" transform="translate(-28 0)" r="15.167" cy="15.167" cx="15.167"></circle>
+                                        <g fill="#a6cad0" transform="translate(-24.415 -1.009)" id="patches">
+                                            <circle transform="translate(43.009 4.496)" r="2" cy="2" cx="2"></circle>
+                                            <circle transform="translate(39.366 17.952)" r="2" cy="2" cx="2"></circle>
+                                            <circle transform="translate(33.016 8.044)" r="1" cy="1" cx="1"></circle>
+                                            <circle transform="translate(51.081 18.888)" r="1" cy="1" cx="1"></circle>
+                                        </g>
+                                    </g>
+                                    <g id="cloud">
+                                        <path fill="#a5c5d0" d="M47.729,6.243A5.507,5.507,0,0,0,36.455,2.972a7.56,7.56,0,0,0-12.946,5.431,6.757,6.757,0,0,0-4.24-.4A1.473,1.473,0,0,0,20.943,9.6a2.926,2.926,0,0,0-.687,1.833,3.736,3.736,0,0,0-1.51.687,3.736,3.736,0,0,0-.687,1.51,2.926,2.926,0,0,0,1.833-.687A1.473,1.473,0,0,0,21.563,11.429a6.757,6.757,0,0,0,4.24.4,7.56,7.56,0,0,0,12.946-5.431A5.507,5.507,0,0,0,47.729,6.243Z"></path>
+                                    </g>
+                                    <g id="stars">
+                                        <path fill="#ffffff" d="M65.5,18A3.5,3.5,0,0,1,62,21.5,3.5,3.5,0,0,1,58.5,18a3.5,3.5,0,0,1,3.5-3.5A3.5,3.5,0,0,1,65.5,18Z"></path>
+                                        <path fill="#ffffff" d="M23,21a2,2,0,0,1-2,2,2,2,0,0,1-2-2,2,2,0,0,1,2-2A2,2,0,0,1,23,21Z"></path>
+                                        <path fill="#ffffff" d="M59,5a1,1,0,0,1-1,1,1,1,0,0,1-1-1,1,1,0,0,1,1-1A1,1,0,0,1,59,5Z"></path>
                                     </g>
                                 </g>
-                                <g id="cloud">
-                                    <path fill="#a5c5d0" d="M47.729,6.243A5.507,5.507,0,0,0,36.455,2.972a7.56,7.56,0,0,0-12.946,5.431,6.757,6.757,0,0,0-4.24-.4A1.473,1.473,0,0,0,20.943,9.6a2.926,2.926,0,0,0-.687,1.833,3.736,3.736,0,0,0-1.51.687,3.736,3.736,0,0,0-.687,1.51,2.926,2.926,0,0,0,1.833-.687A1.473,1.473,0,0,0,21.563,11.429a6.757,6.757,0,0,0,4.24.4,7.56,7.56,0,0,0,12.946-5.431A5.507,5.507,0,0,0,47.729,6.243Z"></path>
-                                </g>
-                                <g id="stars">
-                                    <path fill="#ffffff" d="M65.5,18A3.5,3.5,0,0,1,62,21.5,3.5,3.5,0,0,1,58.5,18a3.5,3.5,0,0,1,3.5-3.5A3.5,3.5,0,0,1,65.5,18Z"></path>
-                                    <path fill="#ffffff" d="M23,21a2,2,0,0,1-2,2,2,2,0,0,1-2-2,2,2,0,0,1,2-2A2,2,0,0,1,23,21Z"></path>
-                                    <path fill="#ffffff" d="M59,5a1,1,0,0,1-1,1,1,1,0,0,1-1-1,1,1,0,0,1,1-1A1,1,0,0,1,59,5Z"></path>
-                                </g>
                             </g>
-                        </g>
+                        </svg>
+                    </label>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2 hover:bg-nebula/30 rounded-lg transition duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
-                </label>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-nebula/20 pt-4">
+                <nav class="space-y-3">
+                    <a href="#" class="block text-stardust hover:text-white transition duration-300 py-2">الرئيسية</a>
+                    <a href="#cs" class="block text-stardust hover:text-white transition duration-300 py-2">علوم الحاسب</a>
+                    <a href="#ds" class="block text-stardust hover:text-white transition duration-300 py-2">علوم البيانات</a>
+                    <a href="#it" class="block text-stardust hover:text-white transition duration-300 py-2">تقنية المعلومات</a>
+                    <button onclick="openAddCourseModal(); toggleMobileMenu();" class="w-full bg-gradient-to-r from-plasma to-aurora text-white px-4 py-3 rounded-lg hover:scale-105 transition duration-300 mt-3">
+                        إضافة مادة
+                    </button>
+                    <!-- Mobile Theme Toggle -->
+                    <div class="pt-3">
+                        <label for="toggle-mobile" class="flex items-center justify-between">
+                            <span class="text-stardust">الوضع المظلم/الفاتح</span>
+                            <input type="checkbox" id="toggle-mobile" class="sr-only theme-toggle">
+                            <div class="relative w-12 h-6 bg-nebula rounded-full transition-colors duration-300">
+                                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 transform"></div>
+                            </div>
+                        </label>
+                    </div>
+                </nav>
             </div>
         </div>
     </header>
@@ -1626,6 +1734,132 @@ ul {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="allCoursesContainer">
                 <!-- Courses will be populated here -->
             </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div id="addCourseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold gradient-text mb-2">إضافة مادة جديدة</h2>
+                    <p class="text-stardust/70">أضف مادة لم تجدها في النظام</p>
+                </div>
+                <button onclick="closeAddCourseModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <form id="addCourseForm" class="space-y-6">
+                <!-- Course Code -->
+                <div>
+                    <label for="courseCode" class="block text-white font-medium mb-2">
+                        رمز المادة <span class="text-supernova">*</span>
+                    </label>
+                    <input type="text" id="courseCode" name="courseCode" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                           placeholder="مثال: CS123, DS456, IT789">
+                </div>
+
+                <!-- Course Title -->
+                <div>
+                    <label for="courseTitle" class="block text-white font-medium mb-2">
+                        اسم المادة <span class="text-supernova">*</span>
+                    </label>
+                    <input type="text" id="courseTitle" name="courseTitle" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                           placeholder="مثال: البرمجة الشيئية">
+                </div>
+
+                <!-- Course Description -->
+                <div>
+                    <label for="courseDesc" class="block text-white font-medium mb-2">
+                        وصف المادة <span class="text-supernova">*</span>
+                    </label>
+                    <textarea id="courseDesc" name="courseDesc" required rows="4"
+                              class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none resize-none"
+                              placeholder="وصف مختصر عن محتوى المادة وأهدافها..."></textarea>
+                </div>
+
+                <!-- Major -->
+                <div>
+                    <label for="courseMajor" class="block text-white font-medium mb-2">
+                        التخصص <span class="text-supernova">*</span>
+                    </label>
+                    <select id="courseMajor" name="courseMajor" required 
+                            class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                        <option value="">اختر التخصص</option>
+                        <option value="علوم الحاسب">علوم الحاسب</option>
+                        <option value="علوم البيانات">علوم البيانات</option>
+                        <option value="تقنية المعلومات">تقنية المعلومات</option>
+                        <option value="المواد العامة">المواد العامة</option>
+                    </select>
+                </div>
+
+                <!-- Level -->
+                <div>
+                    <label for="courseLevel" class="block text-white font-medium mb-2">
+                        المستوى <span class="text-supernova">*</span>
+                    </label>
+                    <select id="courseLevel" name="courseLevel" required 
+                            class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                        <option value="">اختر المستوى</option>
+                        <option value="1">المستوى الأول</option>
+                        <option value="2">المستوى الثاني</option>
+                        <option value="3">المستوى الثالث</option>
+                        <option value="4">المستوى الرابع</option>
+                        <option value="5">المستوى الخامس</option>
+                        <option value="6">المستوى السادس</option>
+                        <option value="7">المستوى السابع</option>
+                        <option value="8">المستوى الثامن</option>
+                    </select>
+                </div>
+
+                <!-- Credits -->
+                <div>
+                    <label for="courseCredits" class="block text-white font-medium mb-2">
+                        عدد الساعات
+                    </label>
+                    <input type="number" id="courseCredits" name="courseCredits" min="1" max="6" 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                           placeholder="3">
+                </div>
+
+                <!-- Resources Section -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">المصادر (اختياري)</h3>
+                    <div id="resourcesContainer" class="space-y-4">
+                        <!-- Initial resource input -->
+                        <div class="resource-input flex gap-3">
+                            <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                                <option value="youtube">يوتيوب</option>
+                                <option value="drive">درايف</option>
+                                <option value="telegram">تليجرام</option>
+                                <option value="mega">ميجا</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                            <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                            <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                            <button type="button" onclick="removeResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addResourceInput()" class="mt-3 text-photon hover:text-white transition duration-300">
+                        <i class="fas fa-plus ml-2"></i> إضافة مصدر آخر
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end gap-4 pt-6 border-t border-nebula/20">
+                    <button type="button" onclick="closeAddCourseModal()" 
+                            class="px-6 py-3 text-stardust hover:text-white transition duration-300">
+                        إلغاء
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-3 bg-gradient-to-r from-plasma to-aurora text-white rounded-lg hover:scale-105 transition duration-300">
+                        إضافة المادة
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -2488,6 +2722,26 @@ ul {
                 resourcesContainer.innerHTML = '<p class="text-stardust/70">لا تتوفر موارد لهذه المادة حالياً.</p>';
             }
             
+            // Add delete button for user-added courses
+            const modalHeader = document.querySelector('#courseModal .flex.justify-between.items-start.mb-6');
+            const existingDeleteBtn = modalHeader.querySelector('.delete-course-btn');
+            if (existingDeleteBtn) {
+                existingDeleteBtn.remove();
+            }
+            
+            if (isUserAddedCourse(courseCode)) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-course-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition duration-300 ml-2';
+                deleteBtn.innerHTML = '<i class="fas fa-trash mr-1"></i> حذف المادة';
+                deleteBtn.onclick = () => {
+                    closeModal();
+                    deleteUserCourse(courseCode);
+                };
+                
+                const closeBtn = modalHeader.querySelector('button');
+                modalHeader.insertBefore(deleteBtn, closeBtn);
+            }
+            
             document.getElementById("courseModal").classList.remove("hidden");
         }
 
@@ -2527,18 +2781,21 @@ ul {
             // Render courses
             filteredCourses.forEach(([code, course]) => {
                 const level = course.level || 3;
+                const isUserAdded = isUserAddedCourse(code);
                 
                 const courseCard = document.createElement('div');
                 courseCard.className = 'course-card glow-border rounded-2xl p-6 group overflow-hidden relative';
                 courseCard.innerHTML = `
                     <span class="level-badge level-${level}">المستوى ${level}</span>
+                    ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضافة</span>' : ''}
                     <div class="relative z-10">
                         <h3 class="text-xl font-bold text-white mb-1">${code}</h3>
                         <h4 class="text-lg font-bold text-white mb-3">${course.title}</h4>
                         <p class="text-stardust/70 text-sm mb-4 line-clamp-3">${course.desc}</p>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">3 ساعات</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.credits || 3} ساعات</span>
                             <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.major}</span>
+                            ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-2 py-1 rounded-full">مضافة من قبلك</span>' : ''}
                         </div>
                         <button onclick="closeAllCoursesModal(); openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 text-sm font-medium">
                             تفاصيل المادة <i class="fas fa-arrow-left ml-1"></i>
@@ -2591,12 +2848,14 @@ ul {
                     course.desc.toUpperCase().includes(searchTerm)) {
                     found = true;
                     const level = course.level || 3;
+                    const isUserAdded = isUserAddedCourse(code);
                     
                     // Create course card
                     const courseCard = document.createElement('div');
                     courseCard.className = 'course-card glow-border rounded-2xl p-8 group overflow-hidden relative';
                     courseCard.innerHTML = `
                         <span class="level-badge level-${level}">المستوى ${level}</span>
+                        ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضافة</span>' : ''}
                         <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
                         <div class="relative z-10">
                             <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
@@ -2606,7 +2865,8 @@ ul {
                             <h4 class="text-xl font-bold text-white mb-4">${course.title}</h4>
                             <p class="text-stardust/70 mb-6">${course.desc.substring(0, 100)}...</p>
                             <div class="flex flex-wrap gap-2 mb-6">
-                                <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
+                                <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.credits || 3} ساعات</span>
+                                ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-3 py-1 rounded-full">مضافة من قبلك</span>' : ''}
                             </div>
                             <button onclick="openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
                                 استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
@@ -2708,6 +2968,332 @@ ul {
                     icon.style.transform = 'translateX(50%)';
                 }
             }
+        });
+
+        // Mobile Menu Toggle Functionality
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                menuBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            }
+        }
+
+        // Add Course Modal Functions
+        function openAddCourseModal() {
+            const modal = document.getElementById("addCourseModal");
+            const modalContent = modal.querySelector('.glass-card');
+            modal.classList.remove("hidden");
+            modalContent.classList.add("modal-enter");
+            document.body.style.overflow = 'hidden';
+            
+            // Remove animation class after animation ends
+            setTimeout(() => {
+                modalContent.classList.remove("modal-enter");
+            }, 300);
+        }
+
+        function closeAddCourseModal() {
+            const modal = document.getElementById("addCourseModal");
+            modal.classList.add("hidden");
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('addCourseForm').reset();
+            // Reset resources to one input
+            const container = document.getElementById('resourcesContainer');
+            container.innerHTML = `
+                <div class="resource-input flex gap-3">
+                    <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                        <option value="youtube">يوتيوب</option>
+                        <option value="drive">درايف</option>
+                        <option value="telegram">تليجرام</option>
+                        <option value="mega">ميجا</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                    <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                    <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                    <button type="button" onclick="removeResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        function addResourceInput() {
+            const container = document.getElementById('resourcesContainer');
+            const newResourceDiv = document.createElement('div');
+            newResourceDiv.className = 'resource-input flex gap-3';
+            newResourceDiv.innerHTML = `
+                <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                    <option value="youtube">يوتيوب</option>
+                    <option value="drive">درايف</option>
+                    <option value="telegram">تليجرام</option>
+                    <option value="mega">ميجا</option>
+                    <option value="other">أخرى</option>
+                </select>
+                <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                <button type="button" onclick="removeResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newResourceDiv);
+        }
+
+        function removeResource(button) {
+            const container = document.getElementById('resourcesContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        function generateUniqueId() {
+            const majors = {
+                'علوم الحاسب': 'CS',
+                'علوم البيانات': 'DS',
+                'تقنية المعلومات': 'IT',
+                'المواد العامة': 'GEN'
+            };
+            
+            const majorSelect = document.getElementById('courseMajor');
+            const prefix = majors[majorSelect.value] || 'GEN';
+            
+            // Generate a random number
+            let code;
+            do {
+                const randomNum = Math.floor(Math.random() * 900) + 100; // 100-999
+                code = prefix + randomNum;
+            } while (courses[code]); // Ensure uniqueness
+            
+            return code;
+        }
+
+        // Add Course Form Submission
+        document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const courseCode = formData.get('courseCode').toUpperCase().trim();
+            const courseTitle = formData.get('courseTitle').trim();
+            const courseDesc = formData.get('courseDesc').trim();
+            const courseMajor = formData.get('courseMajor');
+            const courseLevel = parseInt(formData.get('courseLevel'));
+            const courseCredits = parseInt(formData.get('courseCredits')) || 3;
+
+            // Validate required fields
+            if (!courseCode || !courseTitle || !courseDesc || !courseMajor || !courseLevel) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            // Check if course code already exists
+            if (courses[courseCode]) {
+                alert('رمز المادة موجود مسبقاً. يرجى اختيار رمز مختلف.');
+                return;
+            }
+
+            // Collect resources
+            const resourceInputs = document.querySelectorAll('.resource-input');
+            const resources = [];
+            
+            resourceInputs.forEach(input => {
+                const type = input.querySelector('.resource-type').value;
+                const text = input.querySelector('.resource-text').value.trim();
+                const link = input.querySelector('.resource-link').value.trim();
+                
+                if (text && link) {
+                    resources.push({ type, text, link });
+                }
+            });
+
+            // Create new course object with exact same format as existing courses
+            const newCourse = {
+                title: courseTitle,
+                desc: courseDesc,
+                credits: courseCredits,
+                prereq: null,
+                schedule: null,
+                instructor: null,
+                hours: courseCredits,
+                major: courseMajor,
+                level: courseLevel,
+                resources: resources
+            };
+
+            // Add directly to courses object (same as existing courses)
+            courses[courseCode] = newCourse;
+
+            // Save to localStorage for persistence
+            saveCourseToLocalStorage(courseCode, newCourse);
+
+            // Show success message with custom notification
+            showSuccessNotification('تم إضافة المادة بنجاح!', courseTitle);
+
+            // Close modal
+            closeAddCourseModal();
+
+            // Show the newly added course immediately without page reload
+            setTimeout(() => {
+                // If user is viewing all courses for this major, refresh that view
+                const currentTitle = document.getElementById('allCoursesTitle').textContent;
+                if (currentTitle.includes(courseMajor) && !document.getElementById("allCoursesModal").classList.contains("hidden")) {
+                    const majorCode = courseMajor === 'علوم الحاسب' ? 'cs' : 
+                                     courseMajor === 'علوم البيانات' ? 'ds' : 
+                                     courseMajor === 'تقنية المعلومات' ? 'it' : null;
+                    if (majorCode) {
+                        showAllCourses(majorCode);
+                    }
+                }
+                
+                // Clear search to show all content
+                clearSearch();
+            }, 1000);
+        });
+
+        // Function to save course to localStorage
+        function saveCourseToLocalStorage(courseCode, courseData) {
+            const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+            savedCourses[courseCode] = courseData;
+            localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+        }
+
+        // Function to load saved courses from localStorage
+        function loadSavedCourses() {
+            const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+            // Merge saved courses with existing courses object
+            Object.assign(courses, savedCourses);
+        }
+
+        // Function to delete a user-added course
+        function deleteUserCourse(courseCode) {
+            if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
+                // Remove from courses object
+                delete courses[courseCode];
+                
+                // Remove from localStorage
+                const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                delete savedCourses[courseCode];
+                localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+                
+                // Refresh content
+                window.location.reload();
+            }
+        }
+
+        // Function to check if course is user-added
+        function isUserAddedCourse(courseCode) {
+            const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+            return savedCourses.hasOwnProperty(courseCode);
+        }
+
+        // Success Notification Function
+        function showSuccessNotification(message, courseTitle) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 z-50 glass-card rounded-lg p-4 success-message';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-aurora flex items-center justify-center mr-3">
+                        <i class="fas fa-check text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold">${message}</div>
+                        <div class="text-stardust/70 text-sm">${courseTitle}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Load user courses from localStorage on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved courses first
+            loadSavedCourses();
+        });
+
+        // Mobile menu event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking on links
+            const mobileMenuLinks = document.querySelectorAll('#mobile-menu a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                    document.getElementById('mobile-menu-btn').innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                });
+            });
+
+            // Handle mobile theme toggle
+            const mobileThemeToggle = document.getElementById('toggle-mobile');
+            const desktopThemeToggle = document.getElementById('toggle');
+            
+            if (mobileThemeToggle && desktopThemeToggle) {
+                // Sync mobile toggle with desktop
+                mobileThemeToggle.checked = desktopThemeToggle.checked;
+                
+                mobileThemeToggle.addEventListener('change', function() {
+                    desktopThemeToggle.checked = this.checked;
+                    const event = new Event('change');
+                    desktopThemeToggle.dispatchEvent(event);
+                });
+            }
+
+            // Close modals when clicking outside
+            const addCourseModal = document.getElementById('addCourseModal');
+            const courseModal = document.getElementById('courseModal');
+            const allCoursesModal = document.getElementById('allCoursesModal');
+
+            [addCourseModal, courseModal, allCoursesModal].forEach(modal => {
+                if (modal) {
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            modal.classList.add('hidden');
+                            document.body.style.overflow = 'auto';
+                        }
+                    });
+                }
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const visibleModals = document.querySelectorAll('.fixed:not(.hidden)');
+                    visibleModals.forEach(modal => {
+                        if (modal.id.includes('Modal')) {
+                            modal.classList.add('hidden');
+                            document.body.style.overflow = 'auto';
+                        }
+                    });
+                    
+                    // Close mobile menu
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        document.getElementById('mobile-menu-btn').innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                    }
+                }
+            });
         });
 
         // Theme Toggle Functionality

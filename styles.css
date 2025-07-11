@@ -252,6 +252,65 @@ body {
     margin-top: auto;
 }
 
+/* Mobile Menu Styles */
+#mobileMenu {
+    transition: transform 0.3s ease-in-out;
+}
+
+#mobileMenu.open {
+    transform: translateX(0);
+}
+
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-menu-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Add Subject Modal Styles */
+.resource-item {
+    animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Success/Error Message Styles */
+.message-container {
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .logo {
@@ -288,33 +347,411 @@ body {
     .telegram-link {
         align-self: flex-start;
     }
+    
+    .mobile-menu-btn:hover {
+        background: rgba(109, 99, 255, 0.1);
+    }
+    
+    .add-subject-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .add-subject-btn span {
+        display: none;
+    }
+    
+    .resource-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .resource-item > * {
+        width: 100%;
+    }
 }
 
-@media (max-width: 480px) {
-    .header {
-        padding: 1.5rem 1rem;
+/* Enhanced Mobile Optimizations */
+
+/* Touch-friendly interactions */
+@media (max-width: 768px) {
+    /* Increase touch targets */
+    button, a, input, select, textarea {
+        min-height: 44px;
+        min-width: 44px;
     }
     
-    .main-content {
-        padding: 1.5rem 1rem;
+    /* Mobile typography */
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.75rem !important; }
+    h3 { font-size: 1.5rem !important; }
+    h4 { font-size: 1.25rem !important; }
+    
+    /* Mobile spacing */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
     
+    /* Mobile cards */
     .course-card {
+        min-height: auto;
+        padding: 1rem !important;
+    }
+    
+    /* Mobile forms */
+    .resource-item .grid {
+        gap: 0.75rem;
+        grid-template-columns: 1fr;
+    }
+    
+    .resource-item select,
+    .resource-item input,
+    .resource-item button {
+        width: 100%;
+    }
+    
+    /* Mobile search */
+    .input-wrapper {
+        max-width: 100%;
+    }
+    
+    /* Mobile menu animations */
+    #mobileMenu {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Sticky mobile elements */
+    .mobile-sticky-bottom {
+        position: sticky;
+        bottom: 0;
+        background: rgba(15, 15, 26, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(109, 99, 255, 0.2);
         padding: 1rem;
+        margin: -1rem;
+        margin-top: 1rem;
     }
     
-    .course-title h3 {
-        font-size: 1.1rem;
+    /* Mobile modal improvements */
+    .modal-mobile {
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
     }
     
-    .code-badge {
-        font-size: 0.8rem;
-        padding: 0.2rem 0.6rem;
+    /* Mobile scroll improvements */
+    .mobile-scroll {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
     }
     
-    .telegram-link {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
+    /* Mobile hero adjustments */
+    .hero-mobile-padding {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    /* Mobile navigation improvements */
+    .nav-mobile-spacing {
+        margin-bottom: 1rem;
+    }
+    
+    /* Mobile search quick actions */
+    .quick-search-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+    }
+    
+    .quick-search-tag {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        border-radius: 9999px;
+        background: rgba(45, 45, 77, 0.4);
+        color: rgba(224, 224, 255, 0.8);
+        border: 1px solid rgba(109, 99, 255, 0.3);
+        transition: all 0.2s ease;
+    }
+    
+    .quick-search-tag:hover {
+        background: rgba(45, 45, 77, 0.6);
+        color: white;
+        border-color: rgba(109, 99, 255, 0.5);
+    }
+}
+
+/* Mobile-specific optimizations and enhancements */
+@media (max-width: 768px) {
+    /* Improved touch targets */
+    button, .cta-button, .gradient-bg {
+        min-height: 48px;
+        min-width: 48px;
+        padding: 12px 20px;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    /* Enhanced mobile search */
+    #courseSearchMobile {
+        font-size: 16px; /* Prevents zoom on iOS */
+        line-height: 1.5;
+        padding: 12px 16px 12px 40px;
+        border-radius: 12px;
+    }
+    
+    /* Better mobile course cards - override desktop styles */
+    .course-card {
+        margin-bottom: 16px !important;
+        padding: 20px !important;
+        border-radius: 16px !important;
+        transform: none !important; /* Disable hover transforms on mobile */
+    }
+    
+    .course-card h3, .course-card h4 {
+        font-size: 18px;
+        line-height: 1.4;
+        margin-bottom: 8px;
+    }
+    
+    .course-card p {
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+    
+    /* Mobile-optimized buttons within cards */
+    .course-card button {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 8px;
+        margin-top: 8px;
+    }
+    
+    /* Quick search buttons */
+    .bg-nebula\/40 {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-height: 36px;
+        border-radius: 18px;
+        margin: 2px;
+    }
+    
+    /* Mobile menu improvements */
+    #mobileMenu {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    #mobileMenu button, #mobileMenu a {
+        padding: 16px;
+        font-size: 16px;
+        min-height: 56px;
+        border-radius: 12px;
+        margin-bottom: 4px;
+    }
+    
+    /* Hero section mobile optimization */
+    .hero-gradient {
+        padding: 40px 16px;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 28px;
+        line-height: 1.3;
+        margin-bottom: 16px;
+    }
+    
+    .hero-gradient p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+    
+    /* Glass cards on mobile */
+    .glass-card {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+    
+    /* Navigation improvements */
+    .nav-link {
+        padding: 12px 16px;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+    
+    /* Search message mobile optimization */
+    #searchMessage {
+        top: 80px !important;
+        right: 8px !important;
+        left: 8px !important;
+        padding: 16px;
+        font-size: 14px;
+        border-radius: 12px;
+    }
+    
+    /* Level badges mobile */
+    .level-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+        top: 12px;
+        left: 12px;
+    }
+    
+    /* Floating animations - reduce on mobile for performance */
+    .floating {
+        animation: none;
+    }
+    
+    /* Scroll behavior improvements */
+    html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+    }
+    
+    /* Fix for iOS safe area */
+    @supports (padding: max(0px)) {
+        .header, #mobileMenu {
+            padding-top: max(16px, env(safe-area-inset-top));
+        }
+        
+        .main-content {
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+    }
+    
+    /* Improved tap highlighting */
+    button, a, .course-card {
+        -webkit-tap-highlight-color: rgba(108, 99, 255, 0.2);
+    }
+    
+    /* Better focus styles for accessibility */
+    input:focus, button:focus, a:focus {
+        outline: 2px solid #6C63FF;
+        outline-offset: 2px;
+    }
+    
+    /* Optimized animations for mobile */
+    *, *::before, *::after {
+        animation-duration: 0.3s !important;
+        transition-duration: 0.3s !important;
+    }
+    
+    /* Mobile typography improvements */
+    h1, h2, h3, h4, h5, h6 {
+        word-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    /* Mobile container spacing */
+    .container {
+        padding: 0 16px;
+        max-width: 100%;
+    }
+    
+    /* Section spacing on mobile */
+    section {
+        margin-bottom: 32px;
+    }
+    
+    /* Grid improvements for mobile */
+    .grid {
+        gap: 16px;
+    }
+    
+    /* Mobile-specific utilities */
+    .mobile-only {
+        display: block !important;
+    }
+    
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+/* Landscape mobile improvements */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero-gradient {
+        padding: 24px 16px;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 24px;
+    }
+    
+    #mobileMenu {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    .course-card {
+        padding: 16px;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 24px;
+    }
+    
+    .hero-gradient p {
+        font-size: 14px;
+    }
+    
+    button, .cta-button, .gradient-bg {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .glass-card, .course-card {
+        border-width: 0.5px;
+    }
+}
+
+/* Dark mode optimizations for mobile */
+@media (max-width: 768px) {
+    body.light-mode .course-card {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.light-mode .glass-card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    body.light-mode #searchMessage {
+        background: rgba(255, 255, 255, 0.95);
+        color: #1a202c;
+        border-color: rgba(99, 102, 241, 0.2);
+    }
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+    /* Reduce will-change usage on mobile */
+    .course-card, .glass-card {
+        will-change: auto;
+    }
+    
+    /* Simplified backgrounds on mobile */
+    .pattern-overlay {
+        background-image: none;
+    }
+    
+    /* Reduce blur effects on lower-end devices */
+    @media (max-resolution: 150dpi) {
+        .backdrop-blur-lg, .glass-card {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
     }
 }
 
@@ -355,5 +792,120 @@ body {
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* Additional mobile-specific CSS fixes */
+@media (max-width: 768px) {
+    /* Fix search button functionality */
+    .mobile-search-btn {
+        background: linear-gradient(135deg, #6C63FF 0%, #4D44DB 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        min-width: 48px;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .mobile-search-btn:hover {
+        background: linear-gradient(135deg, #4D44DB 0%, #3730A3 100%);
+        transform: translateY(-1px);
+    }
+    
+    /* Enhanced mobile modal */
+    #addSubjectModal .glass-card {
+        margin: 8px;
+        max-height: calc(100vh - 16px);
+        width: calc(100% - 16px);
+    }
+    
+    /* Better mobile form styling */
+    #addSubjectForm input,
+    #addSubjectForm textarea,
+    #addSubjectForm select {
+        font-size: 16px; /* Prevent zoom on iOS */
+        line-height: 1.5;
+        min-height: 44px;
+    }
+    
+    /* Mobile-optimized touch targets */
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 12px;
+    }
+    
+    /* Improved mobile course cards */
+    .course-card {
+        padding: 20px !important;
+        margin-bottom: 16px !important;
+        border-radius: 16px !important;
+    }
+    
+    .course-card h3 {
+        font-size: 20px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .course-card h4 {
+        font-size: 18px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .course-card p {
+        font-size: 14px !important;
+        line-height: 1.6 !important;
+        margin-bottom: 16px !important;
+    }
+    
+    /* Mobile navigation enhancements */
+    #mobileMenu a, #mobileMenu button {
+        padding: 16px !important;
+        font-size: 16px !important;
+        line-height: 1.5 !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Performance optimizations for mobile */
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Mobile scrolling improvements */
+    html {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    
+    /* Better mobile focus states */
+    input:focus,
+    textarea:focus,
+    select:focus,
+    button:focus {
+        outline: 2px solid #6C63FF;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+    }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero-gradient {
+        padding: 20px 16px !important;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 24px !important;
+    }
+    
+    #mobileMenu {
+        padding: 8px !important;
+    }
 }
 

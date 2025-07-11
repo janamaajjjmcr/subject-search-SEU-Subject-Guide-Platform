@@ -14,6 +14,7 @@ class CourseSearchApp {
     async init() {
         try {
             await this.loadCourses();
+            this.loadCustomSubjects(); // Load custom subjects from localStorage
             this.setupEventListeners();
             this.showInitialMessage();
         } catch (error) {
@@ -216,11 +217,50 @@ class CourseSearchApp {
         this.noResults.style.display = 'none';
         this.initialMessage.style.display = 'none';
     }
+
+    // Method to add new subject to the course data
+    addNewSubject(subjectData) {
+        // Validate required fields
+        if (!subjectData.subject_name || !subjectData.description) {
+            throw new Error('اسم المادة والوصف مطلوبان');
+        }
+
+        // Add to courses array
+        this.courses.push(subjectData);
+        
+        // Save to localStorage for persistence (optional)
+        const customSubjects = JSON.parse(localStorage.getItem('customSubjects') || '[]');
+        customSubjects.push(subjectData);
+        localStorage.setItem('customSubjects', JSON.stringify(customSubjects));
+        
+        return true;
+    }
+
+    // Method to load custom subjects from localStorage
+    loadCustomSubjects() {
+        const customSubjects = JSON.parse(localStorage.getItem('customSubjects') || '[]');
+        this.courses = [...this.courses, ...customSubjects];
+    }
+
+    // Method to export all subjects (including custom ones) as JSON
+    exportSubjects() {
+        const dataStr = JSON.stringify(this.courses, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'course_data_updated.json';
+        link.click();
+        
+        URL.revokeObjectURL(url);
+    }
 }
 
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new CourseSearchApp();
+    // Make app globally accessible
+    window.courseSearchApp = new CourseSearchApp();
 });
 
 // Add some utility functions for enhanced user experience
