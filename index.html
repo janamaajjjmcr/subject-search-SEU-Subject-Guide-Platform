@@ -25,15 +25,178 @@
             measurementId: "G-Y2FL6V8X3L"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Initialize Firebase with error handling
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            
+            // Collection reference for user-added courses
+            const coursesCollection = db.collection('userCourses');
+            
+            console.log('✅ Firebase تم تهيئته بنجاح');
+            
+            // Make functions globally available immediately
+            window.db = db;
+            window.coursesCollection = coursesCollection;
+            
+        } catch (error) {
+            console.error('❌ خطأ في تهيئة Firebase:', error);
+        }
         
-        // Collection reference for user-added courses
-        const coursesCollection = db.collection('userCourses');
+        // Test Firebase connection function
+        async function testFirebaseConnection() {
+            console.log('🧪 اختبار اتصال Firebase...');
+            
+            if (!window.db || !window.coursesCollection) {
+                console.error('❌ Firebase غير مهيأ بشكل صحيح');
+                return false;
+            }
+            
+            try {
+                // بدلاً من الوصول المباشر، استخدم onSnapshot للاستماع
+                console.log('🔄 محاولة الاتصال بـ Firebase...');
+                
+                // تجربة بسيطة للقراءة
+                const unsubscribe = window.coursesCollection.onSnapshot(
+                    (snapshot) => {
+                        console.log('✅ اتصال Firebase يعمل بنجاح!');
+                        console.log('📊 حالة قاعدة البيانات: جاهزة');
+                        console.log('📄 عدد المستندات:', snapshot.size);
+                        
+                        if (snapshot.size > 0) {
+                            console.log('🎉 هناك مواد محفوظة في Firebase:');
+                            snapshot.forEach(doc => {
+                                console.log('📚', doc.id, ':', doc.data().title);
+                            });
+                        } else {
+                            console.log('📝 لا توجد مواد محفوظة بعد - جرب إضافة مادة!');
+                        }
+                        
+                        // إلغاء الاستماع بعد الحصول على النتيجة
+                        unsubscribe();
+                    },
+                    (error) => {
+                        console.error('❌ فشل اتصال Firebase:', error.message);
+                        console.error('🔍 كود الخطأ:', error.code);
+                        
+                        if (error.code === 'permission-denied') {
+                            console.log('🔒 المشكلة: قواعد Firebase تحتاج إلى ضبط');
+                            console.log('🛠️ الحل: اذهب إلى Firebase Console → Firestore Database → Rules');
+                            console.log('📝 غير القواعد إلى:');
+                            console.log(`
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}`);
+                        } else if (error.code === 'unavailable') {
+                            console.log('🌐 مشكلة في الاتصال بالإنترنت أو خدمة Firebase');
+                        }
+                        
+                        unsubscribe();
+                    }
+                );
+                
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في الاختبار:', error.message);
+                return false;
+            }
+        }
+
+        // Function to add a test course
+        async function addTestCourse() {
+            console.log('🧪 إضافة مادة تجريبية...');
+            
+            if (!window.db || !window.coursesCollection) {
+                console.error('❌ Firebase غير مهيأ بشكل صحيح');
+                return false;
+            }
+            
+            try {
+                const testCourse = {
+                    title: 'مادة تجريبية',
+                    description: 'هذه مادة تجريبية لاختبار Firebase',
+                    credits: 3,
+                    major: 'CS',
+                    level: 3,
+                    resources: [],
+                    isUserAdded: true,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    addedBy: 'test-user',
+                    status: 'active'
+                };
+                
+                const docRef = await window.coursesCollection.add(testCourse);
+                console.log('✅ تم إضافة المادة التجريبية بنجاح! ID:', docRef.id);
+                console.log('🔄 تحديث قائمة المواد...');
+                
+                // إعادة تحميل المواد لعرض التحديث
+                if (typeof loadCoursesFromFirebase === 'function') {
+                    loadCoursesFromFirebase();
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('❌ فشل في إضافة المادة التجريبية:', error.message);
+                console.error('🔍 كود الخطأ:', error.code);
+                
+                if (error.code === 'permission-denied') {
+                    console.log('🔒 يجب ضبط قواعد Firebase أولاً');
+                }
+                
+                return false;
+            }
+        }
+
+        // Function to check Firebase data
+        async function checkFirebaseData() {
+            console.log('📊 فحص بيانات Firebase...');
+            try {
+                const snapshot = await coursesCollection.get();
+                console.log('📄 إجمالي المواد في Firebase:', snapshot.size);
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    console.log('📚 مادة:', data.title, '- التخصص:', data.major);
+                });
+                
+                return snapshot.size;
+            } catch (error) {
+                console.error('❌ فشل في قراءة البيانات:', error.message);
+                return 0;
+            }
+        }
+
+        // Debug functions available in console
+        window.testFirebaseConnection = testFirebaseConnection;
+        window.addTestCourse = addTestCourse;
+        window.checkFirebaseData = checkFirebaseData;
         
-        // Test Firebase connection
-        console.log('Firebase initialized successfully');
+        // دالة سهلة لاختبار Firebase
+        window.testFirebase = function() {
+            console.log('🚀 بدء اختبار Firebase الشامل...');
+            testFirebaseConnection();
+        };
+        
+        // دالة سهلة لإضافة مادة
+        window.addCourse = function() {
+            console.log('📚 إضافة مادة تجريبية...');
+            addTestCourse();
+        };
+        
+        // Test on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('📱 جاهز للاختبار! استخدم الأوامر التالية:');
+                console.log('🧪 testFirebase() - لاختبار الاتصال');
+                console.log('📚 addCourse() - لإضافة مادة تجريبية');
+                console.log('📊 checkFirebaseData() - لفحص البيانات');
+            }, 2000);
+        });
     </script>
     <script>
         tailwind.config = {
@@ -569,7 +732,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
+            z-index: 15;
             color: white;
         }
         
@@ -2815,7 +2978,7 @@ ul {
                 courseCard.className = 'course-card glow-border rounded-2xl p-6 group overflow-hidden relative';
                 courseCard.innerHTML = `
                     <span class="level-badge level-${level}">المستوى ${level}</span>
-                    ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
+                    ${isUserAdded ? '<span class="absolute top-2 right-2 bg-aurora text-white text-xs px-2 py-1 rounded-full z-20">مجتمع</span>' : ''}
                     <div class="relative z-10">
                         <h3 class="text-xl font-bold text-white mb-1">${code}</h3>
                         <h4 class="text-lg font-bold text-white mb-3">${course.title}</h4>
@@ -2823,7 +2986,6 @@ ul {
                         <div class="flex flex-wrap gap-2 mb-4">
                             <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.credits || 3} ساعات</span>
                             <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.major}</span>
-                            ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-2 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
                         </div>
                         <button onclick="closeAllCoursesModal(); openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 text-sm font-medium">
                             تفاصيل المادة <i class="fas fa-arrow-left ml-1"></i>
@@ -2883,7 +3045,7 @@ ul {
                     courseCard.className = 'course-card glow-border rounded-2xl p-8 group overflow-hidden relative';
                     courseCard.innerHTML = `
                         <span class="level-badge level-${level}">المستوى ${level}</span>
-                        ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
+                        ${isUserAdded ? '<span class="absolute top-2 right-2 bg-aurora text-white text-xs px-2 py-1 rounded-full z-20">مجتمع</span>' : ''}
                         <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
                         <div class="relative z-10">
                             <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
@@ -2894,7 +3056,6 @@ ul {
                             <p class="text-stardust/70 mb-6">${course.desc.substring(0, 100)}...</p>
                             <div class="flex flex-wrap gap-2 mb-6">
                                 <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.credits || 3} ساعات</span>
-                                ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-3 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
                             </div>
                             <button onclick="openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
                                 استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
@@ -3194,54 +3355,81 @@ ul {
         
         // Function to save course to Firebase
         async function saveCourseToFirebase(courseCode, courseData) {
+            console.log('🔄 محاولة حفظ المادة في Firebase:', courseCode);
             try {
-                await coursesCollection.doc(courseCode).set({
+                const docRef = await coursesCollection.doc(courseCode).set({
                     ...courseData,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    status: 'active'
+                    status: 'active',
+                    addedBy: 'community',
+                    timestamp: Date.now()
                 });
+                
+                console.log('✅ تم حفظ المادة في Firebase بنجاح:', courseCode);
                 
                 // Also save to localStorage as backup
                 const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
-                savedCourses[courseCode] = courseData;
+                savedCourses[courseCode] = {...courseData, fromFirebase: true};
                 localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
                 
-                console.log('Course saved successfully to Firebase');
+                // Verify the save by reading it back
+                const verifyDoc = await coursesCollection.doc(courseCode).get();
+                if (verifyDoc.exists) {
+                    console.log('🔍 تأكيد: المادة موجودة في Firebase:', verifyDoc.data());
+                } else {
+                    console.log('❌ خطأ: المادة غير موجودة في Firebase بعد الحفظ');
+                }
+                
             } catch (error) {
-                console.error('Error saving course to Firebase:', error);
+                console.error('❌ خطأ في حفظ المادة في Firebase:', error);
+                alert('فشل في الحفظ في السحابة. سيتم الحفظ محلياً فقط.');
                 
                 // Fallback to localStorage only
                 const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
-                savedCourses[courseCode] = courseData;
+                savedCourses[courseCode] = {...courseData, fromLocal: true};
                 localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
             }
         }
 
         // Function to load all courses from Firebase
         async function loadCoursesFromFirebase() {
+            console.log('🔄 جاري تحميل المواد من Firebase...');
             try {
-                const snapshot = await coursesCollection.where('status', '==', 'active').get();
+                const snapshot = await coursesCollection.get();
                 const firebaseCourses = {};
                 
+                console.log(`📊 عدد المستندات في Firebase: ${snapshot.size}`);
+                
                 snapshot.forEach(doc => {
+                    console.log(`📄 مستند موجود: ${doc.id}`, doc.data());
                     firebaseCourses[doc.id] = doc.data();
                 });
                 
                 // Merge Firebase courses with existing courses
+                const beforeCount = Object.keys(courses).length;
                 Object.assign(courses, firebaseCourses);
-                console.log('Merged Firebase courses with local courses');
+                const afterCount = Object.keys(courses).length;
+                
+                console.log(`📈 عدد المواد قبل التحميل: ${beforeCount}, بعد التحميل: ${afterCount}`);
+                console.log('✅ تم دمج مواد Firebase مع المواد المحلية');
                 
                 // Also merge localStorage courses as backup
                 const localCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
                 Object.assign(courses, localCourses);
                 
-                console.log(`Loaded ${Object.keys(firebaseCourses).length} courses from Firebase`);
+                console.log(`🔥 تم تحميل ${Object.keys(firebaseCourses).length} مادة من Firebase`);
+                
+                if (Object.keys(firebaseCourses).length > 0) {
+                    console.log('🎉 مواد Firebase المحملة:', Object.keys(firebaseCourses));
+                }
+                
             } catch (error) {
-                console.error('Error loading courses from Firebase:', error);
+                console.error('❌ خطأ في تحميل المواد من Firebase:', error);
                 
                 // Fallback to localStorage
                 const localCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
                 Object.assign(courses, localCourses);
+                console.log('🔄 تم الرجوع للمواد المحلية فقط');
             }
         }
 
@@ -3277,7 +3465,7 @@ ul {
         function isUserAddedCourse(courseCode) {
             // Check Firebase courses first (courses loaded from Firebase)
             const firebaseCourses = Object.keys(courses).filter(key => 
-                courses[key].createdAt || courses[key].status === 'active'
+                courses[key].createdAt || courses[key].status === 'active' || courses[key].fromFirebase
             );
             
             if (firebaseCourses.includes(courseCode)) {
@@ -3288,6 +3476,39 @@ ul {
             const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
             return savedCourses.hasOwnProperty(courseCode);
         }
+        
+        // Debug function to check Firebase data (call from console)
+        window.checkFirebaseData = async function() {
+            console.log('🔍 فحص بيانات Firebase...');
+            try {
+                const snapshot = await coursesCollection.get();
+                console.log(`📊 عدد المستندات: ${snapshot.size}`);
+                snapshot.forEach(doc => {
+                    console.log(`📄 ${doc.id}:`, doc.data());
+                });
+                
+                if (snapshot.size === 0) {
+                    console.log('📭 لا توجد مواد في Firebase بعد');
+                }
+            } catch (error) {
+                console.error('❌ خطأ في الفحص:', error);
+            }
+        };
+        
+        // Add a test course function (call from console)
+        window.addTestCourse = async function() {
+            const testCourse = {
+                title: "مادة تجريبية",
+                desc: "هذه مادة تجريبية للاختبار",
+                credits: 3,
+                major: "علوم الحاسب",
+                level: 5,
+                resources: []
+            };
+            
+            await saveCourseToFirebase('TEST001', testCourse);
+            console.log('✅ تم إضافة مادة تجريبية');
+        };
 
         // Error notification function
         function showErrorNotification(message) {
