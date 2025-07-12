@@ -7,6 +7,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+            authDomain: "seu-subjects.firebaseapp.com",
+            projectId: "seu-subjects",
+            storageBucket: "seu-subjects.firebasestorage.app",
+            messagingSenderId: "552315681734",
+            appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+            measurementId: "G-Y2FL6V8X3L"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Collection reference for user-added courses
+        const coursesCollection = db.collection('userCourses');
+        
+        // Test Firebase connection
+        console.log('Firebase initialized successfully');
+    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -2787,7 +2815,7 @@ ul {
                 courseCard.className = 'course-card glow-border rounded-2xl p-6 group overflow-hidden relative';
                 courseCard.innerHTML = `
                     <span class="level-badge level-${level}">المستوى ${level}</span>
-                    ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضافة</span>' : ''}
+                    ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
                     <div class="relative z-10">
                         <h3 class="text-xl font-bold text-white mb-1">${code}</h3>
                         <h4 class="text-lg font-bold text-white mb-3">${course.title}</h4>
@@ -2795,7 +2823,7 @@ ul {
                         <div class="flex flex-wrap gap-2 mb-4">
                             <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.credits || 3} ساعات</span>
                             <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.major}</span>
-                            ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-2 py-1 rounded-full">مضافة من قبلك</span>' : ''}
+                            ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-2 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
                         </div>
                         <button onclick="closeAllCoursesModal(); openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 text-sm font-medium">
                             تفاصيل المادة <i class="fas fa-arrow-left ml-1"></i>
@@ -2855,7 +2883,7 @@ ul {
                     courseCard.className = 'course-card glow-border rounded-2xl p-8 group overflow-hidden relative';
                     courseCard.innerHTML = `
                         <span class="level-badge level-${level}">المستوى ${level}</span>
-                        ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضافة</span>' : ''}
+                        ${isUserAdded ? '<span class="absolute top-2 left-2 bg-aurora text-white text-xs px-2 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
                         <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
                         <div class="relative z-10">
                             <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
@@ -2866,7 +2894,7 @@ ul {
                             <p class="text-stardust/70 mb-6">${course.desc.substring(0, 100)}...</p>
                             <div class="flex flex-wrap gap-2 mb-6">
                                 <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.credits || 3} ساعات</span>
-                                ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-3 py-1 rounded-full">مضافة من قبلك</span>' : ''}
+                                ${isUserAdded ? '<span class="bg-aurora/30 text-aurora text-xs px-3 py-1 rounded-full">مضاف من قبل المجتمع</span>' : ''}
                             </div>
                             <button onclick="openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
                                 استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
@@ -3127,12 +3155,13 @@ ul {
 
             // Add directly to courses object (same as existing courses)
             courses[courseCode] = newCourse;
+            console.log('Added course to local courses object:', courseCode);
 
-            // Save to localStorage for persistence
-            saveCourseToLocalStorage(courseCode, newCourse);
+            // Save to Firebase for global persistence
+            saveCourseToFirebase(courseCode, newCourse);
 
             // Show success message with custom notification
-            showSuccessNotification('تم إضافة المادة بنجاح!', courseTitle);
+            showSuccessNotification('✅ تم إضافة المادة بنجاح! ستظهر لجميع المستخدمين فوراً', courseTitle);
 
             // Close modal
             closeAddCourseModal();
@@ -3150,45 +3179,138 @@ ul {
                     }
                 }
                 
-                // Clear search to show all content
+                // Clear search to show all content and refresh display
                 clearSearch();
-            }, 1000);
+                
+                // Force refresh to show new course
+                if (searchCourses && typeof searchCourses === 'function') {
+                    searchCourses();
+                    clearSearch();
+                }
+            }, 500);
         });
 
-        // Function to save course to localStorage
-        function saveCourseToLocalStorage(courseCode, courseData) {
-            const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
-            savedCourses[courseCode] = courseData;
-            localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
-        }
-
-        // Function to load saved courses from localStorage
-        function loadSavedCourses() {
-            const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
-            // Merge saved courses with existing courses object
-            Object.assign(courses, savedCourses);
-        }
-
-        // Function to delete a user-added course
-        function deleteUserCourse(courseCode) {
-            if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
-                // Remove from courses object
-                delete courses[courseCode];
+        // Firebase Functions for Course Management
+        
+        // Function to save course to Firebase
+        async function saveCourseToFirebase(courseCode, courseData) {
+            try {
+                await coursesCollection.doc(courseCode).set({
+                    ...courseData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'active'
+                });
                 
-                // Remove from localStorage
+                // Also save to localStorage as backup
                 const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
-                delete savedCourses[courseCode];
+                savedCourses[courseCode] = courseData;
                 localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
                 
-                // Refresh content
-                window.location.reload();
+                console.log('Course saved successfully to Firebase');
+            } catch (error) {
+                console.error('Error saving course to Firebase:', error);
+                
+                // Fallback to localStorage only
+                const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                savedCourses[courseCode] = courseData;
+                localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
             }
         }
 
-        // Function to check if course is user-added
+        // Function to load all courses from Firebase
+        async function loadCoursesFromFirebase() {
+            try {
+                const snapshot = await coursesCollection.where('status', '==', 'active').get();
+                const firebaseCourses = {};
+                
+                snapshot.forEach(doc => {
+                    firebaseCourses[doc.id] = doc.data();
+                });
+                
+                // Merge Firebase courses with existing courses
+                Object.assign(courses, firebaseCourses);
+                console.log('Merged Firebase courses with local courses');
+                
+                // Also merge localStorage courses as backup
+                const localCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                Object.assign(courses, localCourses);
+                
+                console.log(`Loaded ${Object.keys(firebaseCourses).length} courses from Firebase`);
+            } catch (error) {
+                console.error('Error loading courses from Firebase:', error);
+                
+                // Fallback to localStorage
+                const localCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                Object.assign(courses, localCourses);
+            }
+        }
+
+        // Function to delete a user-added course from Firebase
+        async function deleteUserCourse(courseCode) {
+            if (confirm('هل أنت متأكد من حذف هذه المادة؟ سيتم حذفها من جميع الأجهزة.')) {
+                try {
+                    // Delete from Firebase
+                    await coursesCollection.doc(courseCode).delete();
+                    
+                    // Remove from courses object
+                    delete courses[courseCode];
+                    
+                    // Remove from localStorage
+                    const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                    delete savedCourses[courseCode];
+                    localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+                    
+                    showSuccessNotification('تم حذف المادة بنجاح!', '');
+                    
+                    // Refresh content
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } catch (error) {
+                    console.error('Error deleting course from Firebase:', error);
+                    alert('فشل في حذف المادة. حاول مرة أخرى.');
+                }
+            }
+        }
+
+        // Function to check if course is user-added (checks both Firebase and localStorage)
         function isUserAddedCourse(courseCode) {
+            // Check Firebase courses first (courses loaded from Firebase)
+            const firebaseCourses = Object.keys(courses).filter(key => 
+                courses[key].createdAt || courses[key].status === 'active'
+            );
+            
+            if (firebaseCourses.includes(courseCode)) {
+                return true;
+            }
+            
+            // Fallback to localStorage check
             const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
             return savedCourses.hasOwnProperty(courseCode);
+        }
+
+        // Error notification function
+        function showErrorNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 z-50 glass-card rounded-lg p-4 border-l-4 border-red-500';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center mr-3">
+                        <i class="fas fa-exclamation text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold">خطأ</div>
+                        <div class="text-stardust/70 text-sm">${message}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
         // Success Notification Function
@@ -3212,20 +3334,14 @@ ul {
             
             // Remove notification after 3 seconds
             setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
+                notification.remove();
             }, 3000);
         }
 
-        // Load user courses from localStorage on page load
+        // Load user courses from Firebase on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Load saved courses first
-            loadSavedCourses();
+            // Load courses from Firebase (with localStorage fallback)
+            loadCoursesFromFirebase();
         });
 
         // Mobile menu event listener
