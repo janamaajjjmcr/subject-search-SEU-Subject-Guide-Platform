@@ -1,0 +1,2698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كلية الصحة | جامعة SEU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+            authDomain: "seu-subjects.firebaseapp.com",
+            projectId: "seu-subjects",
+            storageBucket: "seu-subjects.firebasestorage.app",
+            messagingSenderId: "552315681734",
+            appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+            measurementId: "G-Y2FL6V8X3L"
+        };
+
+        // Initialize Firebase with error handling
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            
+            // Collection reference for user-added courses
+            const coursesCollection = db.collection('health_courses');
+            
+            console.log('✅ Firebase تم تهيئته بنجاح');
+            
+            // Make functions globally available immediately
+            window.db = db;
+            window.coursesCollection = coursesCollection;
+            
+        } catch (error) {
+            console.error('❌ خطأ في تهيئة Firebase:', error);
+        }
+        
+        // Test Firebase connection function
+        async function testFirebaseConnection() {
+            console.log('🧪 اختبار اتصال Firebase...');
+            
+            if (!window.db || !window.coursesCollection) {
+                console.error('❌ Firebase غير مهيأ بشكل صحيح');
+                return false;
+            }
+            
+            try {
+                // بدلاً من الوصول المباشر، استخدم onSnapshot للاستماع
+                console.log('🔄 محاولة الاتصال بـ Firebase...');
+                
+                // تجربة بسيطة للقراءة
+                const unsubscribe = window.coursesCollection.onSnapshot(
+                    (snapshot) => {
+                        console.log('✅ اتصال Firebase يعمل بنجاح!');
+                        console.log('📊 حالة قاعدة البيانات: جاهزة');
+                        console.log('📄 عدد المستندات:', snapshot.size);
+                        
+                        if (snapshot.size > 0) {
+                            console.log('🎉 هناك مواد محفوظة في Firebase:');
+                            snapshot.forEach(doc => {
+                                console.log('📚', doc.id, ':', doc.data().title);
+                            });
+                        } else {
+                            console.log('📝 لا توجد مواد محفوظة بعد - جرب إضافة مادة!');
+                        }
+                        
+                        // إلغاء الاستماع بعد الحصول على النتيجة
+                        unsubscribe();
+                    },
+                    (error) => {
+                        console.error('❌ فشل اتصال Firebase:', error.message);
+                        console.error('🔍 كود الخطأ:', error.code);
+                        
+                        if (error.code === 'permission-denied') {
+                            console.log('🔒 المشكلة: قواعد Firebase تحتاج إلى ضبط');
+                            console.log('🛠️ الحل: اذهب إلى Firebase Console → Firestore Database → Rules');
+                            console.log('📝 غير القواعد إلى:');
+                            console.log(`
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}`);
+                        } else if (error.code === 'unavailable') {
+                            console.log('🌐 مشكلة في الاتصال بالإنترنت أو خدمة Firebase');
+                        }
+                        
+                        unsubscribe();
+                    }
+                );
+                
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في الاختبار:', error.message);
+                return false;
+            }
+        }
+
+        // Function to add a test course
+        async function addTestCourse() {
+            console.log('🧪 إضافة مادة تجريبية...');
+            
+            if (!window.db || !window.coursesCollection) {
+                console.error('❌ Firebase غير مهيأ بشكل صحيح');
+                return false;
+            }
+            
+            try {
+                const testCourse = {
+                    title: 'مادة تجريبية',
+                    description: 'هذه مادة تجريبية لاختبار Firebase',
+                    credits: 3,
+                    major: 'CS',
+                    level: 3,
+                    resources: [],
+                    isUserAdded: true,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    addedBy: 'test-user',
+                    status: 'active'
+                };
+                
+                const docRef = await window.coursesCollection.add(testCourse);
+                console.log('✅ تم إضافة المادة التجريبية بنجاح! ID:', docRef.id);
+                console.log('🔄 تحديث قائمة المواد...');
+                
+                // إعادة تحميل المواد لعرض التحديث
+                if (typeof loadCoursesFromFirebase === 'function') {
+                    loadCoursesFromFirebase();
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('❌ فشل في إضافة المادة التجريبية:', error.message);
+                console.error('🔍 كود الخطأ:', error.code);
+                
+                if (error.code === 'permission-denied') {
+                    console.log('🔒 يجب ضبط قواعد Firebase أولاً');
+                }
+                
+                return false;
+            }
+        }
+
+        // Function to check Firebase data
+        async function checkFirebaseData() {
+            console.log('📊 فحص بيانات Firebase...');
+            try {
+                const snapshot = await coursesCollection.get();
+                console.log('📄 إجمالي المواد في Firebase:', snapshot.size);
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    console.log('📚 مادة:', data.title, '- التخصص:', data.major);
+                });
+                
+                return snapshot.size;
+            } catch (error) {
+                console.error('❌ فشل في قراءة البيانات:', error.message);
+                return 0;
+            }
+        }
+
+        // Debug functions available in console
+        window.testFirebaseConnection = testFirebaseConnection;
+        window.addTestCourse = addTestCourse;
+        window.checkFirebaseData = checkFirebaseData;
+        
+        // دالة سهلة لاختبار Firebase
+        window.testFirebase = function() {
+            console.log('🚀 بدء اختبار Firebase الشامل...');
+            testFirebaseConnection();
+        };
+        
+        // دالة سهلة لإضافة مادة
+        window.addCourse = function() {
+            console.log('📚 إضافة مادة تجريبية...');
+            addTestCourse();
+        };
+        
+        // Test on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('📱 جاهز للاختبار! استخدم الأوامر التالية:');
+                console.log('🧪 testFirebase() - لاختبار الاتصال');
+                console.log('📚 addCourse() - لإضافة مادة تجريبية');
+                console.log('📊 checkFirebaseData() - لفحص البيانات');
+            }, 2000);
+        });
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cosmic: '#0F0F1A',
+                        midnight: '#1A1A2E',
+                        nebula: '#2D2D4D',
+                        stardust: '#E0E0FF',
+                        plasma: '#6C63FF',
+                        quantum: '#4D44DB',
+                        photon: '#A5A6FF',
+                        aurora: '#00D1B2',
+                        supernova: '#FF8E3C',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'gradient-x': 'gradientX 15s ease infinite',
+                        'spin': 'spin 1s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        gradientX: {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        },
+                        spin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        :root {
+            --primary: #0F0F1A;
+            --secondary: #1A1A2E;
+            --accent: #6C63FF;
+            --text: #E0E0FF;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent) 0%, #A5A6FF 50%, #00D1B2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: gradientX 8s ease infinite;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(109, 99, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-color: rgba(109, 99, 255, 0.3);
+        }
+
+        .glow-border {
+            position: relative;
+        }
+
+        .glow-border::after {
+            display: none;
+        }
+        
+        
+        .cta-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease-in;
+          position: relative;
+          overflow: hidden;
+          z-index: 1;
+          color: #090909;
+          padding: 0.7em 1.7em;
+          cursor: pointer;
+          font-size: 18px;
+          border-radius: 0.5em;
+          background: #e8e8e8;
+          border: 1px solid #e8e8e8;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          font-weight: 500;
+          margin: 0 8px;
+        }
+
+        .cta-button:active {
+          color: #666;
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button:before {
+          content: "";
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%) scaleY(1) scaleX(1.25);
+          top: 100%;
+          width: 140%;
+          height: 180%;
+          background-color: rgba(0, 0, 0, 0.05);
+          border-radius: 50%;
+          display: block;
+          transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+          z-index: -1;
+        }
+
+        .cta-button:after {
+          content: "";
+          position: absolute;
+          left: 55%;
+          transform: translateX(-50%) scaleY(1) scaleX(1.45);
+          top: 180%;
+          width: 160%;
+          height: 190%;
+          background-color: #009087;
+          border-radius: 50%;
+          display: block;
+          transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+          z-index: -1;
+        }
+
+        .cta-button:hover {
+          color: #ffffff;
+          border: 1px solid #009087;
+        }
+
+        .cta-button:hover:before {
+          top: -35%;
+          background-color: #009087;
+          transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+        }
+
+        .cta-button:hover:after {
+          top: -45%;
+          background-color: #009087;
+          transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+        }
+
+       
+.gradient-bg {
+  display: inline-block;
+  transition: all 0.2s ease-in;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  color: #090909;
+  padding: 0.7em 1.7em;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 0.5em;
+  background: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gradient-bg:active {
+  color: #666;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.gradient-bg:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.25);
+  top: 100%;
+  width: 140%;
+  height: 180%;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.gradient-bg:after {
+  content: "";
+  position: absolute;
+  left: 55%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.45);
+  top: 180%;
+  width: 160%;
+  height: 190%;
+  background-color: #009087;
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.gradient-bg:hover {
+  color: #ffffff;
+  border: 1px solid #009087;
+}
+
+.gradient-bg:hover:before {
+  top: -35%;
+  background-color: #009087;
+  transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
+.gradient-bg:hover:after {
+  top: -45%;
+  background-color: #009087;
+  transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #2D2D4D 100%);
+            background-size: 200% 200%;
+            animation: gradientX 15s ease infinite;
+        }
+        
+        .course-card {
+            background: linear-gradient(145deg, var(--secondary) 0%, #2D2D4D 100%);
+            border: 1px solid rgba(109, 99, 255, 0.1);
+            transition: all 0.3s ease;
+            min-height: 350px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.15);
+            border-color: rgba(109, 99, 255, 0.2);
+        }
+        
+        .video-thumbnail {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        
+        .video-thumbnail:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.3);
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--accent) 0%, #00D1B2 100%);
+            transition: width 0.4s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .pattern-overlay {
+            background-image: radial-gradient(rgba(109, 99, 255, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.input {
+  border-style: none;
+  height: 50px;
+  width: 50px;
+  padding: 10px;
+  outline: none;
+  border-radius: 50%;
+  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+  background-color: #7e4fd4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding-right: 40px;
+  color: #c5b5b5;
+  position: relative;
+  z-index: 1;
+}
+
+.input::placeholder,
+.input {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 17px;
+}
+
+.input::placeholder {
+  color: #8f8f8f;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 50%;
+  transform: translateX(50%);
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  outline: none;
+  border-style: none;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.input:focus {
+  box-shadow: none;
+  width: 250px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom: 3px solid #7e4fd4;
+}
+
+.input.expanded {
+  width: 250px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom: 3px solid #7e4fd4;
+  box-shadow: none;
+}
+
+
+
+        
+        .modern-card {
+            width: 252px;
+            height: 265px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin: 8px auto;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #e5e7eb;
+        }
+
+        .modern-img {
+            width: 100%;
+            height: 50%;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+
+        .modern-save {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 16px;
+            width: 28px;
+            height: 28px;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .modern-text {
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: calc(50% - 40px);
+            justify-content: space-between;
+        }
+
+        .modern-save .svg {
+            transition: all 0.3s ease;
+            width: 14px;
+            height: 14px;
+            fill: #6b7280;
+        }
+
+        .modern-icon-box {
+            margin-top: 12px;
+            width: 85%;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            transition: all 0.3s ease;
+        }
+
+        .modern-icon-box svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .modern-text .h3 {
+            font-family: 'Inter', 'Lucida Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .modern-text .p {
+            font-family: 'Inter', 'Lucida Sans', sans-serif;
+            color: #64748b;
+            font-size: 12px;
+            margin: 5px 0 0 0;
+        }
+
+        .modern-icon-box .span {
+            margin-left: 8px;
+            font-family: 'Inter', 'Lucida Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .modern-card:hover {
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .modern-save:hover {
+            transform: scale(1.05);
+            background-color: #ffffff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .modern-save:hover .svg {
+            fill: #4b5563;
+        }
+
+        .modern-icon-box:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .resource-card {
+            background: rgba(45, 45, 77, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+            min-height: 80px;
+        }
+        
+        .resource-card:hover {
+            background: rgba(45, 45, 77, 0.7);
+            transform: translateY(-3px);
+        }
+        
+        .level-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 15;
+            color: white;
+        }
+        
+        .level-badge.level-3 {
+            background: linear-gradient(135deg, #6C63FF 0%, #4D44DB 100%);
+        }
+        
+        .level-badge.level-4 {
+            background: linear-gradient(135deg, #00D1B2 0%, #00B39E 100%);
+        }
+        
+        .level-badge.level-5 {
+            background: linear-gradient(135deg, #FF8E3C 0%, #FF6E00 100%);
+        }
+        
+        .level-badge.level-6 {
+            background: linear-gradient(135deg, #A5A6FF 0%, #7C7CFD 100%);
+        }
+        
+        .level-badge.level-7 {
+            background: linear-gradient(135deg, #FF66C4 0%, #E84CA0 100%);
+        }
+        
+        .level-badge.level-8 {
+            background: linear-gradient(135deg, #00D1B2 0%, #6C63FF 100%);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text);
+            opacity: 0.6;
+        }
+        
+        #loading-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, #00D1B2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .search-results-highlight {
+            background-color: rgba(108, 99, 255, 0.3);
+            color: white;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+
+.animated-text-container {
+  /* color used to softly clip top and bottom of the .animated-words container */
+  background-color: hidden;
+  padding: 1rem 2rem;
+  border-radius: 1.25rem;
+}
+.animated-text-display {
+  color: rgb(124, 124, 124);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 25px;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 40px;
+  padding: 10px 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-radius: 8px;
+}
+
+.animated-words {
+  overflow: hidden;
+  position: relative;
+}
+.animated-words::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    var(--bg-color) 10%,
+    transparent 30%,
+    transparent 70%,
+    var(--bg-color) 90%
+  );
+  z-index: 20;
+}
+
+.animated-word {
+  display: block;
+  height: 100%;
+  padding-left: 6px;
+  color: #956afa;
+  animation: word-rotate 4s infinite;
+}
+
+@keyframes word-rotate {
+  10% {
+    -webkit-transform: translateY(-102%);
+    transform: translateY(-102%);
+  }
+
+  25% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  35% {
+    -webkit-transform: translateY(-202%);
+    transform: translateY(-202%);
+  }
+
+  50% {
+    -webkit-transform: translateY(-200%);
+    transform: translateY(-200%);
+  }
+
+  60% {
+    -webkit-transform: translateY(-302%);
+    transform: translateY(-302%);
+  }
+
+  75% {
+    -webkit-transform: translateY(-300%);
+    transform: translateY(-300%);
+  }
+
+  85% {
+    -webkit-transform: translateY(-402%);
+    transform: translateY(-402%);
+  }
+
+  100% {
+    -webkit-transform: translateY(-400%);
+    transform: translateY(-400%);
+  }
+}
+
+ 
+ul {
+  list-style: none;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.social-icons .icon-content {
+  margin: 0 10px;
+  position: relative;
+}
+.social-icons .icon-content .tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+.social-icons .icon-content:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  top: -50px;
+}
+.social-icons .icon-content a {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #4d4d4d;
+  background-color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+.social-icons .icon-content a:hover {
+  box-shadow: 3px 2px 45px 0px rgb(0 0 0 / 12%);
+}
+.social-icons .icon-content a svg {
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+}
+.social-icons .icon-content a:hover {
+  color: white;
+}
+.social-icons .icon-content a .filled {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: #000;
+  transition: all 0.3s ease-in-out;
+}
+.social-icons .icon-content a:hover .filled {
+  height: 100%;
+}
+
+.social-icons .icon-content a[data-social="linkedin"] .filled,
+.social-icons .icon-content a[data-social="linkedin"] ~ .tooltip {
+  background-color: #0274b3;
+}
+
+.social-icons .icon-content a[data-social="github"] .filled,
+.social-icons .icon-content a[data-social="github"] ~ .tooltip {
+  background-color: #24262a;
+}
+.social-icons .icon-content a[data-social="instagram"] .filled,
+.social-icons .icon-content a[data-social="instagram"] ~ .tooltip {
+  background: linear-gradient(
+    45deg,
+    #405de6,
+    #5b51db,
+    #b33ab4,
+    #c135b4,
+    #e1306c,
+    #fd1f1f
+  );
+}
+.social-icons .icon-content a[data-social="youtube"] .filled,
+.social-icons .icon-content a[data-social="youtube"] ~ .tooltip {
+  background-color: #ff0000;
+}
+.social-icons .icon-content a[data-social="telegram"] .filled,
+.social-icons .icon-content a[data-social="telegram"] ~ .tooltip {
+  background-color: #0088cc;
+}
+
+.gradient-bg-original {
+            background: linear-gradient(135deg, var(--accent) 0%, #00D1B2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-bg-original:hover {
+            background: linear-gradient(135deg, #4D44DB 0%, #00B39E 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3);
+        }
+
+        /* Mobile Menu Styles */
+        #mobile-menu {
+            transition: all 0.3s ease;
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+
+        #mobile-menu:not(.hidden) {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Form Styles */
+        .resource-input {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Theme Toggle */
+        .theme-toggle:checked + div {
+            background-color: var(--accent);
+        }
+
+        .theme-toggle:checked + div > div {
+            transform: translateX(24px);
+        }
+
+        /* Success Animation */
+        .success-message {
+            animation: successPulse 2s ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Responsive Form */
+        @media (max-width: 768px) {
+            .resource-input {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .resource-input select,
+            .resource-input input {
+                width: 100%;
+            }
+        }
+
+        /* Enhanced Modal Animations */
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Theme Toggle Button Styles */
+        #theme-toggle-button {
+            font-size: 17px;
+            position: relative;
+            display: inline-block;
+            width: 7em;
+            cursor: pointer;
+            margin-left: 16px;
+        }
+
+        #toggle {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        #container,
+        #patches,
+        #stars,
+        #button,
+        #sun,
+        #moon,
+        #cloud {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 0.25s;
+        }
+
+        #toggle:checked + svg #container {
+            fill: #2b4360;
+        }
+
+        #toggle:checked + svg #button {
+            transform: translate(28px, 2.333px);
+        }
+
+        #sun {
+            opacity: 1;
+        }
+
+        #toggle:checked + svg #sun {
+            opacity: 0;
+        }
+
+        #moon {
+            opacity: 0;
+        }
+
+        #toggle:checked + svg #moon {
+            opacity: 1;
+        }
+
+        #cloud {
+            opacity: 1;
+        }
+
+        #toggle:checked + svg #cloud {
+            opacity: 0;
+        }
+
+        #stars {
+            opacity: 0;
+        }
+
+        #toggle:checked + svg #stars {
+            opacity: 1;
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            --primary: #dfe4eaca;
+            --secondary: #dad0d0;
+            --accent: #6366f1;
+            --text: #000000;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            color: #000000;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .glass-card {
+            background: rgba(233, 228, 228, 0.9);
+            border: 1px solid rgba(92, 95, 221, 0.15);
+            color: #1a202c;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .course-card {
+            background: linear-gradient(145deg, #e6e3e3db 0%, #d6d7d8 100%);
+            border: 1px solid rgba(90, 93, 217, 0.15);
+            color: #1a202c;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .course-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        body.light-mode .hero-gradient {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(240, 249, 255, 0.95) 25%,
+                rgba(224, 231, 255, 0.95) 50%,
+                rgba(254, 243, 242, 0.95) 75%,
+                rgba(241, 245, 249, 0.95) 100%);
+            color: #1a202c;
+        }
+
+        body.light-mode .pattern-overlay {
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.03) 0%, transparent 50%);
+        }
+
+        body.light-mode .text-stardust {
+            color: #000000 !important;
+        }
+
+        body.light-mode .text-white {
+            color: #000000 !important;
+        }
+
+        body.light-mode h1, 
+        body.light-mode h2, 
+        body.light-mode h3, 
+        body.light-mode h4,
+        body.light-mode h5,
+        body.light-mode h6 {
+            color: #000000 !important;
+        }
+
+        body.light-mode p {
+            color: #131212 !important;
+        }
+
+        body.light-mode .nav-link {
+            color: #475569;
+        }
+
+        body.light-mode .nav-link:hover {
+            color: #000000;
+        }
+
+        body.light-mode header {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        body.light-mode .backdrop-blur-lg {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+        }
+
+        body.light-mode .modern-card {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .modern-save {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        /* Light Mode Text Enhancement */
+        body.light-mode .gradient-text {
+            background: linear-gradient(135deg, #000000 0%, #7c3aed 50%, #0891b2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        body.light-mode .level-badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: #4f46e5 !important;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="backdrop-blur-lg bg-cosmic/90 border-b border-nebula/20 py-6 px-4 sticky top-0 z-50">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <!-- Logo/Title -->
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full gradient-bg-original flex items-center justify-center mr-4">
+                        <i class="fas fa-laptop-code text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold font-playfair">
+                            <span class="gradient-text"> جامعة SEU </span>
+                        </h1>
+                        <p class="text-stardust/70 mt-1 font-medium">كلية الصحة</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-6 space-x-reverse">
+                    <a href="#" class="text-stardust hover:text-white transition duration-300">الرئيسية</a>
+                    <a href="#public-health" class="text-stardust hover:text-white transition duration-300">الصحة العامة</a>
+                    <a href="#health-informatics" class="text-stardust hover:text-white transition duration-300">المعلوماتية الصحية</a>
+                    <a href="index.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
+                    <button onclick="openAddCourseModal()" class="bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm">
+                        إضافة مادة
+                    </button>
+                    <!-- Theme Toggle Button -->
+                    <label for="toggle" id="theme-toggle-button">
+                        <input type="checkbox" id="toggle">
+                        <svg viewBox="0 0 69.667 44" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <filter id="container">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge> 
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/> 
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <g transform="translate(3.5 3.5)">
+                                <rect fill="#83cbd8" transform="translate(0 0)" rx="17.5" height="35" width="60.667" id="container"></rect>
+                                <g transform="translate(2.333 2.333)" id="button">
+                                    <g id="sun">
+                                        <circle fill="#f8e664" r="15.167" cy="15.167" cx="15.167"></circle>
+                                        <circle fill="#fcf4b9" transform="translate(8.167 8.167)" r="7" cy="7" cx="7"></circle>
+                                    </g>
+                                    <g id="moon">
+                                        <circle fill="#cce6ee" transform="translate(-28 0)" r="15.167" cy="15.167" cx="15.167"></circle>
+                                        <g fill="#a6cad0" transform="translate(-24.415 -1.009)" id="patches">
+                                            <circle transform="translate(43.009 4.496)" r="2" cy="2" cx="2"></circle>
+                                            <circle transform="translate(39.366 17.952)" r="2" cy="2" cx="2"></circle>
+                                            <circle transform="translate(33.016 8.044)" r="1" cy="1" cx="1"></circle>
+                                            <circle transform="translate(51.081 18.888)" r="1" cy="1" cx="1"></circle>
+                                        </g>
+                                    </g>
+                                    <g id="cloud">
+                                        <path fill="#a5c5d0" d="M47.729,6.243A5.507,5.507,0,0,0,36.455,2.972a7.56,7.56,0,0,0-12.946,5.431,6.757,6.757,0,0,0-4.24-.4A1.473,1.473,0,0,0,20.943,9.6a2.926,2.926,0,0,0-.687,1.833,3.736,3.736,0,0,0-1.51.687,3.736,3.736,0,0,0-.687,1.51,2.926,2.926,0,0,0,1.833-.687A1.473,1.473,0,0,0,21.563,11.429a6.757,6.757,0,0,0,4.24.4,7.56,7.56,0,0,0,12.946-5.431A5.507,5.507,0,0,0,47.729,6.243Z"></path>
+                                    </g>
+                                    <g id="stars">
+                                        <path fill="#ffffff" d="M65.5,18A3.5,3.5,0,0,1,62,21.5,3.5,3.5,0,0,1,58.5,18a3.5,3.5,0,0,1,3.5-3.5A3.5,3.5,0,0,1,65.5,18Z"></path>
+                                        <path fill="#ffffff" d="M23,21a2,2,0,0,1-2,2,2,2,0,0,1-2-2,2,2,0,0,1,2-2A2,2,0,0,1,23,21Z"></path>
+                                        <path fill="#ffffff" d="M59,5a1,1,0,0,1-1,1,1,1,0,0,1-1-1,1,1,0,0,1,1-1A1,1,0,0,1,59,5Z"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </label>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2 hover:bg-nebula/30 rounded-lg transition duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-nebula/20 pt-4">
+                <nav class="space-y-3" aria-label="قائمة التنقل الرئيسية">
+                    <a href="#" class="block text-stardust hover:text-white transition duration-300 py-2">الرئيسية</a>
+                    <a href="#public-health" class="block text-stardust hover:text-white transition duration-300 py-2">الصحة العامة</a>
+                    <a href="#health-informatics" class="block text-stardust hover:text-white transition duration-300 py-2">المعلوماتية الصحية</a>
+                    <a href="index.html" class="block text-aurora hover:text-white transition duration-300 py-2 font-medium">جميع الكليات</a>
+                    <button onclick="openAddCourseModal(); toggleMobileMenu();" class="w-full bg-gradient-to-r from-plasma to-aurora text-white px-4 py-3 rounded-lg hover:scale-105 transition duration-300 mt-3">
+                        إضافة مادة
+                    </button>
+                    <!-- Mobile Theme Toggle -->
+                    <div class="pt-3">
+                        <label for="toggle-mobile" class="flex items-center justify-between">
+                            <span class="text-stardust">الوضع المظلم/الفاتح</span>
+                            <input type="checkbox" id="toggle-mobile" class="sr-only theme-toggle">
+                            <div class="relative w-12 h-6 bg-nebula rounded-full transition-colors duration-300">
+                                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-300 transform"></div>
+                            </div>
+                        </label>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative text-white py-32 px-4 overflow-hidden hero-gradient">
+        <div class="absolute inset-0 pattern-overlay"></div>
+        <div class="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-plasma/20 to-transparent"></div>
+        <div class="floating absolute -top-20 -left-20 w-96 h-96 rounded-full bg-plasma/10 blur-3xl"></div>
+        <div class="floating absolute -bottom-20 -right-20 w-96 h-96 rounded-full bg-aurora/10 blur-3xl"></div>
+        
+        <div class="container mx-auto relative z-10">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <!-- Back to Colleges Button -->
+                <div class="mb-8">
+                    <a href="index.html" class="inline-flex items-center text-stardust/80 hover:text-white transition duration-300 font-medium bg-white/10 hover:bg-white/20 px-6 py-3 rounded-xl border border-white/20 hover:border-white/40">
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        العودة لجميع الكليات
+                    </a>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 font-playfair leading-tight">
+                    <span class="gradient-text">كلية الصحة</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-stardust/80 mb-10 max-w-3xl mx-auto">
+                    استكشف مواد تخصصات الصحة العامة والمعلوماتية الصحية لتكوين خبراء في الرعاية الصحية والتقنيات الصحية الحديثة
+                </p>
+                
+                <!-- Add Course Button -->
+                <div class="mt-10">
+                    <button onclick="openAddCourseModal()" 
+                            class="gradient-bg-original text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition duration-300 shadow-lg">
+                        <i class="fas fa-plus mr-2"></i> إضافة مادة جديدة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Majors Overview -->
+    <main class="flex-grow container mx-auto py-16 px-4">
+        <!-- Search Bar -->
+        <div class="mb-16 animate-fade-in relative">
+            <div class="input-wrapper">
+                <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS 230)..." class="input">
+                <button class="icon">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div id="loading-bar"></div>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+
+        <section id="search-results" class="hidden mb-24">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold font-playfair">
+                    نتائج البحث: <span id="search-term-display" class="gradient-text"></span>
+                </h2>
+                <button onclick="clearSearch()" class="flex items-center text-photon hover:text-white transition duration-300">
+                    <i class="fas fa-times mr-2"></i> مسح البحث
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="search-results-container">
+                <!-- Search results will be populated here -->
+            </div>
+        </section>
+
+        <!-- Public Health Section -->
+        <section id="public-health" class="mb-24 animate-fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">الصحة العامة</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        تخصص يركز على حماية وتحسين صحة المجتمع من خلال التعليم الصحي، الوقاية من الأمراض، السياسات الصحية، والبحوث الوبائية لضمان بيئة صحية آمنة للجميع.
+                    </p>
+                </div>
+                <button class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('public-health')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- المواد ستظهر هنا عندما يضيفها المستخدمون -->
+                <div class="col-span-full text-center py-12">
+                    <div class="w-16 h-16 rounded-full bg-nebula/30 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-plus text-stardust/50 text-xl"></i>
+                    </div>
+                    <p class="text-stardust/70 mb-4">لا توجد مواد في هذا التخصص بعد</p>
+                    <button onclick="openAddCourseModal()" class="text-photon hover:text-white transition duration-300">
+                        <i class="fas fa-plus mr-2"></i> إضافة أول مادة
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Health Informatics Section -->
+        <section id="health-informatics" class="mb-24 animate-fade-in" style="animation-delay: 0.1s">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">المعلوماتية الصحية</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        مجال يدمج بين تقنية المعلومات والرعاية الصحية، ويشمل إدارة السجلات الطبية الإلكترونية، تحليل البيانات الصحية، والتطبيقات الذكية لتحسين جودة الخدمات الصحية.
+                    </p>
+                </div>
+                <button class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('health-informatics')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- المواد ستظهر هنا عندما يضيفها المستخدمون -->
+                <div class="col-span-full text-center py-12">
+                    <div class="w-16 h-16 rounded-full bg-nebula/30 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-plus text-stardust/50 text-xl"></i>
+                    </div>
+                    <p class="text-stardust/70 mb-4">لا توجد مواد في هذا التخصص بعد</p>
+                    <button onclick="openAddCourseModal()" class="text-photon hover:text-white transition duration-300">
+                        <i class="fas fa-plus mr-2"></i> إضافة أول مادة
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Overview Section -->
+        <section id="overview" class="animate-fade-in relative overflow-hidden" style="animation-delay: 0.3s">
+            <div class="glass-card rounded-3xl p-12 relative overflow-hidden">
+                <!-- Background elements -->
+                <div class="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-plasma/10 blur-3xl"></div>
+                <div class="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-aurora/10 blur-3xl"></div>
+                
+                <div class="relative z-10">
+                    <div class="text-center mb-16">
+                        <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">لماذا تختارنا</span>
+                        <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-6">
+                            <span class="gradient-text">كلية رائدة في مجال الصحة</span>
+                        </h2>
+                        <p class="text-stardust/80 max-w-3xl mx-auto text-lg">
+                            كلية الصحة توفر تعليماً متميزاً يجمع بين العلوم الصحية والتقنيات الحديثة، مما يؤهل الطلاب لتحسين صحة المجتمع والمساهمة في التطوير الصحي المستدام.
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="glow-border bg-nebula/20 rounded-2xl p-8 group">
+                            <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-heartbeat text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">الصحة العامة</h3>
+                            <p class="text-stardust/70 mb-6">تخصص يركز على حماية وتحسين صحة المجتمع من خلال التعليم الصحي، الوقاية من الأمراض، السياسات الصحية، والبحوث الوبائية لضمان بيئة صحية آمنة للجميع.</p>
+                            <a href="#public-health" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="glow-border bg-nebula/20 rounded-2xl p-8 group">
+                            <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-laptop-medical text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">المعلوماتية الصحية</h3>
+                            <p class="text-stardust/70 mb-6">مجال يدمج بين تقنية المعلومات والرعاية الصحية، ويشمل إدارة السجلات الطبية الإلكترونية، تحليل البيانات الصحية، والتطبيقات الذكية لتحسين جودة الخدمات الصحية.</p>
+                            <a href="#health-informatics" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer" class="bg-midnight border-t border-nebula/20 py-16 px-4">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center mr-3">
+                            <i class="fas fa-heartbeat text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold font-playfair">
+                            <span class="gradient-text">جامعة SEU</span>
+                        </h3>
+                    </div>
+                    <p class="text-stardust/70 mb-6">
+                        إعداد خبراء الصحة والمتخصصين في المعلوماتية الصحية للمساهمة في تطوير الرعاية الصحية.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6">البرامج</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#public-health" class="text-stardust/70 hover:text-photon transition duration-300">الصحة العامة</a></li>
+                        <li><a href="#health-informatics" class="text-stardust/70 hover:text-photon transition duration-300">المعلوماتية الصحية</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6">الموارد</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-stardust/70 hover:text-photon transition duration-300">طلاب افضل كلية </a></li>
+                    </ul>
+                </div>
+                
+                <div id="footer-group">
+                    <h4 class="text-lg font-bold text-white mb-6">قروب الكلية</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <a href="https://t.me/Health_College" target="_blank" class="text-stardust/70 hover:text-photon transition duration-300">
+                                قروب كلية الصحة على تلجرام
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-nebula/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-stardust/50 text-sm mb-4 md:mb-0">
+                    © 2025 كلية الحوسبة - جامعة SEU. جميع الحقوق محفوظة.
+                </p>
+            </div>
+        </div>                <ul class="social-icons">
+  <li class="icon-content">
+    <a
+      href="https://www.linkedin.com/in/turki-al-mutairi-1486b3244/"
+      aria-label="LinkedIn"
+      data-social="linkedin"
+      target="_blank"
+    >
+      <div class="filled"></div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="bi bi-linkedin"
+        viewBox="0 0 16 16"
+        xml:space="preserve"
+      >
+        <path
+          d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">LinkedIn</div>
+  </li>
+  <li class="icon-content">
+    <a href="https://github.com/turki013" aria-label="GitHub" data-social="github" , target="_blank">
+      <div class="filled"></div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="bi bi-github"
+        viewBox="0 0 16 16"
+        xml:space="preserve"
+      >
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">GitHub</div>
+  </li>
+  <li class="icon-content">
+    <a
+      href="https://web.telegram.org/k/#@Computing_and_Informatics"
+      aria-label="Telegram"
+      data-social="telegram"
+      target="_blank"
+    >
+      <div class="filled"></div>
+      <svg version="1.1" viewBox="0 0 100 100">
+        <path
+          d="M95,9.9c-1.3-1.1-3.4-1.2-7-0.1c0,0,0,0,0,0c-2.5,0.8-24.7,9.2-44.3,17.3c-17.6,7.3-31.9,13.7-33.6,14.5  c-1.9,0.6-6,2.4-6.2,5.2c-0.1,1.8,1.4,3.4,4.3,4.7c3.1,1.6,16.8,6.2,19.7,7.1c1,3.4,6.9,23.3,7.2,24.5c0.4,1.8,1.6,2.8,2.2,3.2  c0.1,0.1,0.3,0.3,0.5,0.4c0.3,0.2,0.7,0.3,1.2,0.3c0.7,0,1.5-0.3,2.2-0.8c3.7-3,10.1-9.7,11.9-11.6c7.9,6.2,16.5,13.1,17.3,13.9  c0,0,0.1,0.1,0.1,0.1c1.9,1.6,3.9,2.5,5.7,2.5c0.6,0,1.2-0.1,1.8-0.3c2.1-0.7,3.6-2.7,4.1-5.4c0-0.1,0.1-0.5,0.3-1.2  c3.4-14.8,6.1-27.8,8.3-38.7c2.1-10.7,3.8-21.2,4.8-26.8c0.2-1.4,0.4-2.5,0.5-3.2C96.3,13.5,96.5,11.2,95,9.9z M30,58.3l47.7-31.6  c0.1-0.1,0.3-0.2,0.4-0.3c0,0,0,0,0,0c0.1,0,0.1-0.1,0.2-0.1c0.1,0,0.1,0,0.2-0.1c-0.1,0.1-0.2,0.4-0.4,0.6L66,38.1  c-8.4,7.7-19.4,17.8-26.7,24.4c0,0,0,0,0,0.1c0,0-0.1,0.1-0.1,0.1c0,0,0,0.1-0.1,0.1c0,0.1,0,0.1-0.1,0.2c0,0,0,0.1,0,0.1  c0,0,0,0,0,0.1c-0.5,5.6-1.4,15.2-1.8,19.5c0,0,0,0,0-0.1C36.8,81.4,31.2,62.3,30,58.3z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">Telegram</div>
+  </li>
+    </footer>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 id="modalCourseCode" class="text-3xl font-bold gradient-text mb-2"></h2>
+                    <h3 id="modalCourseTitle" class="text-xl font-bold text-white"></h3>
+                    <p class="text-stardust/70"><span id="modalCourseMajor"></span> • 3 ساعات</p>
+                </div>
+                <button onclick="closeModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-3">وصف المادة</h3>
+                <p id="modalCourseDesc" class="text-stardust/70 mb-6"></p>
+
+                <a href="https://drive.google.com/drive/u/2/folders/171QmzC3gsixrvVAUKqi2AWA0RAYLgxZC" target="_blank" class="gradient-bg text-white py-2 px-6 rounded-full font-medium transition duration-300 inline-flex items-center">
+                    <i class="fas fa-download mr-2"></i> تحميل المنهج
+                </a>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-4">الموارد التعليمية</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center" id="course-resources">
+                    <!-- Resources will be populated here -->
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-4">مواد إضافية</h3>
+                <ul class="text-stardust/70 space-y-2">
+                    <li class="flex items-center">
+                        <i class="fas fa-book mr-2 text-photon"></i>
+                        <a href="https://drive.google.com/drive/u/2/folders/171QmzC3gsixrvVAUKqi2AWA0RAYLgxZC" target="_blank" class="hover:text-white">كتاب مقرر موصى به</a>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-link mr-2 text-photon"></i>
+                        <a href="https://t.me/Computing_and_Informatics" target="_blank" class="hover:text-white">منصة التعلم التفاعلية</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Courses Modal -->
+    <div id="allCoursesModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold gradient-text mb-2" id="allCoursesTitle"></h2>
+                </div>
+                <button onclick="closeAllCoursesModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="allCoursesContainer">
+                <!-- Courses will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div id="addCourseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold gradient-text mb-2">إضافة مادة جديدة</h2>
+                    <p class="text-stardust/70">أضف مادة لم تجدها في النظام</p>
+                </div>
+                <button onclick="closeAddCourseModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <form id="addCourseForm" class="space-y-6">
+                <!-- Course Code -->
+                <div>
+                    <label for="courseCode" class="block text-white font-medium mb-2">
+                        رمز المادة <span class="text-supernova">*</span>
+                    </label>
+                    <input type="text" id="courseCode" name="courseCode" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                           placeholder="مثال: CS123, DS456, IT789">
+                </div>
+
+                <!-- Course Title -->
+                <div>
+                    <label for="courseTitle" class="block text-white font-medium mb-2">
+                        اسم المادة <span class="text-supernova">*</span>
+                    </label>
+                    <input type="text" id="courseTitle" name="courseTitle" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                           placeholder="مثال: البرمجة الشيئية">
+                </div>
+
+                <!-- Course Description -->
+                <div>
+                    <label for="courseDesc" class="block text-white font-medium mb-2">
+                        وصف المادة <span class="text-supernova">*</span>
+                    </label>
+                    <textarea id="courseDesc" name="courseDesc" required rows="4"
+                              class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none resize-none"
+                              placeholder="وصف مختصر عن محتوى المادة وأهدافها..."></textarea>
+                </div>
+
+                <!-- Major -->
+                <div>
+                    <label for="courseMajor" class="block text-white font-medium mb-2">
+                        التخصص <span class="text-supernova">*</span>
+                    </label>
+                    <select id="courseMajor" name="courseMajor" required 
+                            class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                        <option value="">اختر التخصص</option>
+                        <option value="الصحة العامة">الصحة العامة</option>
+                        <option value="المعلوماتية الصحية">المعلوماتية الصحية</option>
+                    </select>
+                </div>
+
+                <!-- Level -->
+                <div>
+                    <label for="courseLevel" class="block text-white font-medium mb-2">
+                        المستوى <span class="text-supernova">*</span>
+                    </label>
+                    <select id="courseLevel" name="courseLevel" required 
+                            class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                        <option value="">اختر المستوى</option>
+                        <option value="1">المستوى الأول</option>
+                        <option value="2">المستوى الثاني</option>
+                        <option value="3">المستوى الثالث</option>
+                        <option value="4">المستوى الرابع</option>
+                        <option value="5">المستوى الخامس</option>
+                        <option value="6">المستوى السادس</option>
+                        <option value="7">المستوى السابع</option>
+                        <option value="8">المستوى الثامن</option>
+                    </select>
+                </div>
+
+                <!-- Credits -->
+                <div>
+                    <label for="courseCredits" class="block text-white font-medium mb-2">
+                        عدد الساعات
+                    </label>
+                    <input type="number" id="courseCredits" name="courseCredits" min="1" max="6" 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                           placeholder="3">
+                </div>
+
+                <!-- Resources Section -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">المصادر (اختياري)</h3>
+                    <div id="resourcesContainer" class="space-y-4">
+                        <!-- Initial resource input -->
+                        <div class="resource-input flex gap-3">
+                            <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                                <option value="youtube">يوتيوب</option>
+                                <option value="drive">درايف</option>
+                                <option value="telegram">تليجرام</option>
+                                <option value="mega">ميجا</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                            <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                            <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                            <button type="button" onclick="removeResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addResourceInput()" class="mt-3 text-photon hover:text-white transition duration-300">
+                        <i class="fas fa-plus ml-2"></i> إضافة مصدر آخر
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end gap-4 pt-6 border-t border-nebula/20">
+                    <button type="button" onclick="closeAddCourseModal()" 
+                            class="px-6 py-3 text-stardust hover:text-white transition duration-300">
+                        إلغاء
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-3 bg-gradient-to-r from-plasma to-aurora text-white rounded-lg hover:scale-105 transition duration-300">
+                        إضافة المادة
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Course data - empty initially, users will add courses through the interface
+        const courses = {};
+    
+        // Function to open the modal with course details
+        function openModal(courseCode, courseTitle) {
+            const course = courses[courseCode];
+            if (!course) {
+                alert("المادة غير موجودة في النظام");
+                return;
+            }
+            
+            document.getElementById("modalCourseCode").textContent = courseCode;
+            document.getElementById("modalCourseTitle").textContent = courseTitle;
+            document.getElementById("modalCourseDesc").textContent = course.desc;
+            document.getElementById("modalCourseMajor").textContent = course.major;
+            
+            // Populate resources
+            const resourcesContainer = document.getElementById('course-resources');
+            resourcesContainer.innerHTML = '';
+            
+            if (course.resources && course.resources.length > 0) {
+                course.resources.forEach(resource => {
+                    let icon = '';
+                    let platform = '';
+                    switch(resource.type) {
+                        case 'youtube':
+                            icon = '<i class="fab fa-youtube text-xl text-red-500 mr-2"></i>';
+                            platform = 'يوتيوب';
+                            break;
+                        case 'drive':
+                            icon = '<i class="fab fa-google-drive text-xl text-blue-500 mr-2"></i>';
+                            platform = 'جوجل درايف';
+                            break;
+                        case 'telegram':
+                            icon = '<i class="fab fa-telegram text-xl text-blue-400 mr-2"></i>';
+                            platform = 'تلجرام';
+                            break;
+                        case 'mega':
+                            icon = '<i class="fas fa-cloud-download-alt text-xl text-purple-500 mr-2"></i>';
+                            platform = 'ميجا';
+                            break;
+                        default:
+                            icon = '<i class="fas fa-link text-xl text-photon mr-2"></i>';
+                            platform = 'رابط';
+                    }
+                    
+                    const resourceCard = document.createElement('div');
+                    
+                    // Check if it's a YouTube resource to use the modern card design
+                    if (resource.type === 'youtube') {
+                        resourceCard.className = 'modern-card';
+                        resourceCard.innerHTML = `
+                            <div class="modern-img">
+                                <div class="modern-save">
+                                    <svg class="svg" width="683" height="683" viewBox="0 0 683 683" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_993_25)">
+                                            <mask id="mask0_993_25" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="683" height="683">
+                                                <path d="M0 -0.00012207H682.667V682.667H0V-0.00012207Z" fill="white"></path>
+                                            </mask>
+                                            <g mask="url(#mask0_993_25)">
+                                                <path d="M148.535 19.9999C137.179 19.9999 126.256 24.5092 118.223 32.5532C110.188 40.5866 105.689 51.4799 105.689 62.8439V633.382C105.689 649.556 118.757 662.667 134.931 662.667H135.039C143.715 662.667 151.961 659.218 158.067 653.09C186.451 624.728 270.212 540.966 304.809 506.434C314.449 496.741 327.623 491.289 341.335 491.289C355.045 491.289 368.22 496.741 377.859 506.434C412.563 541.074 496.752 625.242 524.816 653.348C530.813 659.314 538.845 662.667 547.308 662.667C563.697 662.667 576.979 649.395 576.979 633.019V62.8439C576.979 51.4799 572.48 40.5866 564.447 32.5532C556.412 24.5092 545.489 19.9999 534.133 19.9999H148.535Z" stroke="#CED8DE" stroke-width="40" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_993_25">
+                                                <rect width="682.667" height="682.667" fill="white"></rect>
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="modern-text">
+                                <p class="h3">${resource.text}</p>
+                                <p class="p">فيديو تعليمي - ${platform}</p>
+                                <div class="modern-icon-box">
+                                    <svg version="1.1" class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001">
+                                        <g>
+                                            <path style="fill:#3D6687;" d="M165,68.715l-26.327-26.327l37.363-37.363c3.739-3.739,9.801-3.739,13.54,0l12.786,12.786c3.739,3.739,3.739,9.801,0,13.54L165,68.715z"></path>
+                                            <path style="fill:#3D6687;" d="M234.998,101.725l-26.327-26.327l37.363-37.363c3.739-3.739,9.801-3.739,13.54,0l12.786,12.786c3.739,3.739,3.739,9.801,0,13.54L234.998,101.725z"></path>
+                                        </g>
+                                    </svg>
+                                    <p class="span">مشاهدة الآن</p>
+                                </div>
+                            </div>
+                        `;
+                        // Add click event to open YouTube link
+                        resourceCard.addEventListener('click', function() {
+                            window.open(resource.link, '_blank');
+                        });
+                    } else {
+                        // Use the original design for non-YouTube resources
+                        resourceCard.className = 'resource-card';
+                        resourceCard.innerHTML = `
+                            <a href="${resource.link}" target="_blank" class="flex items-center">
+                                ${icon}
+                                <div>
+                                    <h4 class="font-bold text-white">${resource.text}</h4>
+                                    <p class="text-stardust/70 text-sm">${platform}</p>
+                                </div>
+                            </a>
+                        `;
+                    }
+                    resourcesContainer.appendChild(resourceCard);
+                });
+            } else {
+                resourcesContainer.innerHTML = '<p class="text-stardust/70">لا تتوفر موارد لهذه المادة حالياً.</p>';
+            }
+            
+            // Add delete button for user-added courses
+            const modalHeader = document.querySelector('#courseModal .flex.justify-between.items-start.mb-6');
+            const existingDeleteBtn = modalHeader.querySelector('.delete-course-btn');
+            if (existingDeleteBtn) {
+                existingDeleteBtn.remove();
+            }
+            
+            if (isUserAddedCourse(courseCode)) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-course-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition duration-300 ml-2';
+                deleteBtn.innerHTML = '<i class="fas fa-trash mr-1"></i> حذف المادة';
+                deleteBtn.onclick = () => {
+                    closeModal();
+                    deleteUserCourse(courseCode);
+                };
+                
+                const closeBtn = modalHeader.querySelector('button');
+                modalHeader.insertBefore(deleteBtn, closeBtn);
+            }
+            
+            document.getElementById("courseModal").classList.remove("hidden");
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById("courseModal").classList.add("hidden");
+        }
+        
+        // Function to show all courses for a major
+        function showAllCourses(major) {
+            let title = '';
+            switch(major) {
+                case 'public-health':
+                    title = 'الصحة العامة';
+                    break;
+                case 'health-informatics':
+                    title = 'المعلوماتية الصحية';
+                    break;
+                // Keep old IDs for backward compatibility
+                case 'cs':
+                    title = 'الصحة العامة';
+                    break;
+                case 'ds':
+                    title = 'المعلوماتية الصحية';
+                    break;
+            }
+            
+            document.getElementById('allCoursesTitle').textContent = `جميع مواد ${title} والمواد العامة`;
+            
+            const container = document.getElementById('allCoursesContainer');
+            container.innerHTML = '';
+            
+            // Filter courses by major and general courses
+            const filteredCourses = Object.entries(courses).filter(([code, course]) => {
+                return course.major === title || course.major === "المواد العامة";
+            });
+            
+            // Sort courses by level
+            filteredCourses.sort((a, b) => a[1].level - b[1].level);
+            
+            // Render courses
+            filteredCourses.forEach(([code, course]) => {
+                const level = course.level || 3;
+                const isUserAdded = isUserAddedCourse(code);
+                
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card glow-border rounded-2xl p-6 group overflow-hidden relative';
+                courseCard.innerHTML = `
+                    <span class="level-badge level-${level}">المستوى ${level}</span>
+                    ${isUserAdded ? '<span class="absolute top-2 right-2 bg-aurora text-white text-xs px-2 py-1 rounded-full z-20">مجتمع</span>' : ''}
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold text-white mb-1">${code}</h3>
+                        <h4 class="text-lg font-bold text-white mb-3">${course.title}</h4>
+                        <p class="text-stardust/70 text-sm mb-4 line-clamp-3">${course.desc}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.credits || 3} ساعات</span>
+                            <span class="bg-nebula/30 text-photon text-xs px-2 py-1 rounded-full">${course.major}</span>
+                        </div>
+                        <button onclick="closeAllCoursesModal(); openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 text-sm font-medium">
+                            تفاصيل المادة <i class="fas fa-arrow-left ml-1"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(courseCard);
+            });
+            
+            document.getElementById("allCoursesModal").classList.remove("hidden");
+        }
+
+        // Function to close all courses modal
+        function closeAllCoursesModal() {
+            document.getElementById("allCoursesModal").classList.add("hidden");
+        }
+
+        // Function to search courses
+        function searchCourses() {
+            const searchTerm = document.getElementById("courseSearch").value.trim().toUpperCase();
+            
+            if (!searchTerm) {
+                clearSearch();
+                return;
+            }
+            
+            // Hide all original sections
+            document.querySelectorAll("section[id='public-health'], section[id='health-informatics'], section[id='overview']").forEach(section => {
+                section.classList.add("hidden");
+            });
+            
+            // Show search results section
+            const searchResultsSection = document.getElementById("search-results");
+            searchResultsSection.classList.remove("hidden");
+            
+            // Update search term display
+            document.getElementById("search-term-display").textContent = searchTerm;
+            
+            // Clear previous results
+            const searchResultsContainer = document.getElementById("search-results-container");
+            searchResultsContainer.innerHTML = '';
+            
+            // Search in all courses
+            let found = false;
+            
+            Object.keys(courses).forEach(code => {
+                const course = courses[code];
+                if (code.toUpperCase().includes(searchTerm) || 
+                    course.title.toUpperCase().includes(searchTerm) ||
+                    course.desc.toUpperCase().includes(searchTerm)) {
+                    found = true;
+                    const level = course.level || 3;
+                    const isUserAdded = isUserAddedCourse(code);
+                    
+                    // Create course card
+                    const courseCard = document.createElement('div');
+                    courseCard.className = 'course-card glow-border rounded-2xl p-8 group overflow-hidden relative';
+                    courseCard.innerHTML = `
+                        <span class="level-badge level-${level}">المستوى ${level}</span>
+                        ${isUserAdded ? '<span class="absolute top-2 right-2 bg-aurora text-white text-xs px-2 py-1 rounded-full z-20">مجتمع</span>' : ''}
+                        <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/20 transition duration-500"></div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-laptop-code text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-3">${code}</h3>
+                            <h4 class="text-xl font-bold text-white mb-4">${course.title}</h4>
+                            <p class="text-stardust/70 mb-6">${course.desc.substring(0, 100)}...</p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.credits || 3} ساعات</span>
+                            </div>
+                            <button onclick="openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </button>
+                        </div>
+                    `;
+                    searchResultsContainer.appendChild(courseCard);
+                }
+            });
+            
+            if (!found) {
+                searchResultsContainer.innerHTML = '<p class="text-stardust/70 text-center col-span-3 py-12">لا توجد مواد تطابق بحثك.</p>';
+            }
+        }
+        
+        // Function to clear search
+        function clearSearch() {
+            document.getElementById("courseSearch").value = '';
+            document.getElementById("search-results").classList.add("hidden");
+            document.querySelectorAll("section[id='public-health'], section[id='health-informatics'], section[id='overview']").forEach(section => {
+                section.classList.remove("hidden");
+            });
+        }
+
+        // Add event listeners
+        document.getElementById('courseSearch').addEventListener('input', function() {
+            searchCourses();
+        });
+        
+        // Add event listener for Enter key in search
+        document.getElementById("courseSearch").addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCourses();
+            }
+        });
+    </script>
+    <script>
+        // Search icon positioning functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const icon = document.querySelector('.icon');
+            const input = document.querySelector('.input');
+            let isExpanded = false;
+            
+            // Handle icon click
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (!isExpanded) {
+                    // Expand the input
+                    input.focus();
+                    expandInput();
+                } else if (input.value.trim() !== '') {
+                    // If already expanded and has text, perform search
+                    searchCourses();
+                } else {
+                    // Just focus if no text
+                    input.focus();
+                }
+            });
+            
+            // Handle input focus
+            input.addEventListener('focus', function() {
+                expandInput();
+            });
+            
+            // Handle input blur
+            input.addEventListener('blur', function() {
+                if (input.value === '') {
+                    collapseInput();
+                }
+            });
+            
+            // Handle input value change
+            input.addEventListener('input', function() {
+                if (input.value !== '' && !isExpanded) {
+                    expandInput();
+                }
+                // Trigger search as user types
+                searchCourses();
+            });
+            
+            // Function to expand input
+            function expandInput() {
+                if (!isExpanded) {
+                    isExpanded = true;
+                    input.classList.add('expanded');
+                    icon.style.right = '15px';
+                    icon.style.transform = 'translateX(0)';
+                }
+            }
+            
+            // Function to collapse input
+            function collapseInput() {
+                if (isExpanded) {
+                    isExpanded = false;
+                    input.classList.remove('expanded');
+                    icon.style.right = '50%';
+                    icon.style.transform = 'translateX(50%)';
+                }
+            }
+        });
+
+        // Mobile Menu Toggle Functionality
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                menuBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            }
+        }
+
+        // Add Course Modal Functions
+        function openAddCourseModal() {
+            const modal = document.getElementById("addCourseModal");
+            const modalContent = modal.querySelector('.glass-card');
+            modal.classList.remove("hidden");
+            modalContent.classList.add("modal-enter");
+            document.body.style.overflow = 'hidden';
+            
+            // Remove animation class after animation ends
+            setTimeout(() => {
+                modalContent.classList.remove("modal-enter");
+            }, 300);
+        }
+
+        function closeAddCourseModal() {
+            const modal = document.getElementById("addCourseModal");
+            modal.classList.add("hidden");
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('addCourseForm').reset();
+            // Reset resources to one input
+            const container = document.getElementById('resourcesContainer');
+            container.innerHTML = `
+                <div class="resource-input flex gap-3">
+                    <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                        <option value="youtube">يوتيوب</option>
+                        <option value="drive">درايف</option>
+                        <option value="telegram">تليجرام</option>
+                        <option value="mega">ميجا</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                    <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                    <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                    <button type="button" onclick="removeResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        function addResourceInput() {
+            const container = document.getElementById('resourcesContainer');
+            const newResourceDiv = document.createElement('div');
+            newResourceDiv.className = 'resource-input flex gap-3';
+            newResourceDiv.innerHTML = `
+                <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                    <option value="youtube">يوتيوب</option>
+                    <option value="drive">درايف</option>
+                    <option value="telegram">تليجرام</option>
+                    <option value="mega">ميجا</option>
+                    <option value="other">أخرى</option>
+                </select>
+                <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                <button type="button" onclick="removeResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newResourceDiv);
+        }
+
+        function removeResource(button) {
+            const container = document.getElementById('resourcesContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        function generateUniqueId() {
+            const majors = {
+                'الصحة العامة': 'PH',
+                'المعلوماتية الصحية': 'HI',
+                'المواد العامة': 'GEN'
+            };
+            
+            const majorSelect = document.getElementById('courseMajor');
+            const prefix = majors[majorSelect.value] || 'GEN';
+            
+            // Generate a random number
+            let code;
+            do {
+                const randomNum = Math.floor(Math.random() * 900) + 100; // 100-999
+                code = prefix + randomNum;
+            } while (courses[code]); // Ensure uniqueness
+            
+            return code;
+        }
+
+        // Add Course Form Submission
+        document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const courseCode = formData.get('courseCode').toUpperCase().trim();
+            const courseTitle = formData.get('courseTitle').trim();
+            const courseDesc = formData.get('courseDesc').trim();
+            const courseMajor = formData.get('courseMajor');
+            const courseLevel = parseInt(formData.get('courseLevel'));
+            const courseCredits = parseInt(formData.get('courseCredits')) || 3;
+
+            // Validate required fields
+            if (!courseCode || !courseTitle || !courseDesc || !courseMajor || !courseLevel) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            // Check if course code already exists
+            if (courses[courseCode]) {
+                alert('رمز المادة موجود مسبقاً. يرجى اختيار رمز مختلف.');
+                return;
+            }
+
+            // Collect resources
+            const resourceInputs = document.querySelectorAll('.resource-input');
+            const resources = [];
+            
+            resourceInputs.forEach(input => {
+                const type = input.querySelector('.resource-type').value;
+                const text = input.querySelector('.resource-text').value.trim();
+                const link = input.querySelector('.resource-link').value.trim();
+                
+                if (text && link) {
+                    resources.push({ type, text, link });
+                }
+            });
+
+            // Create new course object with exact same format as existing courses
+            const newCourse = {
+                title: courseTitle,
+                desc: courseDesc,
+                credits: courseCredits,
+                prereq: null,
+                schedule: null,
+                instructor: null,
+                hours: courseCredits,
+                major: courseMajor,
+                level: courseLevel,
+                resources: resources
+            };
+
+            // Add directly to courses object (same as existing courses)
+            courses[courseCode] = newCourse;
+            console.log('Added course to local courses object:', courseCode);
+
+            // Save to Firebase for global persistence
+            saveCourseToFirebase(courseCode, newCourse);
+
+            // Show success message with custom notification
+            showSuccessNotification('✅ تم إضافة المادة بنجاح! ستظهر لجميع المستخدمين فوراً', courseTitle);
+
+            // Close modal
+            closeAddCourseModal();
+
+            // Show the newly added course immediately without page reload
+            setTimeout(() => {
+                // If user is viewing all courses for this major, refresh that view
+                const currentTitle = document.getElementById('allCoursesTitle').textContent;
+                if (currentTitle.includes(courseMajor) && !document.getElementById("allCoursesModal").classList.contains("hidden")) {
+                    let majorCode = null;
+                    if (courseMajor === 'الصحة العامة') {
+                        majorCode = 'public-health';
+                    } else if (courseMajor === 'المعلوماتية الصحية') {
+                        majorCode = 'health-informatics';
+                    }
+                    
+                    if (majorCode) {
+                        showAllCourses(majorCode);
+                    }
+                }
+                
+                // Clear search to show all content and refresh display
+                clearSearch();
+                
+                // Force refresh to show new course
+                if (searchCourses && typeof searchCourses === 'function') {
+                    searchCourses();
+                    clearSearch();
+                }
+            }, 500);
+        });
+
+        // Firebase Functions for Course Management
+        
+        // Function to save course to Firebase
+        async function saveCourseToFirebase(courseCode, courseData) {
+            console.log('🔄 محاولة حفظ المادة في Firebase:', courseCode);
+            try {
+                const docRef = await coursesCollection.doc(courseCode).set({
+                    ...courseData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'active',
+                    addedBy: 'community',
+                    timestamp: Date.now()
+                });
+                
+                console.log('✅ تم حفظ المادة في Firebase بنجاح:', courseCode);
+                
+                // Also save to localStorage as backup
+                const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                savedCourses[courseCode] = {...courseData, fromFirebase: true};
+                localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+                
+                // Verify the save by reading it back
+                const verifyDoc = await coursesCollection.doc(courseCode).get();
+                if (verifyDoc.exists) {
+                    console.log('🔍 تأكيد: المادة موجودة في Firebase:', verifyDoc.data());
+                } else {
+                    console.log('❌ خطأ: المادة غير موجودة في Firebase بعد الحفظ');
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في حفظ المادة في Firebase:', error);
+                alert('فشل في الحفظ في السحابة. سيتم الحفظ محلياً فقط.');
+                
+                // Fallback to localStorage only
+                const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                savedCourses[courseCode] = {...courseData, fromLocal: true};
+                localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+            }
+        }
+
+        // Function to load all courses from Firebase
+        async function loadCoursesFromFirebase() {
+            console.log('🔄 جاري تحميل المواد من Firebase...');
+            try {
+                const snapshot = await coursesCollection.get();
+                const firebaseCourses = {};
+                
+                console.log(`📊 عدد المستندات في Firebase: ${snapshot.size}`);
+                
+                snapshot.forEach(doc => {
+                    console.log(`📄 مستند موجود: ${doc.id}`, doc.data());
+                    firebaseCourses[doc.id] = doc.data();
+                });
+                
+                // Merge Firebase courses with existing courses
+                const beforeCount = Object.keys(courses).length;
+                Object.assign(courses, firebaseCourses);
+                const afterCount = Object.keys(courses).length;
+                
+                console.log(`📈 عدد المواد قبل التحميل: ${beforeCount}, بعد التحميل: ${afterCount}`);
+                console.log('✅ تم دمج مواد Firebase مع المواد المحلية');
+                
+                // Also merge localStorage courses as backup
+                const localCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                Object.assign(courses, localCourses);
+                
+                console.log(`🔥 تم تحميل ${Object.keys(firebaseCourses).length} مادة من Firebase`);
+                
+                if (Object.keys(firebaseCourses).length > 0) {
+                    console.log('🎉 مواد Firebase المحملة:', Object.keys(firebaseCourses));
+                }
+                
+            } catch (error) {
+                console.error('❌ خطأ في تحميل المواد من Firebase:', error);
+                
+                // Fallback to localStorage
+                const localCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                Object.assign(courses, localCourses);
+                console.log('🔄 تم الرجوع للمواد المحلية فقط');
+            }
+        }
+
+        // Function to delete a user-added course from Firebase
+        async function deleteUserCourse(courseCode) {
+            if (confirm('هل أنت متأكد من حذف هذه المادة؟ سيتم حذفها من جميع الأجهزة.')) {
+                try {
+                    // Delete from Firebase
+                    await coursesCollection.doc(courseCode).delete();
+                    
+                    // Remove from courses object
+                    delete courses[courseCode];
+                    
+                    // Remove from localStorage
+                    const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                    delete savedCourses[courseCode];
+                    localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+                    
+                    showSuccessNotification('تم حذف المادة بنجاح!', '');
+                    
+                    // Refresh content
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } catch (error) {
+                    console.error('Error deleting course from Firebase:', error);
+                    alert('فشل في حذف المادة. حاول مرة أخرى.');
+                }
+            }
+        }
+
+        // Function to check if course is user-added (checks both Firebase and localStorage)
+        function isUserAddedCourse(courseCode) {
+            // Check Firebase courses first (courses loaded from Firebase)
+            const firebaseCourses = Object.keys(courses).filter(key => 
+                courses[key].createdAt || courses[key].status === 'active' || courses[key].fromFirebase
+            );
+            
+            if (firebaseCourses.includes(courseCode)) {
+                return true;
+            }
+            
+            // Fallback to localStorage check
+            const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+            return savedCourses.hasOwnProperty(courseCode);
+        }
+        
+        // Debug function to check Firebase data (call from console)
+        window.checkFirebaseData = async function() {
+            console.log('🔍 فحص بيانات Firebase...');
+            try {
+                const snapshot = await coursesCollection.get();
+                console.log(`📊 عدد المستندات: ${snapshot.size}`);
+                snapshot.forEach(doc => {
+                    console.log(`📄 ${doc.id}:`, doc.data());
+                });
+                
+                if (snapshot.size === 0) {
+                    console.log('📭 لا توجد مواد في Firebase بعد');
+                }
+            } catch (error) {
+                console.error('❌ خطأ في الفحص:', error);
+            }
+        };
+        
+        // Add a test course function (call from console)
+        window.addTestCourse = async function() {
+            const testCourse = {
+                title: "مادة تجريبية",
+                desc: "هذه مادة تجريبية للاختبار",
+                credits: 3,
+                major: "علوم الحاسب",
+                level: 5,
+                resources: []
+            };
+            
+            await saveCourseToFirebase('TEST001', testCourse);
+            console.log('✅ تم إضافة مادة تجريبية');
+        };
+
+        // Error notification function
+        function showErrorNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 z-50 glass-card rounded-lg p-4 border-l-4 border-red-500';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center mr-3">
+                        <i class="fas fa-exclamation text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold">خطأ</div>
+                        <div class="text-stardust/70 text-sm">${message}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Success Notification Function
+        function showSuccessNotification(message, courseTitle) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 z-50 glass-card rounded-lg p-4 success-message';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-aurora flex items-center justify-center mr-3">
+                        <i class="fas fa-check text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-bold">${message}</div>
+                        <div class="text-stardust/70 text-sm">${courseTitle}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Load user courses from Firebase on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load courses from Firebase (with localStorage fallback)
+            loadCoursesFromFirebase();
+        });
+
+        // Mobile menu event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+
+            // Close mobile menu when clicking on links
+            const mobileMenuLinks = document.querySelectorAll('#mobile-menu a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                    document.getElementById('mobile-menu-btn').innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                });
+            });
+
+            // Handle mobile theme toggle
+            const mobileThemeToggle = document.getElementById('toggle-mobile');
+            const desktopThemeToggle = document.getElementById('toggle');
+            
+            if (mobileThemeToggle && desktopThemeToggle) {
+                // Sync mobile toggle with desktop
+                mobileThemeToggle.checked = desktopThemeToggle.checked;
+                
+                mobileThemeToggle.addEventListener('change', function() {
+                    desktopThemeToggle.checked = this.checked;
+                    const event = new Event('change');
+                    desktopThemeToggle.dispatchEvent(event);
+                });
+            }
+
+            // Close modals when clicking outside
+            const addCourseModal = document.getElementById('addCourseModal');
+            const courseModal = document.getElementById('courseModal');
+            const allCoursesModal = document.getElementById('allCoursesModal');
+
+            [addCourseModal, courseModal, allCoursesModal].forEach(modal => {
+                if (modal) {
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            modal.classList.add('hidden');
+                            document.body.style.overflow = 'auto';
+                        }
+                    });
+                }
+            });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const visibleModals = document.querySelectorAll('.fixed:not(.hidden)');
+                    visibleModals.forEach(modal => {
+                        if (modal.id.includes('Modal')) {
+                            modal.classList.add('hidden');
+                            document.body.style.overflow = 'auto';
+                        }
+                    });
+                    
+                    // Close mobile menu
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        document.getElementById('mobile-menu-btn').innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                    }
+                }
+            });
+        });
+
+        // Theme Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('toggle');
+            const body = document.body;
+
+            // Check for saved theme preference or default to dark mode
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            if (currentTheme === 'light') {
+                body.classList.add('light-mode');
+                if (themeToggle) themeToggle.checked = true;
+            }
+
+            // Theme toggle event listener
+            if (themeToggle) {
+                themeToggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        body.classList.add('light-mode');
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        body.classList.remove('light-mode');
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

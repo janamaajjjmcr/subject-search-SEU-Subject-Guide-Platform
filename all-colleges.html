@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جميع الكليات | جامعة SEU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+            authDomain: "seu-subjects.firebaseapp.com",
+            projectId: "seu-subjects",
+            storageBucket: "seu-subjects.firebasestorage.app",
+            messagingSenderId: "552315681734",
+            appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+            measurementId: "G-Y2FL6V8X3L"
+        };
+
+        // Initialize Firebase with error handling
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            
+            // Collection reference for all courses
+            const coursesCollection = db.collection('allCollegesCourses');
+            
+            console.log('✅ Firebase تم تهيئته بنجاح لجميع الكليات');
+            
+            // Make functions globally available immediately
+            window.db = db;
+            window.coursesCollection = coursesCollection;
+            
+        } catch (error) {
+            console.error('❌ خطأ في تهيئة Firebase:', error);
+        }
+    </script>
+    
+    <!-- Include styles from main index.html -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Consistent design with main index.html */
+        :root {
+            --cosmic: #0F0F1A;
+            --nebula: #1A1A2E;
+            --stardust: #C9C9E0;
+            --plasma: #FF6B6B;
+            --aurora: #4ECDC4;
+            --photon: #A5A6FF;
+            --supernova: #FFE66D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--cosmic) 0%, var(--nebula) 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--plasma) 0%, var(--aurora) 50%, var(--supernova) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: gradientX 8s ease infinite;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--cosmic) 0%, var(--nebula) 50%, #2D1B69 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="grad" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:rgba(255,107,107,0.1);stop-opacity:1" /><stop offset="100%" style="stop-color:transparent;stop-opacity:0" /></radialGradient></defs><circle cx="20" cy="20" r="2" fill="url(%23grad)"/><circle cx="80" cy="40" r="1" fill="url(%23grad)"/><circle cx="40" cy="80" r="1.5" fill="url(%23grad)"/><circle cx="90" cy="80" r="1" fill="url(%23grad)"/><circle cx="10" cy="60" r="1" fill="url(%23grad)"/></svg>') repeat;
+            opacity: 0.7;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 107, 107, 0.25);
+            border-color: rgba(255, 107, 107, 0.5);
+        }
+
+        .college-card {
+            background: linear-gradient(145deg, rgba(26, 26, 46, 0.9) 0%, rgba(77, 45, 45, 0.7) 100%);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .college-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--plasma) 0%, var(--aurora) 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .college-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .college-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 107, 107, 0.2);
+            border-color: rgba(255, 107, 107, 0.4);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--plasma) 0%, var(--aurora) 100%);
+        }
+
+        .gradient-bg-original {
+            background: linear-gradient(135deg, var(--plasma) 0%, var(--aurora) 100%);
+        }
+
+        .pattern-overlay {
+            background-image: radial-gradient(rgba(255, 107, 107, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(odd) {
+            animation-direction: reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @keyframes gradientX {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .animate-fade-in:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .animate-fade-in:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .animate-fade-in:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        /* Enhanced search bar */
+        .search-container {
+            position: relative;
+        }
+
+        .search-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 107, 107, 0.1), transparent);
+            border-radius: 1rem;
+            padding: 2px;
+            z-index: -1;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .input-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input {
+            width: 100%;
+            padding: 20px 60px 20px 20px;
+            border: 2px solid rgba(255, 107, 107, 0.3);
+            border-radius: 15px;
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(20px);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input:focus {
+            border-color: var(--plasma);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--stardust);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #loading-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--plasma) 0%, var(--aurora) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 0 0 15px 15px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .college-card {
+                min-height: 280px;
+            }
+            
+            .input {
+                padding: 15px 50px 15px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="backdrop-blur-lg bg-cosmic/90 border-b border-nebula/20 py-6 px-4 sticky top-0 z-50">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <!-- Back to Main -->
+                <a href="index.html" class="flex items-center text-stardust hover:text-aurora transition duration-300 font-medium">
+                    <i class="fas fa-arrow-right mr-2"></i>
+                    العودة للرئيسية
+                </a>
+                
+                <!-- Logo/Title -->
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full gradient-bg-original flex items-center justify-center mr-4">
+                        <i class="fas fa-university text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold font-playfair">
+                            <span class="gradient-text"> جامعة SEU </span>
+                        </h1>
+                        <p class="text-stardust/70 mt-1 font-medium">جميع الكليات</p>
+                    </div>
+                </div>
+                
+                <!-- Add Course Button -->
+                <button onclick="openAddCourseModal()" class="bg-gradient-to-r from-plasma to-aurora text-white px-6 py-3 rounded-xl hover:scale-105 hover:shadow-lg transition duration-300 text-sm font-semibold">
+                    إضافة مادة
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative text-white py-20 px-4 overflow-hidden hero-gradient">
+        <div class="absolute inset-0 pattern-overlay"></div>
+        
+        <!-- Floating Elements -->
+        <div class="floating-element top-20 left-10">
+            <i class="fas fa-graduation-cap text-6xl text-plasma"></i>
+        </div>
+        <div class="floating-element top-40 right-20">
+            <i class="fas fa-university text-4xl text-aurora"></i>
+        </div>
+        <div class="floating-element bottom-20 left-1/4">
+            <i class="fas fa-book text-5xl text-photon"></i>
+        </div>
+        
+        <div class="container mx-auto relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 font-playfair leading-tight">
+                    <span class="gradient-text">جامعة SEU</span><br>جميع الكليات والتخصصات
+                </h1>
+                <p class="text-lg md:text-xl text-stardust/80 mb-8 max-w-2xl mx-auto">
+                    استكشف جميع تخصصات الجامعة ومقرراتها الأكاديمية من خلال منصة واحدة شاملة
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto py-16 px-4">
+        <!-- Search Bar -->
+        <div class="mb-16 animate-fade-in relative">
+            <div class="input-wrapper">
+                <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود أو الاسم..." class="input">
+                <button class="icon">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div id="loading-bar"></div>
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <section id="search-results" class="hidden mb-24">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold font-playfair">
+                    نتائج البحث: <span id="search-term-display" class="gradient-text"></span>
+                </h2>
+                <button onclick="clearSearch()" class="flex items-center text-photon hover:text-white transition duration-300">
+                    <i class="fas fa-times mr-2"></i> مسح البحث
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="search-results-container">
+                <!-- Search results will be populated here -->
+            </div>
+        </section>
+
+        <!-- Computing College Section -->
+        <section id="computing" class="mb-24 animate-fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">كلية</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">كلية الحوسبة</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        علوم الحاسب • علوم البيانات • تقنية المعلومات
+                    </p>
+                </div>
+                <button class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('computing')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="computing-courses">
+                <!-- Computing courses will be populated here -->
+                <div class="text-center py-12">
+                    <i class="fas fa-laptop-code text-6xl text-stardust/30 mb-4"></i>
+                    <p class="text-stardust/70">جاري تحميل مواد كلية الحوسبة...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Business College Section -->
+        <section id="business" class="mb-24 animate-fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">كلية</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">كلية العلوم الإدارية والمالية</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        محاسبة • مالية • إدارة أعمال • تجارة إلكترونية
+                    </p>
+                </div>
+                <button class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('business')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="business-courses">
+                <!-- Business courses will be populated here -->
+                <div class="text-center py-12">
+                    <i class="fas fa-chart-line text-6xl text-stardust/30 mb-4"></i>
+                    <p class="text-stardust/70">جاري تحميل مواد كلية العلوم الإدارية والمالية...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health College Section -->
+        <section id="health" class="mb-24 animate-fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">كلية</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">كلية الصحة</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        صحة عامة • معلوماتية صحية
+                    </p>
+                </div>
+                <button class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('health')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="health-courses">
+                <!-- Health courses will be populated here -->
+                <div class="text-center py-12">
+                    <i class="fas fa-heartbeat text-6xl text-stardust/30 mb-4"></i>
+                    <p class="text-stardust/70">جاري تحميل مواد كلية الصحة...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Engineering College Section -->
+        <section id="engineering" class="mb-24 animate-fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">كلية</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">كلية الهندسة</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        هندسة مدنية • هندسة كهربائية • هندسة ميكانيكية • هندسة معمارية
+                    </p>
+                </div>
+                <button class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('engineering')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="engineering-courses">
+                <!-- Engineering courses will be populated here -->
+                <div class="text-center py-12">
+                    <i class="fas fa-cogs text-6xl text-stardust/30 mb-4"></i>
+                    <p class="text-stardust/70">جاري تحميل مواد كلية الهندسة...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Course Detail Modal -->
+    <div id="courseModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="glass-card rounded-2xl p-8 m-4 w-full max-w-4xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 id="modalCourseCode" class="text-3xl font-bold gradient-text mb-2"></h2>
+                    <h3 id="modalCourseTitle" class="text-xl font-bold text-white"></h3>
+                    <p class="text-stardust/70"><span id="modalCourseMajor"></span> • <span id="modalCourseCredits"></span> ساعات</p>
+                </div>
+                <button onclick="closeCourseModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-3">وصف المادة</h3>
+                    <p id="modalCourseDesc" class="text-stardust/70 mb-6"></p>
+                    
+                    <div class="mb-6">
+                        <span id="modalCourseLevel" class="bg-plasma/20 text-plasma px-3 py-1 rounded-full text-sm font-medium"></span>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">الموارد التعليمية</h3>
+                    <div id="modalCourseResources" class="space-y-3">
+                        <!-- Resources will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Courses Modal -->
+    <div id="allCoursesModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="glass-card rounded-2xl p-8 m-4 w-full max-w-6xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold gradient-text" id="allCoursesTitle"></h2>
+                <button onclick="closeAllCoursesModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="allCoursesContainer">
+                <!-- All courses will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div id="addCourseModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="glass-card rounded-2xl p-8 m-4 w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">إضافة مادة جديدة</h2>
+                <button onclick="closeAddCourseModal()" class="text-stardust hover:text-white transition duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="addCourseForm" class="space-y-4">
+                <div>
+                    <label for="courseCode" class="block text-white font-medium mb-2">رمز المادة</label>
+                    <input type="text" id="courseCode" name="courseCode" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="مثال: CS230, ACC101, MED345">
+                </div>
+                
+                <div>
+                    <label for="courseTitle" class="block text-white font-medium mb-2">اسم المادة</label>
+                    <input type="text" id="courseTitle" name="courseTitle" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="اسم المادة">
+                </div>
+                
+                <div>
+                    <label for="courseDescription" class="block text-white font-medium mb-2">وصف المادة</label>
+                    <textarea id="courseDescription" name="courseDescription" required rows="3"
+                              class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none resize-none"
+                              placeholder="وصف مختصر للمادة"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="courseCollege" class="block text-white font-medium mb-2">الكلية</label>
+                        <select id="courseCollege" name="courseCollege" required 
+                                class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white focus:border-plasma focus:outline-none">
+                            <option value="">اختر الكلية</option>
+                            <option value="كلية الحوسبة">كلية الحوسبة</option>
+                            <option value="كلية العلوم الإدارية والمالية">كلية العلوم الإدارية والمالية</option>
+                            <option value="كلية الصحة">كلية الصحة</option>
+                            <option value="كلية الهندسة">كلية الهندسة</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="courseLevel" class="block text-white font-medium mb-2">المستوى</label>
+                        <select id="courseLevel" name="courseLevel" required 
+                                class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white focus:border-plasma focus:outline-none">
+                            <option value="">المستوى</option>
+                            <option value="3">المستوى 3</option>
+                            <option value="4">المستوى 4</option>
+                            <option value="5">المستوى 5</option>
+                            <option value="6">المستوى 6</option>
+                            <option value="7">المستوى 7</option>
+                            <option value="8">المستوى 8</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="courseCredits" class="block text-white font-medium mb-2">الساعات</label>
+                        <select id="courseCredits" name="courseCredits" required 
+                                class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white focus:border-plasma focus:outline-none">
+                            <option value="">الساعات</option>
+                            <option value="2">2 ساعات</option>
+                            <option value="3">3 ساعات</option>
+                            <option value="4">4 ساعات</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="pt-6 flex gap-4">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-plasma to-aurora text-white py-3 rounded-lg hover:scale-105 transition duration-300 font-medium">
+                        إضافة المادة
+                    </button>
+                    <button type="button" onclick="closeAddCourseModal()" class="px-6 py-3 border border-stardust/20 text-stardust hover:text-white rounded-lg transition duration-300">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Current configuration
+        const courses = {}; // Will be populated from Firebase and localStorage
+        
+        // College majors mapping
+        const collegeSections = {
+            'كلية الحوسبة': 'computing',
+            'كلية العلوم الإدارية والمالية': 'business',
+            'كلية الصحة': 'health',
+            'كلية الهندسة': 'engineering'
+        };
+
+        // Modal functions
+        function openAddCourseModal() {
+            document.getElementById('addCourseModal').classList.remove('hidden');
+        }
+        
+        function closeAddCourseModal() {
+            document.getElementById('addCourseModal').classList.add('hidden');
+            document.getElementById('addCourseForm').reset();
+        }
+
+        function openCourseModal(courseCode) {
+            const course = courses[courseCode];
+            if (!course) return;
+            
+            document.getElementById('modalCourseCode').textContent = courseCode;
+            document.getElementById('modalCourseTitle').textContent = course.title;
+            document.getElementById('modalCourseDesc').textContent = course.desc;
+            document.getElementById('modalCourseMajor').textContent = course.major;
+            document.getElementById('modalCourseLevel').textContent = `المستوى ${course.level}`;
+            document.getElementById('modalCourseCredits').textContent = course.credits;
+            
+            const resourcesContainer = document.getElementById('modalCourseResources');
+            resourcesContainer.innerHTML = '';
+            
+            if (course.resources && course.resources.length > 0) {
+                course.resources.forEach(resource => {
+                    const resourceElement = document.createElement('a');
+                    resourceElement.href = resource.url;
+                    resourceElement.target = '_blank';
+                    resourceElement.className = 'block p-3 bg-nebula/30 rounded-lg hover:bg-nebula/50 transition duration-300';
+                    resourceElement.innerHTML = `
+                        <div class="flex items-center">
+                            <i class="fas fa-external-link-alt text-plasma mr-3"></i>
+                            <span class="text-white">${resource.title}</span>
+                        </div>
+                    `;
+                    resourcesContainer.appendChild(resourceElement);
+                });
+            } else {
+                resourcesContainer.innerHTML = '<p class="text-stardust/70">لا توجد موارد متاحة حالياً</p>';
+            }
+            
+            document.getElementById('courseModal').classList.remove('hidden');
+        }
+        
+        function closeCourseModal() {
+            document.getElementById('courseModal').classList.add('hidden');
+        }
+
+        function showAllCourses(college) {
+            const collegeName = Object.keys(collegeSections).find(key => collegeSections[key] === college);
+            document.getElementById('allCoursesTitle').textContent = `جميع مواد ${collegeName}`;
+            
+            const container = document.getElementById('allCoursesContainer');
+            container.innerHTML = '';
+            
+            const collegeCourses = Object.entries(courses).filter(([code, course]) => course.college === collegeName);
+            
+            if (collegeCourses.length === 0) {
+                container.innerHTML = '<p class="text-stardust text-center col-span-full">لا توجد مواد في هذه الكلية</p>';
+            } else {
+                collegeCourses.forEach(([code, course]) => {
+                    const courseCard = createCourseCard(code, course, true);
+                    container.appendChild(courseCard);
+                });
+            }
+            
+            document.getElementById('allCoursesModal').classList.remove('hidden');
+        }
+        
+        function closeAllCoursesModal() {
+            document.getElementById('allCoursesModal').classList.add('hidden');
+        }
+
+        // Add course form submission
+        document.getElementById('addCourseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const courseCode = document.getElementById('courseCode').value.trim().toUpperCase();
+            const courseTitle = document.getElementById('courseTitle').value.trim();
+            const courseDescription = document.getElementById('courseDescription').value.trim();
+            const courseCollege = document.getElementById('courseCollege').value;
+            const courseLevel = parseInt(document.getElementById('courseLevel').value);
+            const courseCredits = parseInt(document.getElementById('courseCredits').value);
+            
+            if (!courseCode || !courseTitle || !courseDescription || !courseCollege || !courseLevel || !courseCredits) {
+                alert('يرجى ملء جميع الحقول');
+                return;
+            }
+            
+            const newCourse = {
+                title: courseTitle,
+                desc: courseDescription,
+                college: courseCollege,
+                level: courseLevel,
+                credits: courseCredits,
+                resources: [],
+                isUserAdded: true,
+                createdAt: new Date().toISOString(),
+                status: 'active'
+            };
+            
+            try {
+                // Save to Firebase
+                await coursesCollection.doc(courseCode).set({
+                    ...newCourse,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Add to local courses object
+                courses[courseCode] = newCourse;
+                
+                // Save to localStorage as backup
+                const savedCourses = JSON.parse(localStorage.getItem('all_colleges_courses') || '{}');
+                savedCourses[courseCode] = newCourse;
+                localStorage.setItem('all_colleges_courses', JSON.stringify(savedCourses));
+                
+                // Show success message
+                alert(`تم إضافة المادة "${courseTitle}" بنجاح!`);
+                
+                // Close modal and refresh
+                closeAddCourseModal();
+                renderCourses();
+                
+            } catch (error) {
+                console.error('خطأ في إضافة المادة:', error);
+                alert('حدث خطأ في إضافة المادة. يرجى المحاولة مرة أخرى.');
+            }
+        });
+
+        // Load courses from Firebase and localStorage
+        async function loadCourses() {
+            try {
+                // Load from Firebase
+                const snapshot = await coursesCollection.get();
+                snapshot.forEach(doc => {
+                    courses[doc.id] = doc.data();
+                });
+                console.log(`🔥 Loaded ${snapshot.size} courses from Firebase`);
+            } catch (error) {
+                console.error('خطأ في تحميل المواد من Firebase:', error);
+            }
+            
+            // Load from localStorage as backup
+            const localCourses = JSON.parse(localStorage.getItem('all_colleges_courses') || '{}');
+            Object.assign(courses, localCourses);
+            
+            console.log(`📚 Total courses loaded: ${Object.keys(courses).length}`);
+            renderCourses();
+        }
+
+        // Render courses in their respective sections
+        function renderCourses() {
+            // Clear all sections first
+            ['computing', 'business', 'health', 'engineering'].forEach(section => {
+                const container = document.getElementById(`${section}-courses`);
+                if (container) container.innerHTML = '';
+            });
+            
+            // Group courses by college
+            const coursesByCollege = {
+                'كلية الحوسبة': [],
+                'كلية العلوم الإدارية والمالية': [],
+                'كلية الصحة': [],
+                'كلية الهندسة': []
+            };
+            
+            Object.entries(courses).forEach(([code, course]) => {
+                const college = course.college || course.major;
+                if (coursesByCollege[college]) {
+                    coursesByCollege[college].push([code, course]);
+                }
+            });
+            
+            // Render courses for each college
+            Object.entries(coursesByCollege).forEach(([college, collegeCourses]) => {
+                const sectionId = collegeSections[college];
+                const container = document.getElementById(`${sectionId}-courses`);
+                
+                if (container) {
+                    if (collegeCourses.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center py-12 col-span-full">
+                                <i class="fas fa-book text-4xl text-stardust/30 mb-4"></i>
+                                <p class="text-stardust/70">لا توجد مواد في ${college}</p>
+                            </div>
+                        `;
+                    } else {
+                        // Show only first 3 courses
+                        const displayCourses = collegeCourses.slice(0, 3);
+                        displayCourses.forEach(([code, course]) => {
+                            const courseCard = createCourseCard(code, course);
+                            container.appendChild(courseCard);
+                        });
+                    }
+                }
+            });
+        }
+
+        // Create course card element
+        function createCourseCard(code, course, isSmall = false) {
+            const level = course.level || 3;
+            const isUserAdded = course.isUserAdded || false;
+            
+            const courseCard = document.createElement('div');
+            courseCard.className = 'college-card rounded-2xl p-6 group overflow-hidden relative cursor-pointer';
+            courseCard.onclick = () => openCourseModal(code);
+            
+            courseCard.innerHTML = `
+                <span class="level-badge level-${level}">المستوى ${level}</span>
+                ${isUserAdded ? '<span class="absolute top-4 right-4 w-3 h-3 bg-aurora rounded-full"></span>' : ''}
+                <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-plasma/10 blur-xl group-hover:bg-plasma/15 transition duration-500"></div>
+                <div class="relative z-10">
+                    <div class="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-book text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">${code}</h3>
+                    <h4 class="text-xl font-bold text-white mb-4">${course.title}</h4>
+                    <p class="text-stardust/70 mb-6 line-clamp-3">${course.desc}</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.college}</span>
+                        <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.credits} ساعات</span>
+                    </div>
+                    <div class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                        استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                    </div>
+                </div>
+            `;
+            
+            return courseCard;
+        }
+
+        // Search functionality
+        document.getElementById('courseSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm.length > 0) {
+                performSearch(searchTerm);
+            } else {
+                clearSearch();
+            }
+        });
+
+        function performSearch(searchTerm) {
+            const results = Object.entries(courses).filter(([code, course]) => {
+                return code.toLowerCase().includes(searchTerm) ||
+                       course.title.toLowerCase().includes(searchTerm) ||
+                       course.desc.toLowerCase().includes(searchTerm) ||
+                       course.college.toLowerCase().includes(searchTerm);
+            });
+            
+            displaySearchResults(results, searchTerm);
+        }
+
+        function displaySearchResults(results, searchTerm) {
+            const searchSection = document.getElementById('search-results');
+            const searchTermDisplay = document.getElementById('search-term-display');
+            const resultsContainer = document.getElementById('search-results-container');
+            
+            searchSection.classList.remove('hidden');
+            searchTermDisplay.textContent = searchTerm;
+            resultsContainer.innerHTML = '';
+            
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="text-center py-12 col-span-full">
+                        <i class="fas fa-search text-4xl text-stardust/30 mb-4"></i>
+                        <p class="text-stardust/70">لم يتم العثور على مواد تطابق بحثك</p>
+                    </div>
+                `;
+            } else {
+                results.forEach(([code, course]) => {
+                    const courseCard = createCourseCard(code, course);
+                    resultsContainer.appendChild(courseCard);
+                });
+            }
+            
+            // Hide other sections
+            ['computing', 'business', 'health', 'engineering'].forEach(section => {
+                document.getElementById(section).style.display = 'none';
+            });
+        }
+
+        function clearSearch() {
+            document.getElementById('search-results').classList.add('hidden');
+            document.getElementById('courseSearch').value = '';
+            
+            // Show all sections
+            ['computing', 'business', 'health', 'engineering'].forEach(section => {
+                document.getElementById(section).style.display = 'block';
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 All Colleges page loaded');
+            loadCourses();
+        });
+
+        // Close modals when clicking outside
+        ['courseModal', 'allCoursesModal', 'addCourseModal'].forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
