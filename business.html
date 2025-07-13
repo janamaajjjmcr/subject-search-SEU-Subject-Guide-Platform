@@ -1279,10 +1279,11 @@ ul {
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-6 space-x-reverse">
                     <a href="#" class="text-stardust hover:text-white transition duration-300">الرئيسية</a>
-                    <a href="#cs" class="text-stardust hover:text-white transition duration-300">علوم الحاسب</a>
-                    <a href="#ds" class="text-stardust hover:text-white transition duration-300">علوم البيانات</a>
-                    <a href="#it" class="text-stardust hover:text-white transition duration-300">تقنية المعلومات</a>
-                    <a href="all-colleges.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
+                    <a href="#cs" class="text-stardust hover:text-white transition duration-300">إدارة الأعمال</a>
+                    <a href="#ds" class="text-stardust hover:text-white transition duration-300">المحاسبة</a>
+                    <a href="#it" class="text-stardust hover:text-white transition duration-300">الإدارة المالية</a>
+                    <a href="#ecommerce" class="text-stardust hover:text-white transition duration-300">التجارة الإلكترونية</a>
+                    <a href="index.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
                     <button onclick="openAddCourseModal()" class="bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm">
                         إضافة مادة
                     </button>
@@ -1339,12 +1340,13 @@ ul {
             
             <!-- Mobile Navigation Menu -->
             <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-nebula/20 pt-4">
-                <nav class="space-y-3">
+                <nav class="space-y-3" aria-label="قائمة التنقل الرئيسية">
                     <a href="#" class="block text-stardust hover:text-white transition duration-300 py-2">الرئيسية</a>
-                    <a href="#cs" class="block text-stardust hover:text-white transition duration-300 py-2">علوم الحاسب</a>
-                    <a href="#ds" class="block text-stardust hover:text-white transition duration-300 py-2">علوم البيانات</a>
-                    <a href="#it" class="block text-stardust hover:text-white transition duration-300 py-2">تقنية المعلومات</a>
-                    <a href="all-colleges.html" class="block text-aurora hover:text-white transition duration-300 py-2 font-medium">جميع الكليات</a>
+                    <a href="#cs" class="block text-stardust hover:text-white transition duration-300 py-2">إدارة الأعمال</a>
+                    <a href="#ds" class="block text-stardust hover:text-white transition duration-300 py-2">المحاسبة</a>
+                    <a href="#it" class="block text-stardust hover:text-white transition duration-300 py-2">الإدارة المالية</a>
+                    <a href="#ecommerce" class="block text-stardust hover:text-white transition duration-300 py-2">التجارة الإلكترونية</a>
+                    <a href="index.html" class="block text-aurora hover:text-white transition duration-300 py-2 font-medium">جميع الكليات</a>
                     <button onclick="openAddCourseModal(); toggleMobileMenu();" class="w-full bg-gradient-to-r from-plasma to-aurora text-white px-4 py-3 rounded-lg hover:scale-105 transition duration-300 mt-3">
                         إضافة مادة
                     </button>
@@ -1384,7 +1386,7 @@ ul {
                     <span class="gradient-text">كلية العلوم الإدارية والمالية</span>
                 </h1>
                 <p class="text-xl md:text-2xl text-stardust/80 mb-10 max-w-3xl mx-auto">
-                    استكشف مواد تخصصات المحاسبة، الإدارة المالية، إدارة الأعمال، ونظم المعلومات الإدارية
+                    استكشف مواد تخصصات إدارة الأعمال، المحاسبة، الإدارة المالية، والتجارة الإلكترونية
                 </p>
                 
                 <!-- Add Course Button -->
@@ -1520,6 +1522,37 @@ ul {
             </div>
         </section>
         
+        <!-- E-commerce Section -->
+        <section id="ecommerce" class="mb-24 animate-fade-in" style="animation-delay: 0.3s">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+                <div>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
+                    <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
+                        <span class="gradient-text">التجارة الإلكترونية</span>
+                    </h2>
+                    <p class="text-stardust/80 max-w-2xl text-lg">
+                        مجال يركز على إدارة الأعمال التجارية الرقمية، ويشمل منصات التجارة الإلكترونية، التسويق الرقمي، الدفع الإلكتروني، وتطوير الأعمال عبر الإنترنت.
+                    </p>
+                </div>
+                <button class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('e-commerce')">
+                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- المواد ستظهر هنا عندما يضيفها المستخدمون -->
+                <div class="col-span-full text-center py-12">
+                    <div class="w-16 h-16 rounded-full bg-nebula/30 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-plus text-stardust/50 text-xl"></i>
+                    </div>
+                    <p class="text-stardust/70 mb-4">لا توجد مواد في هذا التخصص بعد</p>
+                    <button onclick="openAddCourseModal()" class="text-photon hover:text-white transition duration-300">
+                        <i class="fas fa-plus mr-2"></i> إضافة أول مادة
+                    </button>
+                </div>
+            </div>
+        </section>
+        
         <!-- Overview Section -->
         <section id="overview" class="animate-fade-in relative overflow-hidden" style="animation-delay: 0.3s">
             <div class="glass-card rounded-3xl p-12 relative overflow-hidden">
@@ -1538,7 +1571,7 @@ ul {
                         </p>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div class="glow-border bg-nebula/20 rounded-2xl p-8 group">
                             <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6">
                                 <i class="fas fa-chart-line text-white text-2xl"></i>
@@ -1568,6 +1601,17 @@ ul {
                             <h3 class="text-2xl font-bold text-white mb-4">الإدارة المالية</h3>
                             <p class="text-stardust/70 mb-6">مجال يركز على إدارة الموارد المالية للمؤسسات، ويشمل التخطيط المالي، إدارة الاستثمارات، تحليل المخاطر، واتخاذ القرارات المالية الاستراتيجية.</p>
                             <a href="#it" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
+                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            </a>
+                        </div>
+                        
+                        <div class="glow-border bg-nebula/20 rounded-2xl p-8 group">
+                            <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-6">
+                                <i class="fas fa-shopping-cart text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-4">التجارة الإلكترونية</h3>
+                            <p class="text-stardust/70 mb-6">مجال يركز على إدارة الأعمال التجارية الرقمية، ويشمل منصات التجارة الإلكترونية، التسويق الرقمي، الدفع الإلكتروني، وتطوير الأعمال عبر الإنترنت.</p>
+                            <a href="#ecommerce" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
                                 تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                             </a>
                         </div>
@@ -1601,6 +1645,7 @@ ul {
                         <li><a href="#cs" class="text-stardust/70 hover:text-photon transition duration-300">إدارة الأعمال</a></li>
                         <li><a href="#ds" class="text-stardust/70 hover:text-photon transition duration-300">المحاسبة</a></li>
                         <li><a href="#it" class="text-stardust/70 hover:text-photon transition duration-300">الإدارة المالية</a></li>
+                        <li><a href="#ecommerce" class="text-stardust/70 hover:text-photon transition duration-300">التجارة الإلكترونية</a></li>
                     </ul>
                 </div>
                 
@@ -1806,7 +1851,7 @@ ul {
                         <option value="إدارة الأعمال">إدارة الأعمال</option>
                         <option value="المحاسبة">المحاسبة</option>
                         <option value="الإدارة المالية">الإدارة المالية</option>
-                        <option value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                        <option value="التجارة الإلكترونية">التجارة الإلكترونية</option>
                     </select>
                 </div>
 
@@ -2029,6 +2074,9 @@ ul {
                 case 'finance':
                     title = 'الإدارة المالية';
                     break;
+                case 'e-commerce':
+                    title = 'التجارة الإلكترونية';
+                    break;
                 // Keep old IDs for backward compatibility
                 case 'cs':
                     title = 'إدارة الأعمال';
@@ -2038,6 +2086,9 @@ ul {
                     break;
                 case 'it':
                     title = 'الإدارة المالية';
+                    break;
+                case 'ecommerce':
+                    title = 'التجارة الإلكترونية';
                     break;
             }
             
@@ -2098,7 +2149,7 @@ ul {
             }
             
             // Hide all original sections
-            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='overview']").forEach(section => {
+            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='ecommerce'], section[id='overview']").forEach(section => {
                 section.classList.add("hidden");
             });
             
@@ -2160,7 +2211,7 @@ ul {
         function clearSearch() {
             document.getElementById("courseSearch").value = '';
             document.getElementById("search-results").classList.add("hidden");
-            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='overview']").forEach(section => {
+            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='ecommerce'], section[id='overview']").forEach(section => {
                 section.classList.remove("hidden");
             });
         }
@@ -2328,9 +2379,10 @@ ul {
 
         function generateUniqueId() {
             const majors = {
-                'علوم الحاسب': 'CS',
-                'علوم البيانات': 'DS',
-                'تقنية المعلومات': 'IT',
+                'إدارة الأعمال': 'BA',
+                'المحاسبة': 'AC',
+                'الإدارة المالية': 'FM',
+                'التجارة الإلكترونية': 'EC',
                 'المواد العامة': 'GEN'
             };
             
@@ -2417,9 +2469,17 @@ ul {
                 // If user is viewing all courses for this major, refresh that view
                 const currentTitle = document.getElementById('allCoursesTitle').textContent;
                 if (currentTitle.includes(courseMajor) && !document.getElementById("allCoursesModal").classList.contains("hidden")) {
-                    const majorCode = courseMajor === 'علوم الحاسب' ? 'cs' : 
-                                     courseMajor === 'علوم البيانات' ? 'ds' : 
-                                     courseMajor === 'تقنية المعلومات' ? 'it' : null;
+                    let majorCode = null;
+                    if (courseMajor === 'إدارة الأعمال') {
+                        majorCode = 'cs';
+                    } else if (courseMajor === 'المحاسبة') {
+                        majorCode = 'ds';
+                    } else if (courseMajor === 'الإدارة المالية') {
+                        majorCode = 'it';
+                    } else if (courseMajor === 'التجارة الإلكترونية') {
+                        majorCode = 'ecommerce';
+                    }
+                    
                     if (majorCode) {
                         showAllCourses(majorCode);
                     }
