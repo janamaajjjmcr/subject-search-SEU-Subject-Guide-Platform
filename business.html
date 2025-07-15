@@ -1924,6 +1924,119 @@ ul {
         </div>
     </div>
 
+    <!-- Edit Course Modal -->
+    <div id="editCourseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card p-8 max-w-2xl max-h-[90vh] overflow-y-auto w-full mx-4 rounded-xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">تعديل المادة</h2>
+                <button onclick="closeEditCourseModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <form id="editCourseForm" class="space-y-6">
+                <!-- Course Code -->
+                <div>
+                    <label class="block text-white font-medium mb-2">رمز المادة</label>
+                    <input type="text" id="editCourseCode" name="courseCode" readonly
+                           class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white/70 cursor-not-allowed focus:outline-none"
+                           placeholder="CS101">
+                </div>
+
+                <!-- Course Title -->
+                <div>
+                    <label class="block text-white font-medium mb-2">اسم المادة *</label>
+                    <input type="text" id="editCourseTitle" name="courseTitle" required
+                           class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                           placeholder="مدخل إلى البرمجة">
+                </div>
+
+                <!-- Course Description -->
+                <div>
+                    <label class="block text-white font-medium mb-2">وصف المادة *</label>
+                    <textarea id="editCourseDesc" name="courseDesc" required rows="3"
+                              class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none resize-none"
+                              placeholder="وصف مختصر عن محتوى المادة"></textarea>
+                </div>
+
+                <!-- Course Details Row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Major -->
+                    <div>
+                        <label class="block text-white font-medium mb-2">التخصص *</label>
+                        <select id="editCourseMajor" name="courseMajor" required
+                                class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                            <option value="">اختر التخصص</option>
+                            <option value="إدارة الأعمال">إدارة الأعمال</option>
+                            <option value="المحاسبة">المحاسبة</option>
+                            <option value="التمويل">التمويل</option>
+                            <option value="التسويق">التسويق</option>
+                            <option value="المواد العامة">المواد العامة</option>
+                        </select>
+                    </div>
+
+                    <!-- Level -->
+                    <div>
+                        <label class="block text-white font-medium mb-2">المستوى *</label>
+                        <select id="editCourseLevel" name="courseLevel" required
+                                class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                            <option value="">اختر المستوى</option>
+                            <option value="3">المستوى الثالث</option>
+                            <option value="4">المستوى الرابع</option>
+                            <option value="5">المستوى الخامس</option>
+                            <option value="6">المستوى السادس</option>
+                            <option value="7">المستوى السابع</option>
+                            <option value="8">المستوى الثامن</option>
+                        </select>
+                    </div>
+
+                    <!-- Credits -->
+                    <div>
+                        <label class="block text-white font-medium mb-2">الساعات المعتمدة</label>
+                        <input type="number" id="editCourseCredits" name="courseCredits" min="1" max="6" value="3"
+                               class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
+                               placeholder="3">
+                    </div>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <label class="block text-white font-medium mb-2">الموارد والمراجع</label>
+                    <div id="editResourcesContainer" class="space-y-3">
+                        <div class="resource-input flex gap-3">
+                            <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                                <option value="youtube">يوتيوب</option>
+                                <option value="drive">درايف</option>
+                                <option value="telegram">تليجرام</option>
+                                <option value="mega">ميجا</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                            <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                            <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                            <button type="button" onclick="removeEditResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addEditResourceInput()" 
+                            class="mt-3 text-photon hover:text-white transition duration-300 text-sm">
+                        <i class="fas fa-plus ml-2"></i> إضافة مصدر آخر
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end gap-4 pt-6 border-t border-nebula/20">
+                    <button type="button" onclick="closeEditCourseModal()" 
+                            class="px-6 py-3 text-stardust hover:text-white transition duration-300">
+                        إلغاء
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-3 bg-gradient-to-r from-plasma to-aurora text-white rounded-lg hover:scale-105 transition duration-300">
+                        حفظ التغييرات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Course data - empty initially, users will add courses through the interface
         const courses = {};
@@ -2033,14 +2146,28 @@ ul {
                 resourcesContainer.innerHTML = '<p class="text-stardust/70">لا تتوفر موارد لهذه المادة حالياً.</p>';
             }
             
-            // Add delete button for user-added courses
+            // Add edit and delete buttons for user-added courses
             const modalHeader = document.querySelector('#courseModal .flex.justify-between.items-start.mb-6');
             const existingDeleteBtn = modalHeader.querySelector('.delete-course-btn');
+            const existingEditBtn = modalHeader.querySelector('.edit-course-btn');
             if (existingDeleteBtn) {
                 existingDeleteBtn.remove();
             }
+            if (existingEditBtn) {
+                existingEditBtn.remove();
+            }
             
             if (isUserAddedCourse(courseCode)) {
+                // Add edit button
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-course-btn bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition duration-300 ml-2';
+                editBtn.innerHTML = '<i class="fas fa-edit mr-1"></i> تعديل المادة';
+                editBtn.onclick = () => {
+                    closeModal();
+                    openEditCourseModal(courseCode);
+                };
+                
+                // Add delete button
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-course-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition duration-300 ml-2';
                 deleteBtn.innerHTML = '<i class="fas fa-trash mr-1"></i> حذف المادة';
@@ -2050,6 +2177,7 @@ ul {
                 };
                 
                 const closeBtn = modalHeader.querySelector('button');
+                modalHeader.insertBefore(editBtn, closeBtn);
                 modalHeader.insertBefore(deleteBtn, closeBtn);
             }
             
@@ -2495,6 +2623,207 @@ ul {
                 }
             }, 500);
         });
+
+        // Edit Course Modal Functions
+        function openEditCourseModal(courseCode) {
+            const course = courses[courseCode];
+            if (!course) {
+                alert("المادة غير موجودة في النظام");
+                return;
+            }
+
+            // Populate edit form with current course data
+            document.getElementById('editCourseCode').value = courseCode;
+            document.getElementById('editCourseTitle').value = course.title;
+            document.getElementById('editCourseDesc').value = course.desc;
+            document.getElementById('editCourseMajor').value = course.major;
+            document.getElementById('editCourseLevel').value = course.level;
+            document.getElementById('editCourseCredits').value = course.credits || 3;
+
+            // Populate resources
+            const container = document.getElementById('editResourcesContainer');
+            container.innerHTML = '';
+            
+            if (course.resources && course.resources.length > 0) {
+                course.resources.forEach(resource => {
+                    addEditResourceInputWithData(resource);
+                });
+            } else {
+                addEditResourceInput();
+            }
+
+            // Show modal
+            const modal = document.getElementById("editCourseModal");
+            const modalContent = modal.querySelector('.glass-card');
+            modal.classList.remove("hidden");
+            modalContent.classList.add("modal-enter");
+            document.body.style.overflow = 'hidden';
+            
+            // Remove animation class after animation ends
+            setTimeout(() => {
+                modalContent.classList.remove("modal-enter");
+            }, 300);
+        }
+
+        function closeEditCourseModal() {
+            const modal = document.getElementById("editCourseModal");
+            modal.classList.add("hidden");
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('editCourseForm').reset();
+            // Reset resources to one input
+            const container = document.getElementById('editResourcesContainer');
+            container.innerHTML = '';
+        }
+
+        function addEditResourceInput() {
+            const container = document.getElementById('editResourcesContainer');
+            const newResourceDiv = document.createElement('div');
+            newResourceDiv.className = 'resource-input flex gap-3';
+            newResourceDiv.innerHTML = `
+                <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                    <option value="youtube">يوتيوب</option>
+                    <option value="drive">درايف</option>
+                    <option value="telegram">تليجرام</option>
+                    <option value="mega">ميجا</option>
+                    <option value="other">أخرى</option>
+                </select>
+                <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر">
+                <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://...">
+                <button type="button" onclick="removeEditResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newResourceDiv);
+        }
+
+        function addEditResourceInputWithData(resource) {
+            const container = document.getElementById('editResourcesContainer');
+            const newResourceDiv = document.createElement('div');
+            newResourceDiv.className = 'resource-input flex gap-3';
+            newResourceDiv.innerHTML = `
+                <select class="resource-type px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white focus:border-photon focus:outline-none">
+                    <option value="youtube" ${resource.type === 'youtube' ? 'selected' : ''}>يوتيوب</option>
+                    <option value="drive" ${resource.type === 'drive' ? 'selected' : ''}>درايف</option>
+                    <option value="telegram" ${resource.type === 'telegram' ? 'selected' : ''}>تليجرام</option>
+                    <option value="mega" ${resource.type === 'mega' ? 'selected' : ''}>ميجا</option>
+                    <option value="other" ${resource.type === 'other' ? 'selected' : ''}>أخرى</option>
+                </select>
+                <input type="text" class="resource-text flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="عنوان المصدر" value="${resource.text}">
+                <input type="url" class="resource-link flex-1 px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none" placeholder="https://..." value="${resource.link}">
+                <button type="button" onclick="removeEditResource(this)" class="px-3 py-2 text-supernova hover:text-white transition duration-300">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newResourceDiv);
+        }
+
+        function removeEditResource(button) {
+            const container = document.getElementById('editResourcesContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        // Edit Course Form Submission
+        document.getElementById('editCourseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const courseCode = document.getElementById('editCourseCode').value;
+            const courseTitle = formData.get('courseTitle').trim();
+            const courseDesc = formData.get('courseDesc').trim();
+            const courseMajor = formData.get('courseMajor');
+            const courseLevel = parseInt(formData.get('courseLevel'));
+            const courseCredits = parseInt(formData.get('courseCredits')) || 3;
+
+            // Validate required fields
+            if (!courseTitle || !courseDesc || !courseMajor || !courseLevel) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            // Collect resources
+            const resourceInputs = document.querySelectorAll('#editResourcesContainer .resource-input');
+            const resources = [];
+            
+            resourceInputs.forEach(input => {
+                const type = input.querySelector('.resource-type').value;
+                const text = input.querySelector('.resource-text').value.trim();
+                const link = input.querySelector('.resource-link').value.trim();
+                
+                if (text && link) {
+                    resources.push({ type, text, link });
+                }
+            });
+
+            // Update course object
+            const updatedCourse = {
+                title: courseTitle,
+                desc: courseDesc,
+                credits: courseCredits,
+                prereq: courses[courseCode].prereq || null,
+                schedule: courses[courseCode].schedule || null,
+                instructor: courses[courseCode].instructor || null,
+                hours: courseCredits,
+                major: courseMajor,
+                level: courseLevel,
+                resources: resources,
+                updatedAt: Date.now()
+            };
+
+            // Update locally
+            courses[courseCode] = updatedCourse;
+            console.log('Updated course in local courses object:', courseCode);
+
+            // Save to Firebase
+            updateCourseInFirebase(courseCode, updatedCourse);
+
+            // Show success message
+            showSuccessNotification('✅ تم تحديث المادة بنجاح!', courseTitle);
+
+            // Close modal
+            closeEditCourseModal();
+
+            // Refresh displays if needed
+            setTimeout(() => {
+                // Clear search to show all content and refresh display
+                clearSearch();
+                
+                // Force refresh to show updated course
+                if (searchCourses && typeof searchCourses === 'function') {
+                    searchCourses();
+                    clearSearch();
+                }
+            }, 500);
+        });
+
+        // Function to update course in Firebase
+        async function updateCourseInFirebase(courseCode, courseData) {
+            console.log('🔄 محاولة تحديث المادة في Firebase:', courseCode);
+            try {
+                await coursesCollection.doc(courseCode).update({
+                    ...courseData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log('✅ تم تحديث المادة في Firebase بنجاح:', courseCode);
+                
+                // Also update localStorage as backup
+                const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                savedCourses[courseCode] = {...courseData, fromFirebase: true};
+                localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+                
+            } catch (error) {
+                console.error('❌ خطأ في تحديث المادة في Firebase:', error);
+                alert('فشل في التحديث في السحابة. سيتم التحديث محلياً فقط.');
+                
+                // Fallback to localStorage only
+                const savedCourses = JSON.parse(localStorage.getItem('userAddedCourses') || '{}');
+                savedCourses[courseCode] = {...courseData, fromLocal: true};
+                localStorage.setItem('userAddedCourses', JSON.stringify(savedCourses));
+            }
+        }
 
         // Firebase Functions for Course Management
         
