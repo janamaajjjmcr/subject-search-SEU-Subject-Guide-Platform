@@ -1813,31 +1813,31 @@ ul {
                 <!-- Course Code -->
                 <div>
                     <label for="courseCode" class="block text-white font-medium mb-2">
-                        رمز المادة <span class="text-supernova">*</span>
+                        رمز المادة <span class="text-supernova">*</span> <span class="text-xs text-stardust/70">(أحرف وأرقام معاً)</span>
                     </label>
                     <input type="text" id="courseCode" name="courseCode" required 
                            class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
-                           placeholder="مثال: CS123, DS456, IT789">
+                           placeholder="مثال: BUS101, ACC240, MKT350">
                 </div>
 
                 <!-- Course Title -->
                 <div>
                     <label for="courseTitle" class="block text-white font-medium mb-2">
-                        اسم المادة <span class="text-supernova">*</span>
+                        اسم المادة <span class="text-supernova">*</span> <span class="text-xs text-stardust/70">(3 أحرف على الأقل)</span>
                     </label>
                     <input type="text" id="courseTitle" name="courseTitle" required 
                            class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
-                           placeholder="مثال: البرمجة الشيئية">
+                           placeholder="مثال: مبادئ الإدارة">
                 </div>
 
                 <!-- Course Description -->
                 <div>
                     <label for="courseDesc" class="block text-white font-medium mb-2">
-                        وصف المادة <span class="text-supernova">*</span>
+                        وصف المادة <span class="text-supernova">*</span> <span class="text-xs text-stardust/70">(6 كلمات على الأقل)</span>
                     </label>
                     <textarea id="courseDesc" name="courseDesc" required rows="4"
                               class="w-full px-4 py-3 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none resize-none"
-                              placeholder="وصف مختصر عن محتوى المادة وأهدافها..."></textarea>
+                              placeholder="وصف مختصر عن محتوى المادة وأهدافها ومواضيعها الأساسية..."></textarea>
                 </div>
 
                 <!-- Major -->
@@ -1943,18 +1943,18 @@ ul {
 
                 <!-- Course Title -->
                 <div>
-                    <label class="block text-white font-medium mb-2">اسم المادة *</label>
+                    <label class="block text-white font-medium mb-2">اسم المادة * <span class="text-xs text-stardust/70">(3 أحرف على الأقل)</span></label>
                     <input type="text" id="editCourseTitle" name="courseTitle" required
                            class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none"
-                           placeholder="مدخل إلى البرمجة">
+                           placeholder="مثال: مبادئ الإدارة">
                 </div>
 
                 <!-- Course Description -->
                 <div>
-                    <label class="block text-white font-medium mb-2">وصف المادة *</label>
+                    <label class="block text-white font-medium mb-2">وصف المادة * <span class="text-xs text-stardust/70">(6 كلمات على الأقل)</span></label>
                     <textarea id="editCourseDesc" name="courseDesc" required rows="3"
                               class="w-full px-3 py-2 bg-nebula/50 border border-nebula rounded-lg text-white placeholder-stardust/50 focus:border-photon focus:outline-none resize-none"
-                              placeholder="وصف مختصر عن محتوى المادة"></textarea>
+                              placeholder="وصف مختصر عن محتوى المادة وأهدافها ومواضيعها"></textarea>
                 </div>
 
                 <!-- Course Details Row -->
@@ -2527,6 +2527,148 @@ ul {
             return code;
         }
 
+        // Function to validate course input
+        function validateCourseInput(courseTitle, courseDesc, courseCode = null) {
+            const errors = [];
+            
+            // Check course code format (if provided)
+            if (courseCode) {
+                const hasLetters = /[A-Za-z]/.test(courseCode);
+                const hasNumbers = /[0-9]/.test(courseCode);
+                
+                if (!hasLetters || !hasNumbers) {
+                    errors.push('رمز المادة يجب أن يحتوي على أحرف وأرقام معاً (مثال: BUS101, ACC240)');
+                }
+                
+                if (courseCode.length < 3) {
+                    errors.push('رمز المادة يجب أن يكون 3 أحرف على الأقل');
+                }
+            }
+            
+            // Check course title length (minimum 3 characters)
+            if (courseTitle.length < 3) {
+                errors.push('اسم المادة يجب أن يكون 3 أحرف على الأقل');
+            }
+            
+            // Check course description word count (minimum 6 words)
+            const wordCount = courseDesc.split(/\s+/).filter(word => word.length > 0).length;
+            if (wordCount < 6) {
+                errors.push('وصف المادة يجب أن يحتوي على 6 كلمات على الأقل');
+            }
+            
+            return errors;
+        }
+
+        // Function to add real-time validation feedback
+        function setupRealtimeValidation() {
+            // Add validation for Add Course form
+            const addCodeInput = document.getElementById('courseCode');
+            const addTitleInput = document.getElementById('courseTitle');
+            const addDescInput = document.getElementById('courseDesc');
+            
+            // Add validation for Edit Course form
+            const editTitleInput = document.getElementById('editCourseTitle');
+            const editDescInput = document.getElementById('editCourseDesc');
+            
+            // Create validation message elements
+            function createValidationMessage(inputElement, messageId) {
+                const existingMessage = document.getElementById(messageId);
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.id = messageId;
+                messageDiv.className = 'text-xs mt-1 transition-colors duration-300';
+                inputElement.parentNode.appendChild(messageDiv);
+                return messageDiv;
+            }
+            
+            // Course code validation
+            function validateCourseCode(input, messageId) {
+                const messageDiv = createValidationMessage(input, messageId);
+                const value = input.value.trim().toUpperCase();
+                const hasLetters = /[A-Za-z]/.test(value);
+                const hasNumbers = /[0-9]/.test(value);
+                
+                if (value.length === 0) {
+                    messageDiv.textContent = '';
+                    messageDiv.className = 'text-xs mt-1 transition-colors duration-300';
+                } else if (value.length < 3) {
+                    messageDiv.textContent = `${value.length}/3 - يحتاج ${3 - value.length} أحرف أخرى`;
+                    messageDiv.className = 'text-xs mt-1 text-supernova transition-colors duration-300';
+                } else if (!hasLetters || !hasNumbers) {
+                    messageDiv.textContent = 'يجب أن يحتوي على أحرف وأرقام معاً (مثال: BUS101)';
+                    messageDiv.className = 'text-xs mt-1 text-supernova transition-colors duration-300';
+                } else {
+                    messageDiv.textContent = '✓ رمز صحيح';
+                    messageDiv.className = 'text-xs mt-1 text-green-400 transition-colors duration-300';
+                }
+            }
+            
+            // Title validation
+            function validateTitle(input, messageId) {
+                const messageDiv = createValidationMessage(input, messageId);
+                const value = input.value.trim();
+                const charCount = value.length;
+                
+                if (charCount === 0) {
+                    messageDiv.textContent = '';
+                    messageDiv.className = 'text-xs mt-1 transition-colors duration-300';
+                } else if (charCount < 3) {
+                    messageDiv.textContent = `${charCount}/3 - يحتاج ${3 - charCount} أحرف أخرى`;
+                    messageDiv.className = 'text-xs mt-1 text-supernova transition-colors duration-300';
+                } else {
+                    messageDiv.textContent = `${charCount}/3 - ✓ مقبول`;
+                    messageDiv.className = 'text-xs mt-1 text-green-400 transition-colors duration-300';
+                }
+            }
+            
+            // Description validation
+            function validateDescription(input, messageId) {
+                const messageDiv = createValidationMessage(input, messageId);
+                const value = input.value.trim();
+                const wordCount = value.split(/\s+/).filter(word => word.length > 0).length;
+                
+                if (value.length === 0) {
+                    messageDiv.textContent = '';
+                    messageDiv.className = 'text-xs mt-1 transition-colors duration-300';
+                } else if (wordCount < 6) {
+                    messageDiv.textContent = `${wordCount}/6 كلمات - يحتاج ${6 - wordCount} كلمات أخرى`;
+                    messageDiv.className = 'text-xs mt-1 text-supernova transition-colors duration-300';
+                } else {
+                    messageDiv.textContent = `${wordCount}/6 كلمات - ✓ مقبول`;
+                    messageDiv.className = 'text-xs mt-1 text-green-400 transition-colors duration-300';
+                }
+            }
+            
+            // Add event listeners
+            if (addCodeInput) {
+                addCodeInput.addEventListener('input', function() {
+                    // Convert to uppercase automatically
+                    this.value = this.value.toUpperCase();
+                    validateCourseCode(addCodeInput, 'add-code-validation');
+                });
+            }
+            if (addTitleInput) {
+                addTitleInput.addEventListener('input', () => validateTitle(addTitleInput, 'add-title-validation'));
+            }
+            if (addDescInput) {
+                addDescInput.addEventListener('input', () => validateDescription(addDescInput, 'add-desc-validation'));
+            }
+            if (editTitleInput) {
+                editTitleInput.addEventListener('input', () => validateTitle(editTitleInput, 'edit-title-validation'));
+            }
+            if (editDescInput) {
+                editDescInput.addEventListener('input', () => validateDescription(editDescInput, 'edit-desc-validation'));
+            }
+        }
+
+        // Call setup function when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupRealtimeValidation();
+        });
+
         // Add Course Form Submission
         document.getElementById('addCourseForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -2542,6 +2684,13 @@ ul {
             // Validate required fields
             if (!courseCode || !courseTitle || !courseDesc || !courseMajor || !courseLevel) {
                 alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            // Validate course code, title and description
+            const validationErrors = validateCourseInput(courseTitle, courseDesc, courseCode);
+            if (validationErrors.length > 0) {
+                alert('خطأ في البيانات:\n\n' + validationErrors.join('\n'));
                 return;
             }
 
@@ -2740,6 +2889,13 @@ ul {
             // Validate required fields
             if (!courseTitle || !courseDesc || !courseMajor || !courseLevel) {
                 alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            // Validate course title and description
+            const validationErrors = validateCourseInput(courseTitle, courseDesc);
+            if (validationErrors.length > 0) {
+                alert('خطأ في البيانات:\n\n' + validationErrors.join('\n'));
                 return;
             }
 
