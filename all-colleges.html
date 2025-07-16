@@ -290,6 +290,245 @@
                 font-size: 14px;
             }
         }
+
+        /* Delete Button Styles from Uiverse.io */
+        /* New Delete Button Design - From Uiverse.io by hannahyockel */
+        .delete-tooltip-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1em;
+            border: 0px solid transparent;
+            background-color: rgba(239, 68, 68, 0.08);
+            border-radius: 1.25em;
+            transition: all 0.2s linear;
+            position: relative;
+            cursor: pointer;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .delete-tooltip-btn:hover {
+            box-shadow: 3.4px 2.5px 4.9px rgba(239, 68, 68, 0.025),
+                8.6px 6.3px 12.4px rgba(239, 68, 68, 0.035),
+                17.5px 12.8px 25.3px rgba(239, 68, 68, 0.045),
+                36.1px 26.3px 52.2px rgba(239, 68, 68, 0.055),
+                99px 72px 143px rgba(239, 68, 68, 0.08);
+            background-color: rgba(239, 68, 68, 0.12);
+        }
+
+        .delete-tooltip-btn svg {
+            width: 25px;
+            height: 25px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-tooltip-btn svg path {
+            fill: #ef4444;
+        }
+
+        .delete-tooltip-btn:hover svg path {
+            fill: #dc2626;
+        }
+
+        .delete-tooltiptext {
+            visibility: hidden;
+            width: 4em;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1000;
+            top: 25%;
+            left: 110%;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .delete-tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 100%;
+            margin-top: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+        }
+
+        .delete-tooltip-btn:hover .delete-tooltiptext {
+            visibility: visible;
+        }
+
+        /* Enhanced mobile edit button to match new delete style */
+        .mobile-edit-btn-new {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1em;
+            border: 0px solid transparent;
+            background-color: rgba(59, 130, 246, 0.08);
+            border-radius: 1.25em;
+            transition: all 0.2s linear;
+            position: relative;
+            cursor: pointer;
+            min-width: 44px;
+            min-height: 44px;
+            margin-left: 8px;
+        }
+
+        .mobile-edit-btn-new:hover {
+            box-shadow: 3.4px 2.5px 4.9px rgba(59, 130, 246, 0.025),
+                8.6px 6.3px 12.4px rgba(59, 130, 246, 0.035),
+                17.5px 12.8px 25.3px rgba(59, 130, 246, 0.045),
+                36.1px 26.3px 52.2px rgba(59, 130, 246, 0.055),
+                99px 72px 143px rgba(59, 130, 246, 0.08);
+            background-color: rgba(59, 130, 246, 0.12);
+        }
+
+        .mobile-edit-btn-new .edit-tooltiptext {
+            visibility: hidden;
+            width: 4em;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1000;
+            top: 25%;
+            left: 110%;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .mobile-edit-btn-new .edit-tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 100%;
+            margin-top: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+        }
+
+        .mobile-edit-btn-new:hover .edit-tooltiptext {
+            visibility: visible;
+        }
+
+        /* Resource delete button design */
+        .resource-delete-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5em;
+            border: 0px solid transparent;
+            background-color: rgba(239, 68, 68, 0.08);
+            border-radius: 0.75em;
+            transition: all 0.2s linear;
+            position: relative;
+            cursor: pointer;
+            min-width: 36px;
+            min-height: 36px;
+        }
+
+        .resource-delete-btn:hover {
+            box-shadow: 2px 1.5px 3px rgba(239, 68, 68, 0.025),
+                5px 4px 8px rgba(239, 68, 68, 0.035),
+                10px 8px 16px rgba(239, 68, 68, 0.045),
+                20px 15px 30px rgba(239, 68, 68, 0.055),
+                50px 36px 72px rgba(239, 68, 68, 0.08);
+            background-color: rgba(239, 68, 68, 0.12);
+        }
+
+        .resource-delete-btn svg {
+            width: 16px;
+            height: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .resource-delete-btn svg path {
+            fill: #ef4444;
+        }
+
+        .resource-delete-btn:hover svg path {
+            fill: #dc2626;
+        }
+
+        .resource-delete-btn .resource-delete-tooltiptext {
+            visibility: hidden;
+            width: 3em;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 3px 0;
+            position: absolute;
+            z-index: 1000;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .resource-delete-btn:hover .resource-delete-tooltiptext {
+            visibility: visible;
+        }
+
+        /* Responsive adjustments for new button design */
+        @media (max-width: 768px) {
+            .delete-tooltip-btn,
+            .mobile-edit-btn-new {
+                padding: 0.8em;
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .delete-tooltip-btn svg,
+            .mobile-edit-btn-new svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .delete-tooltiptext,
+            .mobile-edit-btn-new .edit-tooltiptext {
+                left: -20px;
+                top: -35px;
+                width: 5em;
+            }
+
+            .delete-tooltiptext::after,
+            .mobile-edit-btn-new .edit-tooltiptext::after {
+                top: 100%;
+                left: 50%;
+                right: auto;
+                margin-top: 0;
+                margin-left: -5px;
+                border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+            }
+        }
+
+        /* Light mode adjustments for new buttons */
+        .light-mode .delete-tooltip-btn {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .light-mode .delete-tooltip-btn:hover {
+            background-color: rgba(239, 68, 68, 0.15);
+        }
+
+        .light-mode .mobile-edit-btn-new {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
     </style>
 </head>
 
