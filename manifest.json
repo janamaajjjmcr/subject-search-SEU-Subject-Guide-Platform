@@ -1,0 +1,33 @@
+{
+  "name": "كلية الحوسبة - جامعة SEU",
+  "short_name": "كلية الحوسبة",
+  "description": "محرك بحث شامل لمواد كلية الحوسبة في جامعة SEU",
+  "start_url": "/subject-search/",
+  "display": "standalone",
+  "background_color": "#0a0b1e",
+  "theme_color": "#64ffda",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["education", "reference"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMwYTBiMWUiLz4KPHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4PSIzMiIgeT0iMzIiPgo8cGF0aCBkPSJNMTIgMkMxNy41MiAyIDIyIDYuNDggMjIgMTJTMTcuNTIgMjIgMTIgMjJTMiAxNy41MiAyIDEyUzYuNDggMiAxMiAyWk0xNiAxMS4wOUM3LjQ1IDEwLjU5IDcuNDUgMTMuNDEgMTYgMTIuOTFWMTEuMDlaIiBmaWxsPSIjNjRmZmRhIi8+CjwvZz4KPC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iNjQiIGZpbGw9IiMwYTBiMWUiLz4KPHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4PSI5NiIgeT0iOTYiPgo8cGF0aCBkPSJNMTIgMkMxNy41MiAyIDIyIDYuNDggMjIgMTJTMTcuNTIgMjIgMTIgMjJTMiAxNy41MiAyIDEyUzYuNDggMiAxMiAyWk0xNiAxMS4wOUM3LjQ1IDEwLjU5IDcuNDUgMTMuNDEgMTYgMTIuOTFWMTEuMDlaIiBmaWxsPSIjNjRmZmRhIi8+CjwvZz4KPC9zdmc+",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4MCIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjgwIDcyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyODAiIGhlaWdodD0iNzIwIiBmaWxsPSIjMGEwYjFlIi8+Cjx0ZXh0IHg9IjY0MCIgeT0iMzYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjRmZmRhIiBmb250LXNpemU9IjQ4Ij5rbGlhdCBBbGhvc2JhIDwvdGV4dD4KPC9zdmc+",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ]
+}

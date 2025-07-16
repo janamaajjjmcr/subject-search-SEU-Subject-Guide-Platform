@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- الصفحة الرئيسية -->
+  <url>
+    <loc>https://fxrg.github.io/subject-search/</loc>
+    <lastmod>2025-01-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/"/>
+  </url>
+  
+  <!-- صفحة جميع الكليات -->
+  <url>
+    <loc>https://fxrg.github.io/subject-search/all-colleges.html</loc>
+    <lastmod>2025-01-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/all-colleges.html"/>
+  </url>
+  
+  <!-- صفحة كلية إدارة الأعمال -->
+  <url>
+    <loc>https://fxrg.github.io/subject-search/business.html</loc>
+    <lastmod>2025-01-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/business.html"/>
+  </url>
+  
+  <!-- صفحة كلية العلوم الصحية -->
+  <url>
+    <loc>https://fxrg.github.io/subject-search/health.html</loc>
+    <lastmod>2025-01-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/health.html"/>
+  </url>
+
+</urlset>

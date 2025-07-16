@@ -1,0 +1,22 @@
+# Robots.txt for كلية الحوسبة - جامعة SEU
+# https://fxrg.github.io/subject-search
+
+User-agent: *
+Allow: /
+
+# Allow all pages and resources
+Allow: /*.html
+Allow: /*.css
+Allow: /*.js
+Allow: /*.json
+
+# Disallow sensitive files
+Disallow: /Firebase_Setup_Instructions.md
+Disallow: /README.md
+Disallow: /*.md
+
+# Sitemap location
+Sitemap: https://fxrg.github.io/subject-search/sitemap.xml
+
+# Crawl-delay (optional - 1 second delay between requests)
+Crawl-delay: 1
