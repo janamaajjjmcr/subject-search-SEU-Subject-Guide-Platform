@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حسابي | جامعة SEU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="account-enhanced.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    
+    <style>
+        :root {
+            --primary: #1a0b2e;
+            --secondary: #16213e;
+            --accent: #6c63ff;
+            --plasma: #8b5cf6;
+            --aurora: #06b6d4;
+            --nebula: #3b82f6;
+            --cosmic: #1e293b;
+            --stardust: #cbd5e1;
+            --photon: #f8fafc;
+            --text: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--cosmic) 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--aurora) 50%, var(--plasma) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--plasma) 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .pattern-overlay {
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(108, 99, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+        }
+
+        /* Authentication Form Styles - From Uiverse.io */
+        .auth-form {
+            position: relative;
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .auth-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6c63ff, #8b5cf6, #06b6d4);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            direction: rtl !important;
+            text-align: right !important;
+            unicode-bidi: plaintext;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6c63ff;
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        .form-label {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            padding: 0 10px;
+            color: #6c63ff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #6c63ff 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(108, 99, 255, 0.4);
+        }
+
+        .auth-button:active {
+            transform: translateY(0);
+        }
+
+        /* User Profile Card */
+        .profile-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* My Courses Styles */
+        .my-course-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .my-course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--plasma), var(--aurora));
+        }
+
+        .my-course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(108, 99, 255, 0.2);
+            border-color: rgba(108, 99, 255, 0.3);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 8px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--plasma) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Delete Button for Courses */
+        .delete-course-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 35px;
+            height: 35px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .my-course-card:hover .delete-course-btn {
+            opacity: 1;
+        }
+
+        .delete-course-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            --primary: #f8fafc;
+            --secondary: #e2e8f0;
+            --text: #1a202c;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            color: #1a202c;
+        }
+
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body.light-mode .auth-form {
+            background: linear-gradient(45deg, #ffffff, #f8fafc);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-mode .form-input {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.2);
+            color: #1a202c;
+        }
+
+        body.light-mode .form-input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        body.light-mode .profile-card,
+        body.light-mode .my-course-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-form {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .tab-nav {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="backdrop-blur-lg bg-cosmic/90 border-b border-nebula/20 py-6 px-4 sticky top-0 z-50">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <!-- Back to Main -->
+                <a href="index.html" class="flex items-center text-stardust hover:text-aurora transition duration-300 font-medium">
+                    <i class="fas fa-arrow-right mr-2"></i>
+                    العودة للرئيسية
+                </a>
+                
+                <!-- Logo/Title -->
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center mr-4">
+                        <i class="fas fa-user text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold font-playfair">
+                            <span class="gradient-text">حسابي</span>
+                        </h1>
+                        <p class="text-stardust/70 mt-1 font-medium">إدارة الحساب والمواد</p>
+                    </div>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition duration-300">
+                    <i class="fas fa-sun text-aurora"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="absolute inset-0 pattern-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="relative z-10 container mx-auto py-8 px-4 min-h-screen">
+        <!-- Message Container -->
+        <div id="message-container" class="fixed top-20 right-4 z-50 w-full max-w-md space-y-2" style="pointer-events: none;">
+        </div>
+        
+        <!-- Authentication Section (Hidden when logged in) -->
+        <div id="auth-section" class="max-w-md mx-auto">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-button active" onclick="switchTab('login')">تسجيل الدخول</button>
+                <button class="tab-button" onclick="switchTab('register')">إنشاء حساب</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-tab" class="tab-content active">
+                <div class="auth-form">
+                    <div class="form-header">
+                        <div class="form-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h2 class="form-title">تسجيل الدخول</h2>
+                        <p class="form-subtitle">مرحباً بعودتك! سجل دخولك للوصول إلى حسابك</p>
+                    </div>
+                    
+                    <form id="login-form" class="space-y-6">
+                        <div class="form-group">
+                            <label class="form-label" for="login-username">
+                                <i class="fas fa-user"></i>
+                                البريد الإلكتروني أو اسم المستخدم
+                            </label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   placeholder="أدخل بريدك الإلكتروني أو اسم المستخدم" 
+                                   id="login-username" 
+                                   required
+                                   autocomplete="username">
+                            <div class="input-helper">
+                                <i class="fas fa-info-circle"></i>
+                                يمكنك استخدام البريد الإلكتروني أو اسم المستخدم
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="login-password">
+                                <i class="fas fa-lock"></i>
+                                كلمة المرور
+                            </label>
+                            <div class="relative">
+                                <input type="password" 
+                                       class="form-input" 
+                                       placeholder="أدخل كلمة المرور" 
+                                       id="login-password" 
+                                       required
+                                       autocomplete="current-password">
+                                <button type="button" 
+                                        class="password-toggle" 
+                                        onclick="togglePassword('login-password')"
+                                        aria-label="إظهار كلمة المرور">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="auth-button">
+                            <i class="fas fa-sign-in-alt"></i>
+                            دخول الآن
+                        </button>
+                        
+                        <div class="form-footer">
+                            <p>ليس لديك حساب؟ 
+                                <button type="button" onclick="switchTab('register')" class="link-button">
+                                    إنشاء حساب جديد
+                                </button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-tab" class="tab-content">
+                <div class="auth-form">
+                    <div class="form-header">
+                        <div class="form-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h2 class="form-title">إنشاء حساب جديد</h2>
+                        <p class="form-subtitle">انضم إلينا اليوم! أنشئ حسابك المجاني</p>
+                    </div>
+                    
+                    <form id="register-form" class="space-y-6">
+                        <div class="form-group">
+                            <label class="form-label" for="register-fullname">
+                                <i class="fas fa-id-card"></i>
+                                الاسم الكامل
+                            </label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   placeholder="أدخل اسمك الثلاثي كاملاً" 
+                                   id="register-fullname" 
+                                   required
+                                   autocomplete="name">
+                            <div class="input-helper">
+                                <i class="fas fa-user-check"></i>
+                                سيظهر هذا الاسم في ملفك الشخصي
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="register-username">
+                                <i class="fas fa-at"></i>
+                                اسم المستخدم
+                            </label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   placeholder="اختر اسم مستخدم مميز وفريد" 
+                                   id="register-username" 
+                                   required
+                                   autocomplete="username">
+                            <div class="input-helper">
+                                <i class="fas fa-lightbulb"></i>
+                                استخدم أحرف إنجليزية وأرقام فقط (بدون مسافات)
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="register-email">
+                                <i class="fas fa-envelope"></i>
+                                البريد الإلكتروني
+                            </label>
+                            <input type="email" 
+                                   class="form-input" 
+                                   placeholder="أدخل عنوان بريدك الإلكتروني" 
+                                   id="register-email" 
+                                   required
+                                   autocomplete="email">
+                            <div class="input-helper">
+                                <i class="fas fa-shield-alt"></i>
+                                سنرسل لك رسالة تأكيد (اختياري مع Firebase)
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="register-password">
+                                <i class="fas fa-key"></i>
+                                كلمة المرور
+                            </label>
+                            <div class="relative">
+                                <input type="password" 
+                                       class="form-input" 
+                                       placeholder="اختر كلمة مرور قوية وآمنة" 
+                                       id="register-password" 
+                                       required
+                                       autocomplete="new-password">
+                                <button type="button" 
+                                        class="password-toggle" 
+                                        onclick="togglePassword('register-password')"
+                                        aria-label="إظهار كلمة المرور">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-requirements">
+                                <h4><i class="fas fa-lock"></i> متطلبات كلمة المرور:</h4>
+                                <ul>
+                                    <li><i class="fas fa-check-circle"></i> 6 أحرف على الأقل</li>
+                                    <li><i class="fas fa-check-circle"></i> مزيج من الأرقام والحروف (مستحسن)</li>
+                                    <li><i class="fas fa-check-circle"></i> تجنب استخدام معلومات شخصية</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="auth-button">
+                            <i class="fas fa-user-plus"></i>
+                            إنشاء الحساب الآن
+                        </button>
+                        
+                        <div class="form-footer">
+                            <p>لديك حساب بالفعل؟ 
+                                <button type="button" onclick="switchTab('login')" class="link-button">
+                                    تسجيل الدخول
+                                </button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Dashboard (Hidden when not logged in) -->
+        <div id="dashboard-section" class="hidden max-w-6xl mx-auto">
+            <!-- User Profile Card -->
+            <div class="profile-card mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4 space-x-reverse">
+                        <div class="w-16 h-16 rounded-full gradient-bg flex items-center justify-center">
+                            <i class="fas fa-user text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold" id="user-fullname">اسم المستخدم</h3>
+                            <p class="text-stardust/70" id="user-email">user@example.com</p>
+                            <p class="text-sm text-stardust/60">عضو منذ <span id="user-join-date"></span></p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="px-6 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition duration-300 border border-red-500/30">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+
+            <!-- My Courses Section -->
+            <div class="glass-card p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold gradient-text">
+                        <i class="fas fa-book mr-3"></i>
+                        موادي المضافة
+                    </h2>
+                    <div class="flex items-center space-x-4 space-x-reverse text-stardust/70">
+                        <span>إجمالي المواد: <span id="total-courses" class="font-bold text-aurora">0</span></span>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="text-center py-12">
+                    <i class="fas fa-book-open text-6xl text-stardust/30 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-stardust/70 mb-2">لم تقم بإضافة أي مواد بعد</h3>
+                    <p class="text-stardust/50 mb-6">ابدأ بإضافة المواد الدراسية لتراها هنا</p>
+                    <a href="index.html" class="inline-flex items-center px-6 py-3 gradient-bg text-white rounded-lg hover:scale-105 transition duration-300">
+                        <i class="fas fa-plus mr-2"></i>
+                        إضافة مادة جديدة
+                    </a>
+                </div>
+
+                <!-- Courses Grid -->
+                <div id="my-courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Courses will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div id="message-container" class="fixed top-20 right-4 z-50 space-y-2">
+            <!-- Messages will appear here -->
+        </div>
+    </main>
+
+    <!-- Include Authentication System -->
+    <script src="auth.js"></script>
+    <script src="firebase-auth.js"></script>
+    <script src="account-manager.js"></script>
+    
+    <!-- Include JavaScript files -->
+    <script src="auth.js"></script>
+    <script src="firebase-auth.js"></script>
+    <script src="account-manager.js"></script>
+    
+    <script>
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM Content Loaded - Initializing systems...');
+            
+            // Initialize AuthSystem first
+            if (typeof AuthSystem !== 'undefined') {
+                window.authSystem = new AuthSystem();
+                console.log('✅ AuthSystem initialized');
+            } else {
+                console.error('❌ AuthSystem not found');
+            }
+            
+            // Initialize AccountManager 
+            if (typeof AccountManager !== 'undefined') {
+                window.accountManager = new AccountManager();
+                console.log('✅ AccountManager initialized');
+            } else {
+                console.error('❌ AccountManager not found');
+            }
+            
+            // Initialize Firebase Auth if available
+            if (typeof FirebaseAuthManager !== 'undefined') {
+                window.firebaseAuth = new FirebaseAuthManager();
+                console.log('✅ FirebaseAuth initialized');
+            }
+            
+            // Check Firebase connection and show status
+            setTimeout(() => {
+                const subtitles = document.querySelectorAll('.form-subtitle');
+                const isFirebaseConnected = typeof firebase !== 'undefined' && firebase.apps.length > 0;
+                const statusHTML = isFirebaseConnected ?
+                    '<div class="firebase-status connected"><i class="fas fa-cloud-upload-alt"></i> متصل بـ Firebase</div>' :
+                    '<div class="firebase-status local"><i class="fas fa-database"></i> وضع التخزين المحلي</div>';
+                
+                subtitles.forEach(subtitle => {
+                    if (!subtitle.nextElementSibling || !subtitle.nextElementSibling.classList.contains('firebase-status')) {
+                        subtitle.insertAdjacentHTML('afterend', statusHTML);
+                    }
+                });
+                
+                console.log(isFirebaseConnected ? '🔥 Firebase Connected' : '💾 Using localStorage');
+            }, 1000);
+        });
+
+        // Tab switching function
+        function switchTab(tabName, buttonElement) {
+            console.log(`🔄 Switching to ${tabName} tab`);
+            
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            const targetTab = document.getElementById(`${tabName}-tab`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            
+            // Add active class to clicked button
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            } else {
+                // Find button by text content
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    if ((tabName === 'login' && btn.textContent.includes('تسجيل الدخول')) ||
+                        (tabName === 'register' && btn.textContent.includes('إنشاء حساب'))) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // Password toggle function
+        function togglePassword(inputId) {
+            console.log(`👁️ Toggling password for ${inputId}`);
+            
+            const input = document.getElementById(inputId);
+            const button = input.parentElement.querySelector('.password-toggle');
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                button.setAttribute('aria-label', 'إخفاء كلمة المرور');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                button.setAttribute('aria-label', 'إظهار كلمة المرور');
+            }
+        }
+
+        // Debug localStorage function
+        function debugLocalStorage() {
+            console.log('📊 LocalStorage Debug:');
+            console.log('Users:', localStorage.getItem('courseApp_users'));
+            console.log('Current User:', localStorage.getItem('courseApp_currentUser'));
+        }
+
+        // Call debug on console
+        window.debugLocalStorage = debugLocalStorage;
+        
+        console.log('🎯 Account page scripts loaded successfully');
+    </script>
+    
+    <style>
+        .firebase-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .firebase-status.connected {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .firebase-status.local {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>

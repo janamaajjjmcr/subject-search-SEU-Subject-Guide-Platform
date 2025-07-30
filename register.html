@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إنشاء حساب جديد</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>إنشاء حساب جديد</h2>
+    <form id="registerForm">
+      <input type="text" id="registerName" placeholder="الاسم الكامل" required>
+      <input type="email" id="registerEmail" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="registerPassword" placeholder="كلمة المرور" required>
+      <button type="submit">تسجيل</button>
+    </form>
+    <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+    <div id="registerError" style="color:red;"></div>
+  </div>
+  <script src="firebase-auth.js"></script>
+  <script>
+    document.getElementById('registerForm').onsubmit = function(e) {
+      e.preventDefault();
+      const name = registerName.value;
+      const email = registerEmail.value;
+      const password = registerPassword.value;
+      registerUser(name, email, password);
+    }
+    function registerUser(name, email, password) {
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          return userCredential.user.updateProfile({ displayName: name });
+        })
+        .then(() => {
+          window.location.href = 'index.html';
+        })
+        .catch(error => {
+          document.getElementById('registerError').textContent = error.message;
+        });
+    }
+  </script>
+</body>
+</html>

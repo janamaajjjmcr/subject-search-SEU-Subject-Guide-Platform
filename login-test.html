@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تسجيل الدخول</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .links {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 اختبار نظام تسجيل الدخول</h1>
+        
+        <div id="status" class="status info">جاري التحقق من حالة Firebase...</div>
+        
+        <div id="loginForm">
+            <h3>تسجيل الدخول</h3>
+            <input type="email" id="email" placeholder="البريد الإلكتروني" value="">
+            <input type="password" id="password" placeholder="كلمة المرور" value="">
+            <button onclick="testLogin()">تسجيل دخول</button>
+        </div>
+        
+        <div id="userInfo" class="user-info">
+            <h3>معلومات المستخدم:</h3>
+            <div id="userDetails"></div>
+            <button onclick="testLogout()" style="background: #dc3545;">تسجيل خروج</button>
+        </div>
+        
+        <div class="links">
+            <a href="account-working.html">صفحة إنشاء الحساب</a>
+            <a href="index.html">الصفحة الرئيسية</a>
+            <a href="firebase-test-complete.html">اختبار Firebase الكامل</a>
+        </div>
+    </div>
+
+    <!-- Firebase v8 SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+            authDomain: "seu-subjects.firebaseapp.com",
+            projectId: "seu-subjects",
+            storageBucket: "seu-subjects.firebasestorage.app",
+            messagingSenderId: "552315681734",
+            appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+            measurementId: "G-Y2FL6V8X3L"
+        };
+
+        let auth, db, isReady = false;
+
+        // تهيئة Firebase
+        function initFirebase() {
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                
+                auth = firebase.auth();
+                db = firebase.firestore();
+                isReady = true;
+                
+                updateStatus('✅ Firebase متصل ومستعد!', 'success');
+                
+                // مراقبة حالة تسجيل الدخول
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        console.log('👤 المستخدم مسجل:', user.email);
+                        await showUserInfo(user);
+                    } else {
+                        console.log('👤 المستخدم غير مسجل');
+                        hideUserInfo();
+                    }
+                });
+                
+            } catch (error) {
+                console.error('خطأ في Firebase:', error);
+                updateStatus('❌ خطأ في Firebase: ' + error.message, 'error');
+            }
+        }
+
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        async function showUserInfo(user) {
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                let userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName
+                };
+                
+                if (userDoc.exists) {
+                    userData = { ...userData, ...userDoc.data() };
+                }
+                
+                document.getElementById('userDetails').innerHTML = `
+                    <p><strong>الاسم:</strong> ${userData.fullName || userData.displayName || 'غير محدد'}</p>
+                    <p><strong>البريد:</strong> ${userData.email}</p>
+                    <p><strong>معرف المستخدم:</strong> ${userData.uid}</p>
+                    <p><strong>حالة الحساب:</strong> مفعل ✅</p>
+                `;
+                
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('userInfo').style.display = 'block';
+                
+                updateStatus('🎉 مرحباً ' + (userData.fullName || userData.displayName || 'بك') + '!', 'success');
+                
+            } catch (error) {
+                console.error('خطأ في عرض بيانات المستخدم:', error);
+                updateStatus('⚠️ خطأ في عرض البيانات: ' + error.message, 'error');
+            }
+        }
+
+        function hideUserInfo() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'none';
+            updateStatus('ℹ️ يرجى تسجيل الدخول', 'info');
+        }
+
+        async function testLogin() {
+            if (!isReady) {
+                updateStatus('❌ Firebase غير مستعد بعد', 'error');
+                return;
+            }
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                updateStatus('⚠️ يرجى إدخال البريد وكلمة المرور', 'error');
+                return;
+            }
+            
+            try {
+                updateStatus('🔄 جاري تسجيل الدخول...', 'info');
+                
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                console.log('✅ تم تسجيل الدخول بنجاح:', user.email);
+                updateStatus('✅ تم تسجيل الدخول بنجاح!', 'success');
+                
+                // مسح المدخلات
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+                
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول:', error);
+                
+                let errorMsg = '❌ ';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMsg += 'هذا الحساب غير موجود';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMsg += 'كلمة مرور خاطئة';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMsg += 'بريد إلكتروني غير صحيح';
+                        break;
+                    default:
+                        errorMsg += error.message;
+                }
+                
+                updateStatus(errorMsg, 'error');
+            }
+        }
+
+        async function testLogout() {
+            try {
+                await auth.signOut();
+                updateStatus('👋 تم تسجيل الخروج بنجاح', 'success');
+                console.log('✅ تم تسجيل الخروج');
+            } catch (error) {
+                console.error('خطأ في تسجيل الخروج:', error);
+                updateStatus('❌ خطأ في تسجيل الخروج: ' + error.message, 'error');
+            }
+        }
+
+        // بدء التهيئة عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            console.log('🚀 بدء تهيئة Firebase...');
+            initFirebase();
+        });
+    </script>
+</body>
+</html>

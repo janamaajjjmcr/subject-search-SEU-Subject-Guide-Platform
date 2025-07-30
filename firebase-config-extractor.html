@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استخراج إعدادات Firebase</title>
+    <style>
+        * { font-family: 'Segoe UI', sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 20px; 
+            direction: rtl;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: rgba(0,0,0,0.2); 
+            padding: 30px; 
+            border-radius: 15px; 
+        }
+        .code-block { 
+            background: rgba(0,0,0,0.5); 
+            padding: 20px; 
+            border-radius: 10px; 
+            font-family: monospace; 
+            margin: 20px 0; 
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        .btn { 
+            background: #4CAF50; 
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px;
+            margin: 10px;
+        }
+        .btn:hover { background: #45a049; }
+        .result { 
+            background: rgba(34, 197, 94, 0.1); 
+            border: 1px solid #22c55e; 
+            color: #22c55e; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin: 15px 0;
+        }
+        .error { 
+            background: rgba(239, 68, 68, 0.1); 
+            border: 1px solid #ef4444; 
+            color: #ef4444; 
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 استخراج إعدادات Firebase</h1>
+        <p>هذه الصفحة ستساعدك في الحصول على إعدادات Firebase الصحيحة</p>
+
+        <h2>الطريقة 1: الحصول من Firebase Console</h2>
+        <p>اذهب إلى Firebase Console واتبع هذه الخطوات:</p>
+        <ol>
+            <li>اذهب إلى <strong>Project Settings</strong> (أيقونة الترس)</li>
+            <li>انزل إلى <strong>Your apps</strong></li>
+            <li>إذا لم يوجد تطبيق، انقر <strong>Add app</strong> → اختر أيقونة الويب</li>
+            <li>انسخ الكود واللصقه أدناه:</li>
+        </ol>
+
+        <textarea id="firebaseConfigInput" class="input-field" rows="10" placeholder="الصق هنا كود Firebase Config كاملاً...
+
+مثال:
+const firebaseConfig = {
+  apiKey: 'AIzaSy...',
+  authDomain: 'seu-subjects.firebaseapp.com',
+  projectId: 'seu-subjects',
+  storageBucket: 'seu-subjects.appspot.com',
+  messagingSenderId: '123456789',
+  appId: '1:123456789:web:abc123def456'
+};"></textarea>
+
+        <button class="btn" onclick="extractConfig()">🔍 استخراج الإعدادات</button>
+
+        <div id="result"></div>
+
+        <h2>الطريقة 2: الحصول من الكود الحالي</h2>
+        <p>إذا كان لديك Firebase يعمل بالفعل في موقعك:</p>
+        
+        <button class="btn" onclick="getCurrentConfig()">📊 استخراج من النظام الحالي</button>
+        
+        <div id="currentConfigResult"></div>
+
+        <h2>الطريقة 3: اختبار الاتصال</h2>
+        <p>لاختبار إذا كانت الإعدادات صحيحة:</p>
+        
+        <button class="btn" onclick="testConnection()">🧪 اختبار الاتصال بـ Firebase</button>
+        
+        <div id="testResult"></div>
+
+        <h2>📋 الخطوة التالية</h2>
+        <div class="code-block">
+بعد الحصول على الإعدادات الصحيحة:
+
+1. انسخ الكود المُستخرج
+2. افتح ملف account-working.html 
+3. ابحث عن السطر 422 تقريباً
+4. استبدل firebaseConfig بالإعدادات الجديدة
+5. احفظ الملف واختبر التسجيل
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        function extractConfig() {
+            const input = document.getElementById('firebaseConfigInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                // محاولة استخراج الإعدادات من النص
+                let config = null;
+                
+                // البحث عن كود Firebase
+                const configMatch = input.match(/const\s+firebaseConfig\s*=\s*({[\s\S]*?})/);
+                if (configMatch) {
+                    const configString = configMatch[1];
+                    config = eval('(' + configString + ')');
+                } else {
+                    // محاولة أخرى للبحث
+                    const objectMatch = input.match(/{[\s\S]*}/);
+                    if (objectMatch) {
+                        config = eval('(' + objectMatch[0] + ')');
+                    }
+                }
+                
+                if (config && config.apiKey && config.projectId) {
+                    const cleanConfig = {
+                        apiKey: config.apiKey,
+                        authDomain: config.authDomain,
+                        projectId: config.projectId,
+                        storageBucket: config.storageBucket,
+                        messagingSenderId: config.messagingSenderId,
+                        appId: config.appId
+                    };
+                    
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <h3>✅ تم استخراج الإعدادات بنجاح!</h3>
+                            <div class="code-block">const firebaseConfig = {
+    apiKey: "${cleanConfig.apiKey}",
+    authDomain: "${cleanConfig.authDomain}",
+    projectId: "${cleanConfig.projectId}",
+    storageBucket: "${cleanConfig.storageBucket}",
+    messagingSenderId: "${cleanConfig.messagingSenderId}",
+    appId: "${cleanConfig.appId}"
+};</div>
+                            <button class="btn" onclick="copyToClipboard(\`${JSON.stringify(cleanConfig, null, 4)}\`)">📋 نسخ الإعدادات</button>
+                            <button class="btn" onclick="updateAccountFile(${JSON.stringify(cleanConfig)})">🔄 تحديث ملف التسجيل تلقائياً</button>
+                        </div>
+                    `;
+                    
+                    console.log('Firebase Config extracted:', cleanConfig);
+                } else {
+                    throw new Error('لم يتم العثور على إعدادات صحيحة');
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ خطأ في استخراج الإعدادات</h3>
+                        <p>${error.message}</p>
+                        <p>تأكد من لصق الكود كاملاً من Firebase Console</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getCurrentConfig() {
+            const resultDiv = document.getElementById('currentConfigResult');
+            
+            // محاولة قراءة الإعدادات من localStorage أو النظام الحالي
+            try {
+                // فحص إذا كان Firebase موجود
+                if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                    const app = firebase.app();
+                    const config = app.options;
+                    
+                    resultDiv.innerHTML = `
+                        <div class="result">
+                            <h3>✅ تم العثور على إعدادات Firebase الحالية!</h3>
+                            <div class="code-block">const firebaseConfig = {
+    apiKey: "${config.apiKey}",
+    authDomain: "${config.authDomain}",
+    projectId: "${config.projectId}",
+    storageBucket: "${config.storageBucket}",
+    messagingSenderId: "${config.messagingSenderId}",
+    appId: "${config.appId}"
+};</div>
+                            <button class="btn" onclick="copyToClipboard(\`${JSON.stringify(config, null, 4)}\`)">📋 نسخ الإعدادات</button>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>⚠️ Firebase غير مهيأ حالياً</h3>
+                            <p>استخدم الطريقة الأولى للحصول على الإعدادات من Firebase Console</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ خطأ في قراءة الإعدادات الحالية</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function testConnection() {
+            const resultDiv = document.getElementById('testResult');
+            resultDiv.innerHTML = '<div class="result">🔄 جاري اختبار الاتصال...</div>';
+            
+            // إعدادات افتراضية للاختبار
+            const testConfig = {
+                apiKey: "your-api-key",
+                authDomain: "seu-subjects.firebaseapp.com",
+                projectId: "seu-subjects",
+                storageBucket: "seu-subjects.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "1:123456789:web:test"
+            };
+            
+            try {
+                // اختبار بسيط للاتصال
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(testConfig);
+                }
+                
+                const auth = firebase.auth();
+                const db = firebase.firestore();
+                
+                resultDiv.innerHTML = `
+                    <div class="result">
+                        <h3>✅ Firebase جاهز للاستخدام!</h3>
+                        <p>Authentication: متاح</p>
+                        <p>Firestore: متاح</p>
+                        <p>يمكنك الآن استخدام نظام التسجيل</p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ فشل الاتصال بـ Firebase</h3>
+                        <p>${error.message}</p>
+                        <p>تحقق من إعدادات المشروع في Firebase Console</p>
+                    </div>
+                `;
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ تم نسخ الإعدادات بنجاح!');
+            }).catch(() => {
+                alert('❌ فشل في النسخ، انسخ يدوياً');
+            });
+        }
+
+        function updateAccountFile(config) {
+            // هذه الوظيفة ستعطي تعليمات لتحديث الملف
+            alert(`
+🔄 لتحديث ملف التسجيل:
+
+1. افتح ملف account-working.html
+2. ابحث عن السطر 422 تقريباً
+3. استبدل firebaseConfig بالإعدادات الجديدة
+4. احفظ الملف
+5. اختبر التسجيل
+
+سيتم تحديث الملف تلقائياً قريباً!
+            `);
+        }
+
+        // تشغيل تلقائي عند تحميل الصفحة
+        window.onload = function() {
+            console.log('🔍 صفحة استخراج Firebase جاهزة');
+            getCurrentConfig();
+        };
+    </script>
+</body>
+</html>

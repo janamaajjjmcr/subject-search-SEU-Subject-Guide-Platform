@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Profile</h2>
+                <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Logout</button>
+            </div>
+            <div id="user-info" class="mb-6">
+                <p><strong>Name:</strong> <span id="user-name"></span></p>
+                <p><strong>Email:</strong> <span id="user-email"></span></p>
+            </div>
+            <h3 class="text-xl font-bold mb-4">My Courses</h3>
+            <div id="user-courses" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- User's courses will be populated here -->
+            </div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

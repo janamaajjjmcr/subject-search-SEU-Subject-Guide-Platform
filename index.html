@@ -92,6 +92,7 @@
     <!-- Firebase CDN -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     
     <!-- Firebase Configuration -->
     <script>
@@ -110,6 +111,7 @@
         try {
             firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
+            const auth = firebase.auth();
             
             // Collection reference for user-added courses
             const coursesCollection = db.collection('userCourses');
@@ -119,6 +121,7 @@
             // Make functions globally available immediately
             window.db = db;
             window.coursesCollection = coursesCollection;
+            window.auth = auth;
             
         } catch (error) {
             console.error('❌ خطأ في تهيئة Firebase:', error);
@@ -1894,9 +1897,35 @@ ul {
                     <a href="#ds" class="text-stardust hover:text-white transition duration-300">علوم البيانات</a>
                     <a href="#it" class="text-stardust hover:text-white transition duration-300">تقنية المعلومات</a>
                     <a href="all-colleges.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
-                    <button onclick="openAddCourseModal()" class="bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm">
-                        إضافة مادة
-                    </button>
+                    
+                    <!-- User Authentication Section -->
+                    <div class="flex items-center gap-3">
+                        <!-- User Info (shown when logged in) -->
+                        <div id="user-info" class="hidden flex items-center gap-3">
+                            <div class="text-right">
+                                <div class="text-white font-medium" id="user-name">اسم المستخدم</div>
+                                <div class="text-stardust/70 text-sm">مسجل الدخول</div>
+                            </div>
+                            <button onclick="logout()" class="text-stardust hover:text-plasma transition duration-300">
+                                <i class="fas fa-sign-out-alt text-lg"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Login Button (shown when not logged in) -->
+                        <div id="login-section" class="flex items-center gap-3">
+                            <button onclick="showLoginModal()" class="text-stardust hover:text-aurora transition duration-300 font-medium">
+                                تسجيل الدخول
+                            </button>
+                            <button onclick="showRegisterModal()" class="bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm font-semibold">
+                                إنشاء حساب
+                            </button>
+                        </div>
+                        
+                        <!-- Add Course Button (only shown when logged in) -->
+                        <button id="add-course-btn" onclick="openAddCourseModal()" class="hidden bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm">
+                            إضافة مادة
+                        </button>
+                    </div>
                     <!-- Theme Toggle Button -->
                     <label for="toggle" id="theme-toggle-button">
                         <input type="checkbox" id="toggle">
@@ -1956,9 +1985,35 @@ ul {
                     <a href="#ds" class="block text-stardust hover:text-white transition duration-300 py-2">علوم البيانات</a>
                     <a href="#it" class="block text-stardust hover:text-white transition duration-300 py-2">تقنية المعلومات</a>
                     <a href="all-colleges.html" class="block text-aurora hover:text-white transition duration-300 py-2 font-medium">جميع الكليات</a>
-                    <button onclick="openAddCourseModal(); toggleMobileMenu();" class="w-full bg-gradient-to-r from-plasma to-aurora text-white px-4 py-3 rounded-lg hover:scale-105 transition duration-300 mt-3">
-                        إضافة مادة
-                    </button>
+                    
+                    <!-- Mobile User Authentication Section -->
+                    <div class="pt-3 border-t border-nebula/20">
+                        <!-- User Info (shown when logged in) -->
+                        <div id="mobile-user-info" class="hidden">
+                            <div class="flex items-center justify-between py-2">
+                                <div>
+                                    <div class="text-white font-medium" id="mobile-user-name">اسم المستخدم</div>
+                                    <div class="text-stardust/70 text-sm">مسجل الدخول</div>
+                                </div>
+                                <button onclick="logout(); toggleMobileMenu();" class="text-stardust hover:text-plasma transition duration-300">
+                                    <i class="fas fa-sign-out-alt text-lg"></i>
+                                </button>
+                            </div>
+                            <button onclick="openAddCourseModal(); toggleMobileMenu();" class="w-full bg-gradient-to-r from-plasma to-aurora text-white px-4 py-3 rounded-lg hover:scale-105 transition duration-300 mt-3">
+                                إضافة مادة
+                            </button>
+                        </div>
+                        
+                        <!-- Login Button (shown when not logged in) -->
+                        <div id="mobile-login-section">
+                            <button onclick="showLoginModal(); toggleMobileMenu();" class="w-full text-stardust hover:text-aurora transition duration-300 font-medium py-2 text-right">
+                                تسجيل الدخول
+                            </button>
+                            <button onclick="showRegisterModal(); toggleMobileMenu();" class="w-full bg-gradient-to-r from-plasma to-aurora text-white px-4 py-3 rounded-lg hover:scale-105 transition duration-300 mt-2">
+                                إنشاء حساب
+                            </button>
+                        </div>
+                    </div>
                     <!-- Mobile Theme Toggle -->
                     <div class="pt-3">
                         <label for="toggle-mobile" class="flex items-center justify-between">
@@ -2492,7 +2547,7 @@ ul {
       <div class="filled"></div>
       <svg version="1.1" viewBox="0 0 100 100">
         <path
-          d="M95,9.9c-1.3-1.1-3.4-1.2-7-0.1c0,0,0,0,0,0c-2.5,0.8-24.7,9.2-44.3,17.3c-17.6,7.3-31.9,13.7-33.6,14.5  c-1.9,0.6-6,2.4-6.2,5.2c-0.1,1.8,1.4,3.4,4.3,4.7c3.1,1.6,16.8,6.2,19.7,7.1c1,3.4,6.9,23.3,7.2,24.5c0.4,1.8,1.6,2.8,2.2,3.2  c0.1,0.1,0.3,0.3,0.5,0.4c0.3,0.2,0.7,0.3,1.2,0.3c0.7,0,1.5-0.3,2.2-0.8c3.7-3,10.1-9.7,11.9-11.6c7.9,6.2,16.5,13.1,17.3,13.9  c0,0,0.1,0.1,0.1,0.1c1.9,1.6,3.9,2.5,5.7,2.5c0.6,0,1.2-0.1,1.8-0.3c2.1-0.7,3.6-2.7,4.1-5.4c0-0.1,0.1-0.5,0.3-1.2  c3.4-14.8,6.1-27.8,8.3-38.7c2.1-10.7,3.8-21.2,4.8-26.8c0.2-1.4,0.4-2.5,0.5-3.2C96.3,13.5,96.5,11.2,95,9.9z M30,58.3l47.7-31.6  c0.1-0.1,0.3-0.2,0.4-0.3c0,0,0,0,0,0c0.1,0,0.1-0.1,0.2-0.1c0.1,0,0.1,0,0.2-0.1c-0.1,0.1-0.2,0.4-0.4,0.6L66,38.1  c-8.4,7.7-19.4,17.8-26.7,24.4c0,0,0,0,0,0.1c0,0-0.1,0.1-0.1,0.1c0,0,0,0.1-0.1,0.1c0,0.1,0,0.1-0.1,0.2c0,0,0,0.1,0,0.1  c0,0,0,0,0,0.1c-0.5,5.6-1.4,15.2-1.8,19.5c0,0,0,0,0-0.1C36.8,81.4,31.2,62.3,30,58.3z"
+          d="M95,9.9c-1.3-1.1-3.4-1.2-7-0.1c0,0,0,0,0,0c-2.5,0.8-24.7,9.2-44.3,17.3c-17.6,7.3-31.9,13.7-33.6,14.5  c-1.9,0.6-6,2.4-6.2,5.2c-0.1,1.8,1.4,3.4,4.3,4.7c3.1,1.6,16.8,6.2,19.7,7.1c1,3.4,6.9,23.3,7.2,24.5c0.4,1.8,1.6,2.8,2.2,3.2  c0.1,0.1,0.3,0.3,0.5,0.4c0.3,0.2,0.7,0.3,1.2,0.3c0.7,0,1.5-0.3,2.2-0.8c3.7-3,10.1-9.7,11.9-11.6c7.9,6.2,16.5,13.1,17.3,13.9  c0,0,0.1,0.1,0.1,0.1c1.9,1.6,3.9,2.5,5.7,2.5c0.6,0,1.2-0.1,1.8-0.3c2.1-0.7,3.6-2.7,4.1-5.4c0-0.1,0.1-0.5,0.3-1.2  c3.4-14.8,6.1-27.8,8.3-38.7c2.1-10.7,3.8-21.2,4.8-26.8c0.2-1.4,0.4-2.5,0.5-3.2C96.3,13.5,96.5,11.2,95,9.9z M30,58.3l47.7-31.6  c0.1-0.1,0.3-0.2,0.4-0.3c0,0,0,0,0,0c0.1,0,0.1-0.1,0.2-0.1c0.1,0,0.1,0,0.2-0.1c-0.1,0.1-0.2,0.4-0.4,0.6L66,38.1  c-8.4,7.7-19.4,17.8-26.7,24.4c0,0,0,0,0.1,0.1c0,0,0,0.1-0.1,0.1c0,0,0,0.1-0.1,0.1c0,0.1,0,0.1-0.1,0.2c0,0,0,0.1,0,0.1  c0,0,0,0,0,0.1c-0.5,5.6-1.4,15.2-1.8,19.5c0,0,0,0,0-0.1C36.8,81.4,31.2,62.3,30,58.3z"
           fill="currentColor"
         ></path>
       </svg>
@@ -2575,6 +2630,21 @@ ul {
             </div>
 
             <form id="addCourseForm" class="space-y-6">
+                <!-- User Information Section -->
+                <div class="bg-nebula/30 rounded-lg p-4 border border-stardust/20">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="ml-3">
+                                <div class="text-white font-medium" id="form-user-name">اسم المستخدم</div>
+                                <div class="text-stardust/70 text-sm" id="form-user-status">مسجل الدخول</div>
+                            </div>
+                        </div>
+                        <div class="text-aurora" id="form-user-icon">
+                            <i class="fas fa-user-check text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Course Code -->
                 <div>
                     <label for="courseCode" class="block text-white font-medium mb-2">
@@ -2798,6 +2868,114 @@ ul {
                     <button type="submit" 
                             class="px-6 py-3 bg-gradient-to-r from-plasma to-aurora text-white rounded-lg hover:scale-105 transition duration-300">
                         حفظ التغييرات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="glass-card rounded-2xl p-8 m-4 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">تسجيل الدخول</h2>
+                <button onclick="closeLoginModal()" class="text-stardust hover:text-white transition duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label for="loginEmail" class="block text-white font-medium mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="loginEmail" name="email" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="أدخل بريدك الإلكتروني">
+                </div>
+                
+                <div>
+                    <label for="loginPassword" class="block text-white font-medium mb-2">كلمة المرور</label>
+                    <input type="password" id="loginPassword" name="password" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="أدخل كلمة المرور">
+                </div>
+                
+                <div class="text-right">
+                    <button type="button" onclick="showForgotPasswordModal()" class="text-stardust hover:text-aurora text-sm transition duration-300">
+                        نسيت كلمة المرور؟
+                    </button>
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-gradient-to-r from-plasma to-aurora text-white py-3 rounded-lg hover:scale-105 transition duration-300 font-medium">
+                        تسجيل الدخول
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="glass-card rounded-2xl p-8 m-4 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">إنشاء حساب جديد</h2>
+                <button onclick="closeRegisterModal()" class="text-stardust hover:text-white transition duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="registerForm" class="space-y-4">
+                <div>
+                    <label for="registerName" class="block text-white font-medium mb-2">الاسم</label>
+                    <input type="text" id="registerName" name="name" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="أدخل اسمك">
+                </div>
+                
+                <div>
+                    <label for="registerEmail" class="block text-white font-medium mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="registerEmail" name="email" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="أدخل بريدك الإلكتروني">
+                </div>
+                
+                <div>
+                    <label for="registerPassword" class="block text-white font-medium mb-2">كلمة المرور</label>
+                    <input type="password" id="registerPassword" name="password" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="أدخل كلمة المرور">
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-gradient-to-r from-plasma to-aurora text-white py-3 rounded-lg hover:scale-105 transition duration-300 font-medium">
+                        إنشاء الحساب
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="glass-card rounded-2xl p-8 m-4 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">إعادة تعيين كلمة المرور</h2>
+                <button onclick="closeForgotPasswordModal()" class="text-stardust hover:text-white transition duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="forgotPasswordForm" class="space-y-4">
+                <div>
+                    <label for="forgotPasswordEmail" class="block text-white font-medium mb-2">البريد الإلكتروني</label>
+                    <input type="email" id="forgotPasswordEmail" name="email" required 
+                           class="w-full px-4 py-3 bg-nebula/50 border border-stardust/20 rounded-lg text-white placeholder-stardust/50 focus:border-plasma focus:outline-none"
+                           placeholder="أدخل بريدك الإلكتروني">
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-gradient-to-r from-plasma to-aurora text-white py-3 rounded-lg hover:scale-105 transition duration-300 font-medium">
+                        إرسال رابط إعادة التعيين
                     </button>
                 </div>
             </form>
@@ -3560,7 +3738,14 @@ ul {
 
         // Function to open the modal with course details
         function openModal(courseCode, courseTitle) {
-            const course = courses[courseCode];
+            // Check in both local courses and Firebase courses
+            let course = courses[courseCode];
+            if (!course && window.userCourses) {
+                course = window.userCourses[courseCode];
+            }
+            
+            console.log(`🔍 Opening modal for course: ${courseCode}`, course);
+            
             if (!course) {
                 alert("المادة غير موجودة في النظام");
                 return;
@@ -3574,6 +3759,22 @@ ul {
             // Populate resources
             const resourcesContainer = document.getElementById('course-resources');
             resourcesContainer.innerHTML = '';
+            
+            // Add course creator information if available
+            if (course.addedBy) {
+                const creatorInfo = document.createElement('div');
+                creatorInfo.className = 'mb-6 p-4 bg-nebula/30 rounded-lg border border-stardust/20';
+                creatorInfo.innerHTML = `
+                    <div class="flex items-center text-stardust/80">
+                        <i class="fas fa-user-plus text-aurora ml-3"></i>
+                        <div>
+                            <div class="text-white font-medium">أضيفت بواسطة</div>
+                            <div class="text-aurora">${course.addedBy.name}</div>
+                        </div>
+                    </div>
+                `;
+                resourcesContainer.appendChild(creatorInfo);
+            }
             
             if (course.resources && course.resources.length > 0) {
                 course.resources.forEach(resource => {
@@ -3866,17 +4067,26 @@ ul {
             const searchResultsContainer = document.getElementById("search-results-container");
             searchResultsContainer.innerHTML = '';
             
-            // Search in all courses
+            // Search in all courses (including Firebase courses)
             let found = false;
             
-            Object.keys(courses).forEach(code => {
-                const course = courses[code];
+            // Get all courses from both local and Firebase
+            const allCourses = { ...courses };
+            
+            // The courses object already contains Firebase courses from loadCoursesFromFirebase()
+            // No need to check window.userCourses separately
+            
+            Object.keys(allCourses).forEach(code => {
+                const course = allCourses[code];
                 if (code.toUpperCase().includes(searchTerm) || 
                     course.title.toUpperCase().includes(searchTerm) ||
                     course.desc.toUpperCase().includes(searchTerm)) {
                     found = true;
                     const level = course.level || 3;
-                    const isUserAdded = isUserAddedCourse(code);
+                    const isUserAdded = course.addedBy ? true : false; // Check if course has addedBy field
+                    const addedBy = course.addedBy || null;
+                    
+                    console.log(`🔍 Found course: ${code}`, { isUserAdded, addedBy, course });
                     
                     // Create course card
                     const courseCard = document.createElement('div');
@@ -3892,9 +4102,18 @@ ul {
                             <h3 class="text-2xl font-bold text-white mb-3">${code}</h3>
                             <h4 class="text-xl font-bold text-white mb-4">${course.title}</h4>
                             <p class="text-stardust/70 mb-6">${course.desc.substring(0, 100)}...</p>
-                            <div class="flex flex-wrap gap-2 mb-6">
+                            <div class="flex flex-wrap gap-2 mb-4">
                                 <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.credits || 3} ساعات</span>
+                                <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">${course.major || 'غير محدد'}</span>
                             </div>
+                            ${addedBy ? `
+                                <div class="mb-4 p-3 bg-nebula/20 rounded-lg border border-stardust/10">
+                                    <div class="flex items-center text-stardust/80 text-sm">
+                                        <i class="fas fa-user-plus text-aurora ml-2"></i>
+                                        <span>أضيفت بواسطة: <span class="text-aurora font-medium">${addedBy.name}</span></span>
+                                    </div>
+                                </div>
+                            ` : ''}
                             <button onclick="openModal('${code}', '${course.title}')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
                                 استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                             </button>
@@ -4019,10 +4238,116 @@ ul {
             modalContent.classList.add("modal-enter");
             document.body.style.overflow = 'hidden';
             
+            // Update form user info when modal opens
+            updateAuthUI();
+            
             // Remove animation class after animation ends
             setTimeout(() => {
                 modalContent.classList.remove("modal-enter");
             }, 300);
+        }
+        
+        // Authentication UI Update Function
+        function updateAuthUI() {
+            const user = auth.currentUser;
+            const formUserName = document.getElementById('form-user-name');
+            const formUserStatus = document.getElementById('form-user-status');
+            const formUserIcon = document.getElementById('form-user-icon');
+            const userInfo = document.getElementById('user-info');
+            const loginSection = document.getElementById('login-section');
+            const addCourseBtn = document.getElementById('add-course-btn');
+            const mobileUserInfo = document.getElementById('mobile-user-info');
+            const mobileLoginSection = document.getElementById('mobile-login-section');
+            const mobileUserName = document.getElementById('mobile-user-name');
+            
+            if (user) {
+                // User is signed in
+                userInfo.classList.remove('hidden');
+                loginSection.classList.add('hidden');
+                addCourseBtn.classList.remove('hidden');
+                mobileUserInfo.classList.remove('hidden');
+                mobileLoginSection.classList.add('hidden');
+                
+                const userName = user.displayName || user.email;
+                
+                if (formUserName) {
+                    formUserName.textContent = userName;
+                }
+                if (formUserStatus) {
+                    formUserStatus.textContent = 'مسجل الدخول';
+                }
+                if (formUserIcon) {
+                    formUserIcon.innerHTML = '<i class="fas fa-user-check text-xl"></i>';
+                    formUserIcon.className = 'text-aurora';
+                }
+                if (mobileUserName) {
+                    mobileUserName.textContent = userName;
+                }
+                document.getElementById('user-name').textContent = userName;
+            } else {
+                // User is signed out
+                userInfo.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+                addCourseBtn.classList.add('hidden');
+                mobileUserInfo.classList.add('hidden');
+                mobileLoginSection.classList.remove('hidden');
+                
+                if (formUserName) {
+                    formUserName.textContent = 'غير مسجل الدخول';
+                }
+                if (formUserStatus) {
+                    formUserStatus.textContent = 'يجب تسجيل الدخول لإضافة مادة';
+                }
+                if (formUserIcon) {
+                    formUserIcon.innerHTML = '<i class="fas fa-user-times text-xl"></i>';
+                    formUserIcon.className = 'text-plasma';
+                }
+            }
+            
+            // Always ensure form user section is visible
+            const formUserSection = document.querySelector('#addCourseForm .bg-nebula\\/30');
+            if (formUserSection) {
+                formUserSection.style.display = 'block';
+            }
+        }
+        
+        // Authentication functions
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+        
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+        }
+        
+        function showRegisterModal() {
+            document.getElementById('registerModal').classList.remove('hidden');
+        }
+        
+        function closeRegisterModal() {
+            document.getElementById('registerModal').classList.add('hidden');
+            document.getElementById('registerForm').reset();
+        }
+        
+        function logout() {
+            auth.signOut().then(() => {
+                updateAuthUI();
+                closeAddCourseModal();
+            }).catch((error) => {
+                console.error('خطأ في تسجيل الخروج:', error);
+            });
+        }
+        
+        // Forgot Password functions
+        function showForgotPasswordModal() {
+            closeLoginModal();
+            document.getElementById('forgotPasswordModal').classList.remove('hidden');
+        }
+        
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').classList.add('hidden');
+            document.getElementById('forgotPasswordForm').reset();
         }
 
         function closeAddCourseModal() {
@@ -4246,7 +4571,7 @@ ul {
         });
 
         // Add Course Form Submission
-        document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+        document.getElementById('addCourseForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
@@ -4290,7 +4615,18 @@ ul {
                 }
             });
 
-            // Create new course object with exact same format as existing courses
+            // Get current user from Firebase Auth
+            let addedById = 'anonymous';
+            let addedByName = 'مستخدم مجهول';
+            let addedByEmail = '';
+            if (window.firebase && firebase.auth && firebase.auth().currentUser) {
+                const user = firebase.auth().currentUser;
+                addedById = user.uid;
+                addedByName = user.displayName || user.email || 'مستخدم مجهول';
+                addedByEmail = user.email || '';
+            }
+
+            // Create new course object with user attribution
             const newCourse = {
                 title: courseTitle,
                 desc: courseDesc,
@@ -4301,7 +4637,12 @@ ul {
                 hours: courseCredits,
                 major: courseMajor,
                 level: courseLevel,
-                resources: resources
+                resources: resources,
+                addedBy: {
+                    id: addedById,
+                    name: addedByName,
+                    email: addedByEmail
+                }
             };
 
             // Add directly to courses object (same as existing courses)
@@ -4576,7 +4917,6 @@ ul {
                     ...courseData,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'active',
-                    addedBy: 'community',
                     timestamp: Date.now()
                 });
                 
@@ -4815,8 +5155,11 @@ ul {
             const addCourseModal = document.getElementById('addCourseModal');
             const courseModal = document.getElementById('courseModal');
             const allCoursesModal = document.getElementById('allCoursesModal');
+            const loginModal = document.getElementById('loginModal');
+            const registerModal = document.getElementById('registerModal');
+            const forgotPasswordModal = document.getElementById('forgotPasswordModal');
 
-            [addCourseModal, courseModal, allCoursesModal].forEach(modal => {
+            [addCourseModal, courseModal, allCoursesModal, loginModal, registerModal, forgotPasswordModal].forEach(modal => {
                 if (modal) {
                     modal.addEventListener('click', function(e) {
                         if (e.target === modal) {
@@ -4848,6 +5191,81 @@ ul {
             });
         });
 
+        // Authentication state observer
+        if (window.auth) {
+            auth.onAuthStateChanged((user) => {
+                updateAuthUI();
+            });
+        }
+        
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                closeLoginModal();
+                alert('تم تسجيل الدخول بنجاح!');
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول:', error);
+                alert('خطأ في تسجيل الدخول: ' + error.message);
+            }
+        });
+        
+        // Register form submission
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Update display name
+                await user.updateProfile({
+                    displayName: name
+                });
+                
+                // Add user to Firestore
+                await db.collection('users').doc(user.uid).set({
+                    name: name,
+                    email: email,
+                    createdAt: new Date().toISOString()
+                });
+                
+                // Send email verification
+                await user.sendEmailVerification();
+                
+                closeRegisterModal();
+                showSuccessNotification('تم إنشاء الحساب بنجاح!', 'تم إرسال رابط تأكيد البريد الإلكتروني إلى بريدك');
+            } catch (error) {
+                console.error('خطأ في إنشاء الحساب:', error);
+                alert('خطأ في إنشاء الحساب: ' + error.message);
+            }
+        });
+        
+        // Forgot Password form submission
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('forgotPasswordEmail').value;
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                closeForgotPasswordModal();
+                showSuccessNotification('تم إرسال رابط إعادة التعيين!', 'تحقق من بريدك الإلكتروني لإعادة تعيين كلمة المرور');
+            } catch (error) {
+                console.error('خطأ في إرسال رابط إعادة التعيين:', error);
+                alert('خطأ في إرسال رابط إعادة التعيين: ' + error.message);
+            }
+        });
+        
         // Theme Toggle Functionality
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggle = document.getElementById('toggle');
@@ -4872,6 +5290,9 @@ ul {
                     }
                 });
             }
+            
+            // Initialize auth UI
+            updateAuthUI();
         });
     </script>
     

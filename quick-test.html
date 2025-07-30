@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار سريع للمصادقة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1e293b 100%);
+            color: white;
+            padding: 20px;
+            direction: rtl;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        button {
+            background: linear-gradient(135deg, #6c63ff 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .success {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+        }
+        .info {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            direction: rtl;
+            text-align: right;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار سريع لنظام المصادقة</h1>
+        
+        <div class="test-section">
+            <h2>📋 اختبار تسجيل حساب جديد</h2>
+            <input type="text" id="test-fullname" placeholder="الاسم الكامل (مثل: أحمد محمد علي)" value="أحمد محمد علي">
+            <input type="text" id="test-username" placeholder="اسم المستخدم (مثل: ahmed123)" value="ahmed123">
+            <input type="email" id="test-email" placeholder="البريد الإلكتروني (مثل: ahmed@example.com)" value="ahmed@example.com">
+            <input type="password" id="test-password" placeholder="كلمة المرور (6 أحرف على الأقل)" value="123456">
+            
+            <button onclick="testRegister()">📝 اختبار التسجيل</button>
+            <button onclick="testLogin()">🔑 اختبار تسجيل الدخول</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔍 فحص البيانات المحفوظة</h2>
+            <button onclick="checkStorage()">📊 فحص localStorage</button>
+            <button onclick="clearStorage()">🗑️ مسح جميع البيانات</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        let authSystem;
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                authSystem = new AuthSystem();
+                addResult('✅ تم تهيئة نظام المصادقة بنجاح', 'success');
+                checkStorage();
+            } catch (error) {
+                addResult(`❌ فشل في تهيئة النظام: ${error.message}`, 'error');
+            }
+        });
+
+        function testRegister() {
+            try {
+                const userData = {
+                    fullName: document.getElementById('test-fullname').value,
+                    username: document.getElementById('test-username').value,
+                    email: document.getElementById('test-email').value,
+                    password: document.getElementById('test-password').value
+                };
+
+                addResult(`🔄 محاولة تسجيل المستخدم: ${userData.username}`, 'info');
+                
+                const result = authSystem.register(userData);
+                addResult(`✅ نجح التسجيل! ${result.message}`, 'success');
+                
+                // Generate new random user for next test
+                const randomId = Math.floor(Math.random() * 1000);
+                document.getElementById('test-username').value = `user${randomId}`;
+                document.getElementById('test-email').value = `user${randomId}@example.com`;
+                
+                checkStorage();
+                
+            } catch (error) {
+                addResult(`❌ فشل التسجيل: ${error.message}`, 'error');
+            }
+        }
+
+        function testLogin() {
+            try {
+                const credentials = {
+                    username: document.getElementById('test-username').value,
+                    password: document.getElementById('test-password').value
+                };
+
+                addResult(`🔄 محاولة تسجيل الدخول: ${credentials.username}`, 'info');
+                
+                const result = authSystem.login(credentials);
+                addResult(`✅ نجح تسجيل الدخول! ${result.message}`, 'success');
+                addResult(`👤 مرحباً بك: ${result.user.fullName}`, 'success');
+                
+            } catch (error) {
+                addResult(`❌ فشل تسجيل الدخول: ${error.message}`, 'error');
+            }
+        }
+
+        function checkStorage() {
+            const users = localStorage.getItem('courseApp_users');
+            const currentUser = localStorage.getItem('courseApp_currentUser');
+            
+            addResult('📊 حالة التخزين المحلي:', 'info');
+            
+            if (users) {
+                const parsedUsers = JSON.parse(users);
+                addResult(`👥 عدد المستخدمين المسجلين: ${parsedUsers.length}`, 'success');
+                
+                if (parsedUsers.length > 0) {
+                    parsedUsers.forEach((user, index) => {
+                        addResult(`${index + 1}. ${user.fullName} (${user.username}) - ${user.email}`, 'info');
+                    });
+                }
+            } else {
+                addResult('❌ لا توجد بيانات مستخدمين محفوظة', 'error');
+            }
+            
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                addResult(`👤 المستخدم الحالي: ${user.fullName}`, 'success');
+            } else {
+                addResult('ℹ️ لا يوجد مستخدم مسجل دخول حالياً', 'info');
+            }
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('courseApp_users');
+            localStorage.removeItem('courseApp_currentUser');
+            addResult('🗑️ تم مسح جميع البيانات من localStorage', 'info');
+            
+            // Reset auth system
+            if (authSystem) {
+                authSystem.users = [];
+                authSystem.currentUser = null;
+            }
+        }
+    </script>
+</body>
+</html>

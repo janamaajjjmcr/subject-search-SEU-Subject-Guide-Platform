@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حسابي | كلية الحوسبة - جامعة SEU</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="صفحة الحساب الشخصي - إدارة المواد المضافة">
+    <meta name="robots" content="noindex, follow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        :root {
+            --primary: #0F0F1A;
+            --secondary: #1A1A2E;
+            --accent: #6C63FF;
+            --text: #E0E0FF;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent) 0%, #A5A6FF 50%, #00D1B2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(109, 99, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-color: rgba(109, 99, 255, 0.3);
+        }
+
+        .course-card {
+            background: linear-gradient(145deg, var(--secondary) 0%, #2D2D4D 100%);
+            border: 1px solid rgba(109, 99, 255, 0.1);
+            transition: all 0.3s ease;
+            min-height: 250px;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.15);
+            border-color: rgba(109, 99, 255, 0.2);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--accent) 0%, #A5A6FF 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+        }
+
+        .level-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 15;
+            color: white;
+        }
+        
+        .level-badge.level-3 {
+            background: linear-gradient(135deg, #6C63FF 0%, #4D44DB 100%);
+        }
+        
+        .level-badge.level-4 {
+            background: linear-gradient(135deg, #00D1B2 0%, #00B39E 100%);
+        }
+        
+        .level-badge.level-5 {
+            background: linear-gradient(135deg, #FF8E3C 0%, #FF6E00 100%);
+        }
+        
+        .level-badge.level-6 {
+            background: linear-gradient(135deg, #A5A6FF 0%, #7C7CFD 100%);
+        }
+        
+        .level-badge.level-7 {
+            background: linear-gradient(135deg, #FF66C4 0%, #E84CA0 100%);
+        }
+        
+        .level-badge.level-8 {
+            background: linear-gradient(135deg, #00D1B2 0%, #6C63FF 100%);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(224, 224, 255, 0.6);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="backdrop-blur-lg bg-opacity-90 border-b border-gray-700 py-6 px-4 sticky top-0 z-50" style="background-color: rgba(15, 15, 26, 0.9);">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <!-- Logo/Title -->
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4" style="background: linear-gradient(135deg, #6C63FF 0%, #00D1B2 100%);">
+                        <i class="fas fa-user text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">
+                            <span class="gradient-text">حسابي</span>
+                        </h1>
+                        <p class="text-gray-400 mt-1 font-medium">إدارة المواد المضافة</p>
+                    </div>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fas fa-home mr-2"></i>
+                        الرئيسية
+                    </a>
+                    <button onclick="logoutUser()" class="logout-btn">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto py-16 px-4">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="inline-block w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p class="text-gray-400">جاري تحميل البيانات...</p>
+        </div>
+
+        <!-- User Info Section -->
+        <section id="userInfoSection" class="mb-12 hidden">
+            <div class="glass-card rounded-2xl p-8 mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <div class="flex items-center mb-4 md:mb-0">
+                        <div class="w-20 h-20 rounded-full flex items-center justify-center mr-6" style="background: linear-gradient(135deg, #6C63FF 0%, #00D1B2 100%);">
+                            <span id="userInitials" class="text-2xl font-bold text-white"></span>
+                        </div>
+                        <div>
+                            <h2 id="userName" class="text-2xl font-bold text-white mb-2"></h2>
+                            <p id="userEmail" class="text-gray-400 mb-1"></p>
+                            <p id="userMajor" class="text-blue-400 text-sm"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="stat-card">
+                            <div id="coursesCount" class="text-3xl font-bold mb-2">0</div>
+                            <div class="text-sm opacity-90">المواد المضافة</div>
+                        </div>
+                        <div class="stat-card">
+                            <div id="joinDate" class="text-lg font-bold mb-2">--</div>
+                            <div class="text-sm opacity-90">تاريخ الانضمام</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Courses Section -->
+        <section id="myCoursesSection" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">
+                    <span class="gradient-text">مواديّ المضافة</span>
+                </h2>
+                <a href="index.html" class="text-blue-400 hover:text-blue-300 transition">
+                    <i class="fas fa-plus mr-2"></i>
+                    إضافة مادة جديدة
+                </a>
+            </div>
+            
+            <!-- Courses Grid -->
+            <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Courses will be populated here -->
+            </div>
+            
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state hidden">
+                <i class="fas fa-book-open"></i>
+                <h3 class="text-xl font-bold mb-4">لم تقم بإضافة أي مواد بعد</h3>
+                <p class="text-lg mb-6">ابدأ بإضافة المواد التي درستها لمساعدة زملائك</p>
+                <a href="index.html" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:scale-105 transition duration-300">
+                    <i class="fas fa-plus mr-2"></i>
+                    إضافة أول مادة
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Course Modal -->
+    <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 id="modalCourseCode" class="text-3xl font-bold gradient-text mb-2"></h2>
+                    <h3 id="modalCourseTitle" class="text-xl font-bold text-white"></h3>
+                    <p class="text-gray-400"><span id="modalCourseMajor"></span> • <span id="modalCourseCredits"></span> ساعات</p>
+                </div>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl p-2 rounded-full hover:bg-gray-700 transition duration-300">&times;</button>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-3">وصف المادة</h3>
+                <p id="modalCourseDesc" class="text-gray-300 mb-6"></p>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-white mb-4">الموارد التعليمية</h3>
+                <div id="course-resources" class="space-y-3">
+                    <!-- Resources will be populated here -->
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <div class="text-sm text-gray-400">
+                    <i class="fas fa-calendar mr-2"></i>
+                    تم الإضافة: <span id="modalDateAdded"></span>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="editCourse()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
+                        <i class="fas fa-edit mr-2"></i>
+                        تعديل
+                    </button>
+                    <button onclick="deleteCourse()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
+                        <i class="fas fa-trash mr-2"></i>
+                        حذف
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+            authDomain: "seu-subjects.firebaseapp.com",
+            projectId: "seu-subjects",
+            storageBucket: "seu-subjects.firebasestorage.app",
+            messagingSenderId: "552315681734",
+            appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+            measurementId: "G-Y2FL6V8X3L"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Global variables
+        let currentUser = null;
+        let userCourses = [];
+        let currentCourseCode = null;
+
+        // Check authentication and load user data
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check localStorage first
+            const userAuth = localStorage.getItem('userAuth');
+            if (!userAuth) {
+                redirectToLogin();
+                return;
+            }
+
+            const user = JSON.parse(userAuth);
+            if (!user.isLoggedIn) {
+                redirectToLogin();
+                return;
+            }
+
+            // Wait for Firebase auth
+            auth.onAuthStateChanged(async (firebaseUser) => {
+                if (firebaseUser) {
+                    currentUser = firebaseUser;
+                    await loadUserData();
+                } else {
+                    redirectToLogin();
+                }
+            });
+        });
+
+        // Redirect to login page
+        function redirectToLogin() {
+            alert('يجب تسجيل الدخول أولاً');
+            window.location.href = 'auth.html';
+        }
+
+        // Load user data from Firestore
+        async function loadUserData() {
+            try {
+                // Get user document
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                const userData = userDoc.data();
+
+                if (!userData) {
+                    console.error('بيانات المستخدم غير موجودة');
+                    return;
+                }
+
+                // Update UI with user info
+                document.getElementById('userName').textContent = userData.name || currentUser.displayName;
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('userMajor').textContent = userData.major || 'غير محدد';
+                
+                // Generate initials
+                const initials = (userData.name || currentUser.displayName || 'مستخدم')
+                    .split(' ')
+                    .map(word => word.charAt(0))
+                    .join('')
+                    .toUpperCase();
+                document.getElementById('userInitials').textContent = initials;
+
+                // Format join date
+                if (userData.createdAt) {
+                    const joinDate = userData.createdAt.toDate();
+                    document.getElementById('joinDate').textContent = joinDate.toLocaleDateString('ar-SA');
+                }
+
+                // Load user's courses
+                await loadUserCourses();
+
+                // Show content
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('userInfoSection').classList.remove('hidden');
+                document.getElementById('myCoursesSection').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('خطأ في تحميل بيانات المستخدم:', error);
+                alert('حدث خطأ في تحميل البيانات');
+            }
+        }
+
+        // Load user's courses
+        async function loadUserCourses() {
+            try {
+                const coursesSnapshot = await db.collection('userCourses')
+                    .where('addedBy', '==', currentUser.uid)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                userCourses = [];
+                coursesSnapshot.forEach(doc => {
+                    userCourses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                // Update courses count
+                document.getElementById('coursesCount').textContent = userCourses.length;
+
+                // Update courses count in user document
+                await db.collection('users').doc(currentUser.uid).update({
+                    coursesAdded: userCourses.length,
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Display courses
+                displayUserCourses();
+
+            } catch (error) {
+                console.error('خطأ في تحميل المواد:', error);
+                // Show empty state on error
+                document.getElementById('emptyState').classList.remove('hidden');
+            }
+        }
+
+        // Display user's courses
+        function displayUserCourses() {
+            const coursesGrid = document.getElementById('coursesGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (userCourses.length === 0) {
+                coursesGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            coursesGrid.innerHTML = '';
+
+            userCourses.forEach(course => {
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card rounded-2xl p-6 group overflow-hidden relative cursor-pointer';
+                courseCard.onclick = () => openModal(course.id, course);
+                
+                const level = course.level || 3;
+                const addedDate = course.createdAt ? 
+                    course.createdAt.toDate().toLocaleDateString('ar-SA') : 
+                    'غير محدد';
+
+                courseCard.innerHTML = `
+                    <span class="level-badge level-${level}">المستوى ${level}</span>
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-xl group-hover:from-blue-500/20 group-hover:to-purple-500/20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-6" style="background: linear-gradient(135deg, #6C63FF 0%, #00D1B2 100%);">
+                            <i class="fas fa-book text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">${course.id}</h3>
+                        <h4 class="text-xl font-bold text-white mb-4">${course.title}</h4>
+                        <p class="text-gray-400 mb-6 line-clamp-3">${course.description || course.desc || ''}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-gray-700 text-blue-300 text-xs px-3 py-1 rounded-full">${course.credits || 3} ساعات</span>
+                            <span class="bg-gray-700 text-green-300 text-xs px-3 py-1 rounded-full">${course.major}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-400 group-hover:text-white transition duration-300 font-medium">
+                                عرض التفاصيل
+                            </span>
+                            <span class="text-xs text-gray-500">${addedDate}</span>
+                        </div>
+                    </div>
+                `;
+
+                coursesGrid.appendChild(courseCard);
+            });
+        }
+
+        // Open course modal
+        function openModal(courseCode, courseData) {
+            currentCourseCode = courseCode;
+            
+            document.getElementById('modalCourseCode').textContent = courseCode;
+            document.getElementById('modalCourseTitle').textContent = courseData.title;
+            document.getElementById('modalCourseDesc').textContent = courseData.description || courseData.desc || '';
+            document.getElementById('modalCourseMajor').textContent = courseData.major;
+            document.getElementById('modalCourseCredits').textContent = courseData.credits || 3;
+            
+            // Format date
+            const dateAdded = courseData.createdAt ? 
+                courseData.createdAt.toDate().toLocaleDateString('ar-SA') : 
+                'غير محدد';
+            document.getElementById('modalDateAdded').textContent = dateAdded;
+
+            // Display resources
+            const resourcesContainer = document.getElementById('course-resources');
+            resourcesContainer.innerHTML = '';
+
+            if (courseData.resources && courseData.resources.length > 0) {
+                courseData.resources.forEach(resource => {
+                    const resourceDiv = document.createElement('div');
+                    resourceDiv.className = 'flex items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition';
+                    
+                    let icon = 'fas fa-link';
+                    let platformName = 'رابط';
+                    
+                    switch(resource.type) {
+                        case 'youtube':
+                            icon = 'fab fa-youtube';
+                            platformName = 'يوتيوب';
+                            break;
+                        case 'drive':
+                            icon = 'fab fa-google-drive';
+                            platformName = 'جوجل درايف';
+                            break;
+                        case 'telegram':
+                            icon = 'fab fa-telegram';
+                            platformName = 'تلجرام';
+                            break;
+                        case 'mega':
+                            icon = 'fas fa-cloud';
+                            platformName = 'ميجا';
+                            break;
+                    }
+                    
+                    resourceDiv.innerHTML = `
+                        <i class="${icon} text-blue-400 mr-3"></i>
+                        <div class="flex-1">
+                            <div class="text-white font-medium">${resource.text}</div>
+                            <div class="text-gray-400 text-sm">${platformName}</div>
+                        </div>
+                        <a href="${resource.link}" target="_blank" class="text-blue-400 hover:text-blue-300">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    `;
+                    
+                    resourcesContainer.appendChild(resourceDiv);
+                });
+            } else {
+                resourcesContainer.innerHTML = '<p class="text-gray-400 text-center py-4">لا توجد موارد مضافة</p>';
+            }
+
+            document.getElementById('courseModal').classList.remove('hidden');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('courseModal').classList.add('hidden');
+            currentCourseCode = null;
+        }
+
+        // Edit course (redirect to main page with edit mode)
+        function editCourse() {
+            if (currentCourseCode) {
+                localStorage.setItem('editCourseCode', currentCourseCode);
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Delete course
+        async function deleteCourse() {
+            if (!currentCourseCode) return;
+
+            if (confirm('هل أنت متأكد من حذف هذه المادة؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                try {
+                    // Delete from Firestore
+                    await db.collection('userCourses').doc(currentCourseCode).delete();
+                    
+                    // Remove from local array
+                    userCourses = userCourses.filter(course => course.id !== currentCourseCode);
+                    
+                    // Update UI
+                    document.getElementById('coursesCount').textContent = userCourses.length;
+                    displayUserCourses();
+                    
+                    // Update user document
+                    await db.collection('users').doc(currentUser.uid).update({
+                        coursesAdded: userCourses.length
+                    });
+                    
+                    closeModal();
+                    
+                    // Show success message
+                    showNotification('تم حذف المادة بنجاح', 'success');
+                    
+                } catch (error) {
+                    console.error('خطأ في حذف المادة:', error);
+                    showNotification('حدث خطأ في حذف المادة', 'error');
+                }
+            }
+        }
+
+        // Logout user
+        async function logoutUser() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                try {
+                    await auth.signOut();
+                    localStorage.removeItem('userAuth');
+                    window.location.href = 'auth.html';
+                } catch (error) {
+                    console.error('خطأ في تسجيل الخروج:', error);
+                    showNotification('حدث خطأ في تسجيل الخروج', 'error');
+                }
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 glass-card rounded-lg p-4 border-l-4 ${
+                type === 'success' ? 'border-green-500' : 
+                type === 'error' ? 'border-red-500' : 'border-blue-500'
+            }`;
+            
+            const iconClass = type === 'success' ? 'fas fa-check-circle' : 
+                             type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle';
+            
+            const iconColor = type === 'success' ? 'text-green-500' : 
+                             type === 'error' ? 'text-red-500' : 'text-blue-500';
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="${iconClass} ${iconColor} mr-3"></i>
+                    <div class="text-white">${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('courseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

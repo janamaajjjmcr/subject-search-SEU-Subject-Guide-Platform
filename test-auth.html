@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام التسجيل</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1e293b 100%);
+            color: white;
+            padding: 2rem;
+            direction: rtl;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .test-result {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .success {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+            color: #6ee7b7;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+        .info {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+            color: #93c5fd;
+        }
+        button {
+            background: linear-gradient(135deg, #6c63ff 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 16px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 اختبار نظام المصادقة</h1>
+        <p>هذا الملف لاختبار عمل نظام التسجيل وحفظ localStorage</p>
+        
+        <div id="results"></div>
+        
+        <button onclick="testRegistration()">اختبار التسجيل</button>
+        <button onclick="testLogin()">اختبار تسجيل الدخول</button>
+        <button onclick="checkLocalStorage()">فحص localStorage</button>
+        <button onclick="clearStorage()">مسح البيانات</button>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        // Initialize AuthSystem
+        const authSystem = new AuthSystem();
+        addResult('تم تهيئة نظام المصادقة بنجاح ✅', 'success');
+
+        function testRegistration() {
+            try {
+                const testUser = {
+                    fullName: 'محمد أحمد الطالب',
+                    username: 'mohammed_test',
+                    email: 'mohammed@test.com',
+                    password: '123456'
+                };
+
+                addResult(`محاولة تسجيل المستخدم: ${testUser.username}`, 'info');
+                
+                const result = authSystem.register(testUser);
+                addResult(`✅ نجح التسجيل: ${result.message}`, 'success');
+                
+                // Check if saved in localStorage
+                const users = JSON.parse(localStorage.getItem('courseApp_users') || '[]');
+                const savedUser = users.find(u => u.username === testUser.username);
+                
+                if (savedUser) {
+                    addResult(`✅ تم حفظ المستخدم في localStorage بنجاح`, 'success');
+                    addResult(`البيانات المحفوظة: ${JSON.stringify({
+                        username: savedUser.username,
+                        email: savedUser.email,
+                        fullName: savedUser.fullName,
+                        joinDate: savedUser.joinDate
+                    }, null, 2)}`, 'info');
+                } else {
+                    addResult('❌ فشل في حفظ المستخدم في localStorage', 'error');
+                }
+                
+            } catch (error) {
+                addResult(`❌ خطأ في التسجيل: ${error.message}`, 'error');
+            }
+        }
+
+        function testLogin() {
+            try {
+                const credentials = {
+                    username: 'mohammed_test',
+                    password: '123456'
+                };
+
+                addResult(`محاولة تسجيل دخول المستخدم: ${credentials.username}`, 'info');
+                
+                const result = authSystem.login(credentials);
+                addResult(`✅ نجح تسجيل الدخول: ${result.message}`, 'success');
+                
+                // Check current user in localStorage
+                const currentUser = JSON.parse(localStorage.getItem('courseApp_currentUser'));
+                if (currentUser) {
+                    addResult(`✅ المستخدم الحالي محفوظ: ${currentUser.fullName}`, 'success');
+                } else {
+                    addResult('❌ المستخدم الحالي غير محفوظ في localStorage', 'error');
+                }
+                
+            } catch (error) {
+                addResult(`❌ خطأ في تسجيل الدخول: ${error.message}`, 'error');
+            }
+        }
+
+        function checkLocalStorage() {
+            addResult('فحص بيانات localStorage:', 'info');
+            
+            const users = localStorage.getItem('courseApp_users');
+            const currentUser = localStorage.getItem('courseApp_currentUser');
+            
+            if (users) {
+                const parsedUsers = JSON.parse(users);
+                addResult(`✅ عدد المستخدمين المسجلين: ${parsedUsers.length}`, 'success');
+                parsedUsers.forEach((user, index) => {
+                    addResult(`${index + 1}. ${user.fullName} (${user.username})`, 'info');
+                });
+            } else {
+                addResult('❌ لا توجد بيانات مستخدمين', 'error');
+            }
+            
+            if (currentUser) {
+                const parsedCurrentUser = JSON.parse(currentUser);
+                addResult(`✅ المستخدم الحالي: ${parsedCurrentUser.fullName}`, 'success');
+            } else {
+                addResult('ℹ️ لا يوجد مستخدم مسجل دخول', 'info');
+            }
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('courseApp_users');
+            localStorage.removeItem('courseApp_currentUser');
+            addResult('🗑️ تم مسح جميع البيانات من localStorage', 'info');
+            
+            // Reinitialize
+            authSystem.users = [];
+            authSystem.currentUser = null;
+        }
+
+        // Initial check
+        checkLocalStorage();
+    </script>
+</body>
+</html>

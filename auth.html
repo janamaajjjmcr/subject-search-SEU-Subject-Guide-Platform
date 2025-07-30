@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | كلية الحوسبة - جامعة SEU</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="تسجيل الدخول إلى نظام إدارة المواد الأكاديمية - كلية الحوسبة جامعة SEU">
+    <meta name="robots" content="noindex, follow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        :root {
+            --primary: #0F0F1A;
+            --secondary: #1A1A2E;
+            --accent: #6C63FF;
+            --text: #E0E0FF;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent) 0%, #A5A6FF 50%, #00D1B2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(109, 99, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-input {
+            background: rgba(45, 45, 77, 0.4);
+            border: 1px solid rgba(109, 99, 255, 0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #6C63FF;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+
+        .auth-input::placeholder {
+            color: rgba(224, 224, 255, 0.5);
+        }
+
+        .auth-btn {
+            background: linear-gradient(135deg, #6C63FF 0%, #00D1B2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.3);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .success-message {
+            color: #00D1B2;
+            font-size: 14px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(0, 209, 178, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #00D1B2;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            color: rgba(224, 224, 255, 0.7);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #6C63FF;
+            border-bottom-color: #6C63FF;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-8 max-w-md w-full">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 rounded-full mx-auto mb-4" style="background: linear-gradient(135deg, #6C63FF 0%, #00D1B2 100%);">
+                    <i class="fas fa-laptop-code text-white text-2xl leading-[4rem]"></i>
+                </div>
+                <h1 class="text-2xl font-bold mb-2">
+                    <span class="gradient-text">كلية الحوسبة</span>
+                </h1>
+                <p class="text-gray-400">جامعة SEU - نظام إدارة المواد</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex justify-center mb-8 border-b border-gray-600">
+                <button class="tab-btn active" onclick="switchTab('login')">تسجيل الدخول</button>
+                <button class="tab-btn" onclick="switchTab('register')">إنشاء حساب</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="form-container active">
+                <form onsubmit="loginUser(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" class="auth-input" placeholder="أدخل بريدك الإلكتروني" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">كلمة المرور</label>
+                        <input type="password" id="loginPassword" class="auth-input" placeholder="أدخل كلمة المرور" required>
+                    </div>
+                    
+                    <button type="submit" id="loginBtn" class="auth-btn">
+                        تسجيل الدخول
+                    </button>
+                    
+                    <div id="loginMessage"></div>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="resetPassword()" class="text-sm text-blue-400 hover:text-blue-300">
+                        نسيت كلمة المرور؟
+                    </button>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="form-container">
+                <form onsubmit="registerUser(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">الاسم الكامل</label>
+                        <input type="text" id="registerName" class="auth-input" placeholder="أدخل اسمك الكامل" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">البريد الإلكتروني</label>
+                        <input type="email" id="registerEmail" class="auth-input" placeholder="أدخل بريدك الإلكتروني" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">التخصص</label>
+                        <select id="registerMajor" class="auth-input" required>
+                            <option value="">اختر التخصص</option>
+                            <option value="علوم الحاسب">علوم الحاسب</option>
+                            <option value="علوم البيانات">علوم البيانات</option>
+                            <option value="تقنية المعلومات">تقنية المعلومات</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">كلمة المرور</label>
+                        <input type="password" id="registerPassword" class="auth-input" placeholder="أدخل كلمة المرور (6 أحرف على الأقل)" required minlength="6">
+                        <p class="text-xs text-gray-400 mt-1">يجب أن تكون 6 أحرف على الأقل</p>
+                    </div>
+                    
+                    <button type="submit" id="registerBtn" class="auth-btn">
+                        إنشاء حساب
+                    </button>
+                    
+                    <div id="registerMessage"></div>
+                </form>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-sm text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-arrow-right mr-2"></i>
+                    العودة للصفحة الرئيسية
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration (same as main site)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+            authDomain: "seu-subjects.firebaseapp.com",
+            projectId: "seu-subjects",
+            storageBucket: "seu-subjects.firebasestorage.app",
+            messagingSenderId: "552315681734",
+            appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+            measurementId: "G-Y2FL6V8X3L"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Tab switching
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update form containers
+            document.querySelectorAll('.form-container').forEach(container => container.classList.remove('active'));
+            document.getElementById(tab + 'Form').classList.add('active');
+            
+            // Clear messages
+            clearMessages();
+        }
+
+        // Clear all messages
+        function clearMessages() {
+            document.getElementById('loginMessage').innerHTML = '';
+            document.getElementById('registerMessage').innerHTML = '';
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            document.getElementById(elementId).innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle mr-2"></i>${message}</div>`;
+        }
+
+        // Show success message
+        function showSuccess(elementId, message) {
+            document.getElementById(elementId).innerHTML = `<div class="success-message"><i class="fas fa-check-circle mr-2"></i>${message}</div>`;
+        }
+
+        // Login user
+        async function loginUser(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Show loading
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'جاري تسجيل الدخول...<span class="loading-spinner"></span>';
+            clearMessages();
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                console.log('تم تسجيل الدخول بنجاح:', user.uid);
+                
+                // Store user info in localStorage
+                localStorage.setItem('userAuth', JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    isLoggedIn: true
+                }));
+                
+                showSuccess('loginMessage', 'تم تسجيل الدخول بنجاح! جاري التوجه...');
+                
+                // Redirect to main page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول:', error);
+                
+                let errorMessage = 'حدث خطأ في تسجيل الدخول';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'البريد الإلكتروني غير مسجل في النظام';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'كلمة المرور غير صحيحة';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'البريد الإلكتروني غير صحيح';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'تم تعطيل هذا الحساب';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                
+                showError('loginMessage', errorMessage);
+            } finally {
+                // Reset button
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'تسجيل الدخول';
+            }
+        }
+
+        // Register user
+        async function registerUser(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const major = document.getElementById('registerMajor').value;
+            const password = document.getElementById('registerPassword').value;
+            const registerBtn = document.getElementById('registerBtn');
+            
+            // Show loading
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = 'جاري إنشاء الحساب...<span class="loading-spinner"></span>';
+            clearMessages();
+            
+            try {
+                // Create user account
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Update user profile
+                await user.updateProfile({
+                    displayName: name
+                });
+                
+                // Save user data to Firestore
+                await db.collection('users').doc(user.uid).set({
+                    name: name,
+                    email: email,
+                    major: major,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    coursesAdded: 0,
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log('تم إنشاء الحساب بنجاح:', user.uid);
+                
+                // Store user info in localStorage
+                localStorage.setItem('userAuth', JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    name: name,
+                    major: major,
+                    isLoggedIn: true
+                }));
+                
+                showSuccess('registerMessage', 'تم إنشاء الحساب بنجاح! جاري التوجه...');
+                
+                // Redirect to main page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('خطأ في إنشاء الحساب:', error);
+                
+                let errorMessage = 'حدث خطأ في إنشاء الحساب';
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'البريد الإلكتروني مستخدم مسبقاً';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'البريد الإلكتروني غير صحيح';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'كلمة المرور ضعيفة جداً';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                
+                showError('registerMessage', errorMessage);
+            } finally {
+                // Reset button
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'إنشاء حساب';
+            }
+        }
+
+        // Reset password
+        async function resetPassword() {
+            const email = document.getElementById('loginEmail').value;
+            
+            if (!email) {
+                showError('loginMessage', 'يرجى إدخال بريدك الإلكتروني أولاً');
+                return;
+            }
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showSuccess('loginMessage', 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
+            } catch (error) {
+                console.error('خطأ في إعادة تعيين كلمة المرور:', error);
+                showError('loginMessage', 'حدث خطأ في إرسال البريد الإلكتروني');
+            }
+        }
+
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const userAuth = localStorage.getItem('userAuth');
+            if (userAuth) {
+                const user = JSON.parse(userAuth);
+                if (user.isLoggedIn) {
+                    // User is already logged in, redirect to main page
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>تسجيل الدخول</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required>
+      <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+      <button type="submit">دخول</button>
+    </form>
+    <p>ليس لديك حساب؟ <a href="register.html">إنشاء حساب جديد</a></p>
+    <div id="loginError" style="color:red;"></div>
+  </div>
+  <script src="firebase-auth.js"></script>
+  <script>
+    document.getElementById('loginForm').onsubmit = function(e) {
+      e.preventDefault();
+      const email = loginEmail.value;
+      const password = loginPassword.value;
+      signInUser(email, password);
+    }
+    function signInUser(email, password) {
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          window.location.href = 'index.html';
+        })
+        .catch(error => {
+          document.getElementById('loginError').textContent = error.message;
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حسابي - جامعة SEU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * { 
+            font-family: 'Noto Sans Arabic', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        /* إصلاح النصوص العربية */
+        body {
+            direction: rtl;
+            text-align: right;
+            unicode-bidi: embed;
+        }
+        
+        .form-input {
+            direction: rtl !important;
+            text-align: right !important;
+            unicode-bidi: plaintext !important;
+            font-family: 'Noto Sans Arabic', sans-serif !important;
+            padding: 1rem 1rem 1rem 3rem; /* مساحة للأيقونة */
+        }
+        
+        .form-input:focus {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+        
+        .form-input::placeholder {
+            direction: rtl !important;
+            text-align: right !important;
+            color: rgba(156, 163, 175, 0.8) !important;
+        }
+        
+        /* إصلاح موقع أيقونة العين */
+        .password-toggle {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+            z-index: 10;
+        }
+        
+        /* الألوان والتصميم */
+        :root {
+            --cosmic: #0a0a23;
+            --nebula: #1a1a3e;
+            --stardust: #a8a8b3;
+            --plasma: #ff006e;
+            --aurora: #8338ec;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cosmic) 0%, var(--nebula) 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .form-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            margin-bottom: 1rem;
+        }
+        
+        .form-input:focus {
+            border-color: var(--aurora);
+            box-shadow: 0 0 0 3px rgba(131, 56, 236, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--plasma), var(--aurora));
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .tab-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--stardust);
+            font-weight: 500;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--plasma), var(--aurora));
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--plasma), var(--aurora));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--stardust);
+            font-weight: 500;
+        }
+        
+        .text-link {
+            color: #60a5fa;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .text-link:hover {
+            color: #93c5fd;
+        }
+        
+        /* تحسين الاستجابة للهاتف */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .form-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- زر العودة -->
+    <div class="container" style="padding-top: 1rem;">
+        <button onclick="window.history.back()" class="flex items-center text-white hover:text-blue-400 transition duration-300 mb-6">
+            <i class="fas fa-arrow-right mr-2"></i>
+            العودة
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="form-card">
+            <!-- العنوان الرئيسي -->
+            <h1 class="text-3xl font-bold mb-2">
+                <span class="gradient-text">حسابك في جامعة SEU</span>
+            </h1>
+            <p class="text-center text-gray-300 mb-6">انضم إلينا أو سجل دخولك</p>
+
+            <!-- رسائل النجاح والخطأ -->
+            <div id="message-container"></div>
+
+            <!-- أزرار التبويب -->
+            <div class="tab-container">
+                <button class="tab-button active" onclick="showTab('register')">
+                    📝 إنشاء حساب
+                </button>
+                <button class="tab-button" onclick="showTab('login')">
+                    🔑 تسجيل الدخول
+                </button>
+            </div>
+
+            <!-- نموذج التسجيل -->
+            <div id="register-tab" class="tab-content active">
+                <form onsubmit="registerUser(event)">
+                    <div>
+                        <label class="form-label">الاسم الكامل</label>
+                        <input type="text" 
+                               id="fullName" 
+                               class="form-input" 
+                               placeholder="أدخل اسمك الثلاثي كاملاً"
+                               required>
+                    </div>
+
+                    <div>
+                        <label class="form-label">اسم المستخدم</label>
+                        <input type="text" 
+                               id="username" 
+                               class="form-input" 
+                               placeholder="اختر اسم مستخدم مميز"
+                               required>
+                    </div>
+
+                    <div>
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" 
+                               id="email" 
+                               class="form-input" 
+                               placeholder="أدخل بريدك الإلكتروني"
+                               required>
+                    </div>
+
+                    <div class="password-container">
+                        <label class="form-label">كلمة المرور</label>
+                        <input type="password" 
+                               id="password" 
+                               class="form-input" 
+                               placeholder="أدخل كلمة مرور قوية"
+                               required>
+                        <span class="password-toggle" onclick="togglePassword('password')">
+                            <i class="fas fa-eye" id="password-eye"></i>
+                        </span>
+                    </div>
+
+                    <div class="password-container">
+                        <label class="form-label">تأكيد كلمة المرور</label>
+                        <input type="password" 
+                               id="confirmPassword" 
+                               class="form-input" 
+                               placeholder="أعد كتابة كلمة المرور"
+                               required>
+                        <span class="password-toggle" onclick="togglePassword('confirmPassword')">
+                            <i class="fas fa-eye" id="confirmPassword-eye"></i>
+                        </span>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        🚀 إنشاء الحساب
+                    </button>
+                </form>
+
+                <p class="text-center text-gray-400 mt-4">
+                    لديك حساب؟ 
+                    <span class="text-link" onclick="showTab('login')">سجل دخولك هنا</span>
+                </p>
+            </div>
+
+            <!-- نموذج تسجيل الدخول -->
+            <div id="login-tab" class="tab-content">
+                <form onsubmit="loginUser(event)">
+                    <div>
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" 
+                               id="loginEmail" 
+                               class="form-input" 
+                               placeholder="أدخل بريدك الإلكتروني"
+                               required>
+                    </div>
+
+                    <div class="password-container">
+                        <label class="form-label">كلمة المرور</label>
+                        <input type="password" 
+                               id="loginPassword" 
+                               class="form-input" 
+                               placeholder="أدخل كلمة المرور"
+                               required>
+                        <span class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <i class="fas fa-eye" id="loginPassword-eye"></i>
+                        </span>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        🔐 تسجيل الدخول
+                    </button>
+                </form>
+
+                <p class="text-center text-gray-400 mt-4">
+                    ليس لديك حساب؟ 
+                    <span class="text-link" onclick="showTab('register')">أنشئ حساب جديد</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- معلومات المستخدمين المسجلين -->
+        <div class="form-card mt-4" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3);">
+            <h3 class="text-lg font-bold text-green-400 mb-3">👥 المستخدمون المسجلون:</h3>
+            <div id="users-list" class="text-sm text-green-300">
+                جاري تحميل قائمة المستخدمين...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // التبديل بين التبويبات
+        function showTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // إظهار التبويب المطلوب
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            // مسح الرسائل
+            document.getElementById('message-container').innerHTML = '';
+        }
+
+        // تبديل إظهار كلمة المرور
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId + '-eye');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // إظهار الرسائل
+        function showMessage(message, type) {
+            const container = document.getElementById('message-container');
+            const className = type === 'success' ? 'success-message' : 'error-message';
+            container.innerHTML = `<div class="${className}">${message}</div>`;
+            
+            // إخفاء الرسالة بعد 5 ثواني
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // نظام حفظ المستخدمين في LocalStorage
+        function saveUser(userData) {
+            let users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // التحقق من وجود المستخدم
+            const existingUser = users.find(u => u.email === userData.email);
+            if (existingUser) {
+                throw new Error('هذا الإيميل مسجل بالفعل');
+            }
+            
+            users.push({
+                ...userData,
+                id: Date.now(),
+                createdAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('users', JSON.stringify(users));
+            updateUsersList();
+        }
+
+        // تسجيل مستخدم جديد
+        function registerUser(event) {
+            event.preventDefault();
+            
+            try {
+                const fullName = document.getElementById('fullName').value.trim();
+                const username = document.getElementById('username').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // التحقق من البيانات
+                if (!fullName || !username || !email || !password) {
+                    throw new Error('يرجى ملء جميع الحقول');
+                }
+                
+                if (password !== confirmPassword) {
+                    throw new Error('كلمات المرور غير متطابقة');
+                }
+                
+                if (password.length < 6) {
+                    throw new Error('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                }
+                
+                // حفظ المستخدم
+                saveUser({ fullName, username, email, password });
+                
+                // رسالة نجاح
+                showMessage('✅ تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول', 'success');
+                
+                // تنظيف النموذج
+                document.getElementById('fullName').value = '';
+                document.getElementById('username').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+                // ملء بيانات تسجيل الدخول
+                document.getElementById('loginEmail').value = email;
+                document.getElementById('loginPassword').value = password;
+                
+                // التبديل لتبويب تسجيل الدخول بعد 2 ثانية
+                setTimeout(() => {
+                    showTab('login');
+                }, 2000);
+                
+            } catch (error) {
+                showMessage('❌ ' + error.message, 'error');
+            }
+        }
+
+        // تسجيل الدخول
+        function loginUser(event) {
+            event.preventDefault();
+            
+            try {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    throw new Error('يرجى إدخال الإيميل وكلمة المرور');
+                }
+                
+                // البحث عن المستخدم
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (!user) {
+                    throw new Error('الإيميل أو كلمة المرور غير صحيحة');
+                }
+                
+                // حفظ جلسة المستخدم
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // رسالة نجاح
+                showMessage(`✅ مرحباً ${user.fullName}! جاري التحويل للصفحة الرئيسية...`, 'success');
+                
+                // التحويل للصفحة الرئيسية بعد ثانيتين
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            } catch (error) {
+                showMessage('❌ ' + error.message, 'error');
+            }
+        }
+
+        // تحديث قائمة المستخدمين
+        function updateUsersList() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const usersList = document.getElementById('users-list');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = 'لا يوجد مستخدمون مسجلون بعد';
+                return;
+            }
+            
+            const usersHTML = users.map((user, index) => `
+                <div style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                    <strong>${index + 1}. ${user.fullName}</strong><br>
+                    <small>📧 ${user.email} | 👤 ${user.username}</small><br>
+                    <small>📅 ${new Date(user.createdAt).toLocaleString('ar-SA')}</small>
+                </div>
+            `).join('');
+            
+            usersList.innerHTML = usersHTML;
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUsersList();
+            
+            // التركيز على أول حقل
+            document.getElementById('fullName').focus();
+            
+            console.log('✅ تم تحميل الصفحة بنجاح');
+        });
+    </script>
+</body>
+</html>

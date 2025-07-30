@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار Firebase - SEU</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: white;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+        
+        .test-input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .test-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+        }
+        
+        .error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498db;
+            color: #3498db;
+        }
+        
+        h1, h2 {
+            text-align: center;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .connected {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+        
+        .disconnected {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 اختبار نظام Firebase</h1>
+        
+        <div class="test-section">
+            <h2>📊 حالة الاتصال</h2>
+            <div id="connection-status">
+                <span class="status-badge disconnected">🔄 جاري فحص الاتصال...</span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📝 اختبار التسجيل السريع</h2>
+            <p>سيتم إنشاء حساب تجريبي ببيانات عشوائية:</p>
+            
+            <input type="text" id="testName" class="test-input" placeholder="الاسم الكامل (سيتم ملؤه تلقائياً)" readonly>
+            <input type="text" id="testUsername" class="test-input" placeholder="اسم المستخدم (سيتم ملؤه تلقائياً)" readonly>
+            <input type="email" id="testEmail" class="test-input" placeholder="الإيميل (سيتم ملؤه تلقائياً)" readonly>
+            <input type="password" id="testPassword" class="test-input" placeholder="كلمة المرور (سيتم ملؤها تلقائياً)" readonly>
+            
+            <button class="test-button" onclick="fillRandomData()">🎲 ملء البيانات العشوائية</button>
+            <button class="test-button" onclick="testRegister()">📝 اختبار التسجيل</button>
+            
+            <div id="register-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔑 اختبار تسجيل الدخول</h2>
+            <p>سيتم استخدام آخر حساب تم إنشاؤه:</p>
+            
+            <input type="email" id="loginTestEmail" class="test-input" placeholder="الإيميل">
+            <input type="password" id="loginTestPassword" class="test-input" placeholder="كلمة المرور">
+            
+            <button class="test-button" onclick="testLogin()">🔐 اختبار تسجيل الدخول</button>
+            
+            <div id="login-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>👤 حالة المستخدم الحالي</h2>
+            <div id="user-status">
+                <span class="status-badge disconnected">❌ لا يوجد مستخدم مسجل</span>
+            </div>
+            <div id="user-details"></div>
+            
+            <button class="test-button" onclick="checkUserStatus()">🔍 فحص حالة المستخدم</button>
+            <button class="test-button" onclick="testLogout()">🚪 تسجيل الخروج</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 معلومات فنية</h2>
+            <div id="technical-info">
+                <div class="code-block" id="debug-info">جاري تحميل معلومات التشخيص...</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📋 سجل الأحداث</h2>
+            <div id="event-log" class="code-block">
+سجل الأحداث سيظهر هنا...
+            </div>
+            <button class="test-button" onclick="clearLog()">🧹 مسح السجل</button>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut,
+            onAuthStateChanged,
+            updateProfile 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration - نفس الإعدادات من الملف الأساسي
+        const firebaseConfig = {
+            apiKey: "AIzaSyDemoKey123-REPLACE-WITH-YOUR-ACTUAL-KEY",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        let app, auth, db;
+        let isConnected = false;
+        let currentTestUser = null;
+
+        // تهيئة Firebase
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            isConnected = true;
+            updateConnectionStatus(true);
+            log('✅ Firebase تم تهيئته بنجاح');
+        } catch (error) {
+            log('❌ خطأ في تهيئة Firebase: ' + error.message);
+            updateConnectionStatus(false);
+        }
+
+        // مراقبة حالة المستخدم
+        if (auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentTestUser = user;
+                    updateUserStatus(user);
+                    log('✅ مستخدم مسجل: ' + user.email);
+                } else {
+                    currentTestUser = null;
+                    updateUserStatus(null);
+                    log('❌ لا يوجد مستخدم مسجل');
+                }
+            });
+        }
+
+        // وظائف مساعدة
+        function updateConnectionStatus(connected) {
+            const statusEl = document.getElementById('connection-status');
+            if (connected) {
+                statusEl.innerHTML = '<span class="status-badge connected">✅ Firebase متصل بنجاح</span>';
+            } else {
+                statusEl.innerHTML = '<span class="status-badge disconnected">❌ خطأ في اتصال Firebase</span>';
+            }
+        }
+
+        function updateUserStatus(user) {
+            const statusEl = document.getElementById('user-status');
+            const detailsEl = document.getElementById('user-details');
+            
+            if (user) {
+                statusEl.innerHTML = '<span class="status-badge connected">✅ مستخدم مسجل الدخول</span>';
+                detailsEl.innerHTML = `
+                    <div class="result info">
+                        <strong>الإيميل:</strong> ${user.email}<br>
+                        <strong>الاسم:</strong> ${user.displayName || 'غير محدد'}<br>
+                        <strong>معرف المستخدم:</strong> ${user.uid}<br>
+                        <strong>تاريخ التسجيل:</strong> ${user.metadata.creationTime}
+                    </div>
+                `;
+            } else {
+                statusEl.innerHTML = '<span class="status-badge disconnected">❌ لا يوجد مستخدم مسجل</span>';
+                detailsEl.innerHTML = '';
+            }
+        }
+
+        function log(message) {
+            const logEl = document.getElementById('event-log');
+            const timestamp = new Date().toLocaleTimeString('ar-SA');
+            logEl.textContent += `[${timestamp}] ${message}\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function showResult(elementId, message, type) {
+            const resultEl = document.getElementById(elementId);
+            resultEl.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        // اختبار التسجيل
+        async function testRegister() {
+            if (!isConnected) {
+                showResult('register-result', '❌ Firebase غير متصل', 'error');
+                return;
+            }
+
+            const name = document.getElementById('testName').value;
+            const username = document.getElementById('testUsername').value;
+            const email = document.getElementById('testEmail').value;
+            const password = document.getElementById('testPassword').value;
+
+            if (!name || !username || !email || !password) {
+                showResult('register-result', '❌ يرجى ملء جميع البيانات أولاً', 'error');
+                return;
+            }
+
+            try {
+                log('🔄 بدء عملية التسجيل...');
+                showResult('register-result', '🔄 جاري إنشاء الحساب...', 'info');
+
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                await updateProfile(user, { displayName: name });
+                
+                await setDoc(doc(db, 'users', user.uid), {
+                    fullName: name,
+                    username: username,
+                    email: email,
+                    createdAt: new Date()
+                });
+
+                showResult('register-result', '✅ نجح التسجيل! تم إنشاء الحساب بنجاح', 'success');
+                log('✅ تم إنشاء حساب جديد: ' + email);
+
+                // ملء بيانات تسجيل الدخول تلقائياً
+                document.getElementById('loginTestEmail').value = email;
+                document.getElementById('loginTestPassword').value = password;
+
+            } catch (error) {
+                let errorMsg = '❌ فشل التسجيل: ';
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMsg += 'الإيميل مستخدم بالفعل';
+                        break;
+                    case 'auth/weak-password':
+                        errorMsg += 'كلمة المرور ضعيفة';
+                        break;
+                    default:
+                        errorMsg += error.message;
+                }
+                
+                showResult('register-result', errorMsg, 'error');
+                log('❌ خطأ في التسجيل: ' + error.code);
+            }
+        }
+
+        // اختبار تسجيل الدخول
+        async function testLogin() {
+            if (!isConnected) {
+                showResult('login-result', '❌ Firebase غير متصل', 'error');
+                return;
+            }
+
+            const email = document.getElementById('loginTestEmail').value;
+            const password = document.getElementById('loginTestPassword').value;
+
+            if (!email || !password) {
+                showResult('login-result', '❌ يرجى إدخال الإيميل وكلمة المرور', 'error');
+                return;
+            }
+
+            try {
+                log('🔄 بدء عملية تسجيل الدخول...');
+                showResult('login-result', '🔄 جاري تسجيل الدخول...', 'info');
+
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                showResult('login-result', '✅ نجح تسجيل الدخول! مرحباً بك', 'success');
+                log('✅ تم تسجيل الدخول: ' + email);
+
+            } catch (error) {
+                let errorMsg = '❌ فشل تسجيل الدخول: ';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMsg += 'المستخدم غير موجود';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMsg += 'كلمة المرور خاطئة';
+                        break;
+                    default:
+                        errorMsg += error.message;
+                }
+                
+                showResult('login-result', errorMsg, 'error');
+                log('❌ خطأ في تسجيل الدخول: ' + error.code);
+            }
+        }
+
+        // تسجيل الخروج
+        async function testLogout() {
+            if (!currentTestUser) {
+                log('❌ لا يوجد مستخدم مسجل للخروج');
+                return;
+            }
+
+            try {
+                await signOut(auth);
+                log('✅ تم تسجيل الخروج بنجاح');
+            } catch (error) {
+                log('❌ خطأ في تسجيل الخروج: ' + error.message);
+            }
+        }
+
+        // فحص حالة المستخدم
+        function checkUserStatus() {
+            if (currentTestUser) {
+                log('ℹ️ المستخدم الحالي: ' + currentTestUser.email);
+            } else {
+                log('ℹ️ لا يوجد مستخدم مسجل حالياً');
+            }
+        }
+
+        // ملء بيانات عشوائية
+        function fillRandomData() {
+            const randomNum = Math.floor(Math.random() * 1000);
+            const name = `أحمد محمد علي ${randomNum}`;
+            const username = `user${randomNum}`;
+            const email = `test${randomNum}@test.com`;
+            const password = `pass${randomNum}`;
+
+            document.getElementById('testName').value = name;
+            document.getElementById('testUsername').value = username;
+            document.getElementById('testEmail').value = email;
+            document.getElementById('testPassword').value = password;
+
+            log('🎲 تم ملء البيانات العشوائية');
+        }
+
+        function clearLog() {
+            document.getElementById('event-log').textContent = 'تم مسح السجل...\n';
+        }
+
+        // تحديث المعلومات الفنية
+        function updateTechnicalInfo() {
+            const debugInfo = `
+إعدادات Firebase:
+- Project ID: ${firebaseConfig.projectId}
+- Auth Domain: ${firebaseConfig.authDomain}
+- حالة الاتصال: ${isConnected ? 'متصل' : 'منقطع'}
+- إصدار Firebase: 10.7.1
+- المتصفح: ${navigator.userAgent}
+- الوقت الحالي: ${new Date().toLocaleString('ar-SA')}
+            `;
+            document.getElementById('debug-info').textContent = debugInfo;
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTechnicalInfo();
+            log('📄 تم تحميل صفحة الاختبار');
+            
+            // ملء بيانات عشوائية تلقائياً
+            setTimeout(fillRandomData, 1000);
+        });
+
+        // جعل الوظائف متاحة عالمياً
+        window.testRegister = testRegister;
+        window.testLogin = testLogin;
+        window.testLogout = testLogout;
+        window.checkUserStatus = checkUserStatus;
+        window.fillRandomData = fillRandomData;
+        window.clearLog = clearLog;
+    </script>
+</body>
+</html>

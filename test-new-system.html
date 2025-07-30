@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تجربة النظام الجديد</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px 10px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .feature i {
+            color: #28a745;
+            margin-left: 15px;
+            font-size: 1.2em;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 النظام الجديد جاهز!</h1>
+        
+        <div class="step">
+            <h3>🔥 ما هو الجديد؟</h3>
+            <p>الآن بعد تسجيل الدخول، سيتم توجيهك إلى <strong>لوحة التحكم الشخصية</strong> بدلاً من الخروج التلقائي!</p>
+        </div>
+
+        <div class="step">
+            <h3>📊 لوحة التحكم تحتوي على:</h3>
+            <div class="feature">
+                <i class="fas fa-user-circle"></i>
+                <span><strong>معلوماتك الشخصية</strong> - اسمك، إيميلك، تاريخ التسجيل</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-chart-bar"></i>
+                <span><strong>إحصائيات موادك</strong> - عدد المواد في كل تخصص</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-book"></i>
+                <span><strong>قائمة موادك</strong> - جميع المواد التي أضفتها</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-plus"></i>
+                <span><strong>إضافة مواد جديدة</strong> - مباشرة من لوحة التحكم</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-edit"></i>
+                <span><strong>تعديل وحذف</strong> - إدارة موادك بسهولة</span>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>🚀 كيف تجرب النظام؟</h3>
+            <p><strong>الخطوة 1:</strong> اذهب لصفحة إنشاء الحساب وسجل دخولك</p>
+            <p><strong>الخطوة 2:</strong> سيتم توجيهك تلقائياً للوحة التحكم</p>
+            <p><strong>الخطوة 3:</strong> استكشف الميزات الجديدة وأضف موادك!</p>
+        </div>
+
+        <div class="step">
+            <h3>🔗 وصول سريع من الصفحة الرئيسية</h3>
+            <p>يمكنك الآن الوصول للوحة التحكم من القائمة العلوية عند تسجيل الدخول:</p>
+            <p><strong>القائمة → لوحة التحكم</strong></p>
+        </div>
+
+        <div class="links">
+            <h3>جرب الآن:</h3>
+            <a href="account-working.html" class="btn">
+                <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+            </a>
+            <a href="dashboard.html" class="btn btn-outline">
+                <i class="fas fa-tachometer-alt"></i> معاينة لوحة التحكم
+            </a>
+            <a href="index.html" class="btn btn-outline">
+                <i class="fas fa-home"></i> الصفحة الرئيسية
+            </a>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h4>✨ الآن تجربة أفضل!</h4>
+            <p>لا مزيد من الخروج التلقائي - استمتع بتجربة متكاملة لإدارة موادك الجامعية</p>
+        </div>
+    </div>
+</body>
+</html>
