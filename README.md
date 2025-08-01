@@ -109,7 +109,7 @@
 
 ```bash
 # 📦 استنساخ المستودع
-git clone https://github.com/janamaajjjmcr/subject-search-SEU-Subject-Guide-Platform.git
+git clone https://github.com/fxrg/subject-search-SEU-Subject-Guide-Platform.git
 
 # 📁 الانتقال للمجلد
 cd subject-search-SEU-Subject-Guide-Platform
@@ -269,7 +269,7 @@ npx serve .
 # 1️⃣ Fork المستودع على GitHub
 
 # 2️⃣ استنسخ نسختك
-git clone https://github.com/YOUR_USERNAME/subject-search-SEU-Subject-Guide-Platform.git
+git clone https://github.com/fxrg/subject-search-SEU-Subject-Guide-Platform.git
 
 # 3️⃣ أنشئ فرع جديد للميزة
 git checkout -b feature/user-authentication
