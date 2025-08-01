@@ -3,7 +3,7 @@
 <div align="center">
 
 ![SEU Guide Platform](https://img.shields.io/badge/🎓_SEU-Guide_Platform-4285f4?style=for-the-badge&logoColor=white)
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Now-success?style=for-the-badge)](https://janamaajjjmcr.github.io/subject-search-SEU-Subject-Guide-Platform/)
+‏[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Now-success?style=for-the-badge)](https://fxrg.github.io/subject-search-/)
 [![GitHub Stars](https://img.shields.io/github/stars/janamaajjjmcr/subject-search-SEU-Subject-Guide-Platform?style=for-the-badge&logo=github)](https://github.com/janamaajjjmcr/subject-search-SEU-Subject-Guide-Platform/stargazers)
 [![Contributors](https://img.shields.io/badge/Made%20by-SEU%20Students-orange?style=for-the-badge)](https://github.com/janamaajjjmcr)
 
@@ -408,8 +408,8 @@ git push origin feature/user-authentication
 
 ### 🚀 **ابدأ رحلتك الآن!**
 
-[![استكشف المنصة](https://img.shields.io/badge/🎓_استكشف_المنصة-ابدأ_الآن-success?style=for-the-badge&logoColor=white)](https://janamaajjjmcr.github.io/subject-search-SEU-Subject-Guide-Platform/)
-[![انضم للمجتمع](https://img.shields.io/badge/👥_انضم_للمجتمع-GitHub-black?style=for-the-badge&logo=github)](https://github.com/janamaajjjmcr/subject-search-SEU-Subject-Guide-Platform)
+‏[![Explore Platform](https://img.shields.io/badge/🎓_Explore_Platform-Start_Now-success?style=for-the-badge&logoColor=white)](https://fxrg.github.io/subject-search-/)
+‏[![Join Community](https://img.shields.io/badge/👥_Join_Community-GitHub-black?style=for-the-badge&logo=github)](https://github.com/fxrg/subject-search-SEU-Subject-Guide-Platform)
 
 -----
 
@@ -419,4 +419,4 @@ git push origin feature/user-authentication
 
 [⬆️ العودة للأعلى](#-seu-subject-guide-platform)
 
-</div>
+‏</div>
