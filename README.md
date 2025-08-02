@@ -112,7 +112,7 @@
 git clone https://github.com/fxrg/subject-search.git
 
 # 📁 الانتقال للمجلد
-cd subject-search-SEU-Subject-Guide-Platform
+cd subject-search
 
 # 🌐 تشغيل الخادم المحلي
 python -m http.server 8000
