@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحقق من البريد الإلكتروني | جامعة SEU</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="verification-styles.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+</head>
+<body class="pattern-overlay">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold gradient-text mb-2">تحقق من البريد الإلكتروني</h1>
+                <p class="text-stardust">أكمل عملية التسجيل</p>
+            </div>
+
+            <!-- Verification Card -->
+            <div class="verification-card">
+                <!-- Email Icon -->
+                <div class="text-center mb-6">
+                    <i class="fas fa-envelope email-icon"></i>
+                    <h2 class="text-xl font-bold text-white mb-2">تحقق من بريدك الإلكتروني</h2>
+                    <p class="text-stardust">يجب التحقق من بريدك الإلكتروني للاستمرار في استخدام الموقع</p>
+                </div>
+
+                <!-- User Email Display -->
+                <div class="info-box">
+                    <div class="flex items-center">
+                        <i class="fas fa-user text-blue-400 mr-2"></i>
+                        <div class="text-right">
+                            <p class="text-blue-200 text-sm">البريد الإلكتروني:</p>
+                            <p class="text-white font-medium" id="user-email">جاري التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification Required Notice -->
+                <div class="spam-notice">
+                    <div class="flex items-start">
+                        <i class="fas fa-lock text-red-400 mt-1 mr-2"></i>
+                        <div class="text-right">
+                            <p class="text-red-200 text-sm font-medium mb-1">مطلوب:</p>
+                            <p class="text-red-200 text-sm">لا يمكنك استخدام الموقع حتى يتم التحقق من بريدك الإلكتروني</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Persistent Verification Message -->
+                <div id="persistent-verification-message" class="verification-message">
+                    <div class="flex items-start">
+                        <i class="fas fa-envelope-open text-blue-400 mt-1 mr-2"></i>
+                        <div class="text-right">
+                            <p class="text-blue-200 text-sm font-medium mb-2">رسالة مهمة:</p>
+                            <p class="text-blue-200 text-sm mb-2">تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى فتح البريد والضغط على رابط التحقق للمتابعة.</p>
+                            <p class="text-yellow-200 text-sm font-medium">⚠️ ملاحظة مهمة:</p>
+                            <p class="text-yellow-200 text-sm">إذا لم تجد الرسالة في صندوق الوارد، يرجى فحص مجلد <strong>الرسائل غير المرغوب فيها (Spam)</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spam Notice -->
+                <div class="spam-notice">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-triangle text-yellow-400 mt-1 mr-2"></i>
+                        <div class="text-right">
+                            <p class="text-yellow-200 text-sm font-medium mb-1">مهم:</p>
+                            <p class="text-yellow-200 text-sm">يرجى فحص مجلد <strong>الرسائل غير المرغوب فيها (Spam)</strong> إذا لم تجد الرسالة في صندوق الوارد</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3">
+                    <button id="resend-email" class="btn-primary">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        إعادة إرسال بريد التحقق
+                    </button>
+                    
+                    <button id="check-verification" class="btn-primary">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        تحقق من حالة الحساب
+                    </button>
+                    
+                    <button id="go-to-login" class="btn-secondary">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        الذهاب لصفحة تسجيل الدخول
+                    </button>
+                    
+                                         <button id="go-home" class="btn-secondary">
+                         <i class="fas fa-home mr-2"></i>
+                         تصفح الموقع كزائر
+                     </button>
+                </div>
+
+                <!-- Countdown Timer -->
+                <div class="countdown" id="countdown" style="display: none;">
+                    يمكن إعادة الإرسال خلال: <span id="timer">60</span> ثانية
+                </div>
+
+                <!-- Success Message -->
+                <div id="success-message" class="success-notice" style="display: none;">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                        <div class="text-right">
+                            <p class="text-green-200 font-medium">تم التحقق بنجاح!</p>
+                            <p class="text-green-200 text-sm">سيتم توجيهك للصفحة الرئيسية خلال لحظات...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Auth Script -->
+    <script src="firebase-auth.js"></script>
+    
+    <script>
+        let countdownInterval;
+        let resendCooldown = 60; // 60 seconds cooldown
+
+        // Firebase is already initialized in firebase-auth.js
+        // We can access auth and db from the global scope
+        
+        // Check if auth is available
+        if (typeof auth === 'undefined') {
+            console.error('Auth is not available');
+            showMessage('خطأ في تحميل نظام المصادقة', 'error');
+        } else {
+            console.log('Auth is available');
+        }
+
+        // Show message function
+        function showMessage(message, type = 'info') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 max-w-sm ${
+                type === 'success' ? 'bg-green-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                type === 'warning' ? 'bg-yellow-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Update user email display
+        function updateUserEmail() {
+            const user = auth.currentUser;
+            const emailElement = document.getElementById('user-email');
+            if (user && emailElement) {
+                emailElement.textContent = user.email;
+            } else if (emailElement) {
+                emailElement.textContent = 'لم يتم العثور على مستخدم';
+            }
+        }
+
+        // Start countdown timer
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            const timerElement = document.getElementById('timer');
+            const resendButton = document.getElementById('resend-email');
+            
+            if (countdownElement && timerElement && resendButton) {
+                countdownElement.style.display = 'block';
+                resendButton.disabled = true;
+                resendButton.innerHTML = '<i class="fas fa-clock mr-2"></i>انتظار...';
+                
+                let timeLeft = resendCooldown;
+                
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    timerElement.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        countdownElement.style.display = 'none';
+                        resendButton.disabled = false;
+                        resendButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>إعادة إرسال بريد التحقق';
+                    }
+                }, 1000);
+            }
+        }
+
+        // Wait for DOM to be loaded and Firebase to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make sure Firebase is loaded
+            if (typeof firebase === 'undefined') {
+                console.error('Firebase is not loaded');
+                showMessage('خطأ في تحميل النظام. يرجى تحديث الصفحة', 'error');
+                return;
+            }
+            
+            console.log('DOM loaded, setting up event listeners');
+            // Resend verification email
+            const resendButton = document.getElementById('resend-email');
+            console.log('Resend button found:', resendButton);
+            if (resendButton) {
+                resendButton.addEventListener('click', () => {
+                    const user = auth.currentUser;
+                    if (user) {
+                        user.sendEmailVerification({
+                            url: window.location.origin + '/index.html',
+                            handleCodeInApp: false
+                        }).then(() => {
+                            showMessage('تم إرسال بريد التحقق مرة أخرى', 'success');
+                            startCountdown();
+                        }).catch((error) => {
+                            showMessage('خطأ في إرسال بريد التحقق: ' + error.message, 'error');
+                        });
+                    } else {
+                        showMessage('لم يتم العثور على مستخدم مسجل. يرجى تسجيل الدخول أولاً', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    }
+                });
+            }
+
+            // Check verification status
+            const checkButton = document.getElementById('check-verification');
+            console.log('Check button found:', checkButton);
+            if (checkButton) {
+                checkButton.addEventListener('click', () => {
+                    const user = auth.currentUser;
+                    if (user) {
+                        user.reload().then(() => {
+                            if (user.emailVerified) {
+                                // Hide persistent verification message
+                                const persistentMessage = document.getElementById('persistent-verification-message');
+                                if (persistentMessage) {
+                                    persistentMessage.style.display = 'none';
+                                }
+                                
+                                // Show success message
+                                const successMessage = document.getElementById('success-message');
+                                if (successMessage) {
+                                    successMessage.style.display = 'block';
+                                }
+                                
+                                // Update icon
+                                const emailIcon = document.querySelector('.email-icon');
+                                if (emailIcon) {
+                                    emailIcon.className = 'fas fa-check-circle check-icon';
+                                }
+                                
+                                showMessage('تم التحقق من البريد الإلكتروني بنجاح!', 'success');
+                                
+                                // Redirect after 3 seconds
+                                setTimeout(() => {
+                                    window.location.href = 'index.html';
+                                }, 3000);
+                            } else {
+                                showMessage('لم يتم التحقق من البريد الإلكتروني بعد. يرجى فحص بريدك والضغط على رابط التحقق', 'warning');
+                            }
+                        });
+                    } else {
+                        showMessage('لم يتم العثور على مستخدم مسجل. يرجى تسجيل الدخول أولاً', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    }
+                });
+            }
+
+            // Go to login page
+            const loginButton = document.getElementById('go-to-login');
+            console.log('Login button found:', loginButton);
+            if (loginButton) {
+                loginButton.addEventListener('click', () => {
+                    window.location.href = 'login.html';
+                });
+            }
+
+            // Go to home page (Browse as Guest)
+            const homeButton = document.getElementById('go-home');
+            console.log('Home button found:', homeButton);
+            if (homeButton) {
+                homeButton.addEventListener('click', () => {
+                    console.log('Browse as guest button clicked');
+                    
+                    // Check if user is signed in
+                    const currentUser = auth.currentUser;
+                    if (currentUser) {
+                        // Sign out the user to allow access to home page without verification
+                        auth.signOut().then(() => {
+                            showMessage('تم تسجيل الخروج. يمكنك تصفح الموقع كزائر', 'info');
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1000);
+                        }).catch((error) => {
+                            console.error('Error signing out:', error);
+                            showMessage('خطأ في تسجيل الخروج، سيتم توجيهك للصفحة الرئيسية', 'warning');
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1000);
+                        });
+                    } else {
+                        // No user signed in, just redirect
+                        showMessage('سيتم توجيهك للصفحة الرئيسية', 'info');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    }
+                });
+                console.log('Event listener added to home button');
+            } else {
+                console.error('Home button not found');
+            }
+        });
+
+        // Check authentication state on page load
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('User is signed in:', user.email);
+                console.log('Email verified:', user.emailVerified);
+                
+                updateUserEmail();
+                
+                // If already verified, hide persistent message and show success
+                if (user.emailVerified) {
+                    const persistentMessage = document.getElementById('persistent-verification-message');
+                    const successMessage = document.getElementById('success-message');
+                    const emailIcon = document.querySelector('.email-icon');
+                    
+                    if (persistentMessage) {
+                        persistentMessage.style.display = 'none';
+                    }
+                    if (successMessage) {
+                        successMessage.style.display = 'block';
+                    }
+                    if (emailIcon) {
+                        emailIcon.className = 'fas fa-check-circle check-icon';
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }
+            } else {
+                console.log('User is signed out');
+                // Don't redirect immediately, let user see the page and use buttons
+                updateUserEmail();
+            }
+        });
+
+        // Start countdown on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            startCountdown();
+        });
+    </script>
+</body>
+</html> 

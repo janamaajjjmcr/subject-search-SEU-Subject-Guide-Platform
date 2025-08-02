@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام التحقق من البريد الإلكتروني</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">اختبار نظام التحقق من البريد الإلكتروني</h1>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Test Registration -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">اختبار التسجيل</h2>
+                <form id="test-register-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">الاسم</label>
+                        <input type="text" id="test-name" class="w-full p-3 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
+                        <input type="email" id="test-email" class="w-full p-3 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
+                        <input type="password" id="test-password" class="w-full p-3 border border-gray-300 rounded-md" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600">
+                        إنشاء حساب تجريبي
+                    </button>
+                </form>
+            </div>
+
+            <!-- Test Login -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">اختبار تسجيل الدخول</h2>
+                <form id="test-login-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
+                        <input type="email" id="test-login-email" class="w-full p-3 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">كلمة المرور</label>
+                        <input type="password" id="test-login-password" class="w-full p-3 border border-gray-300 rounded-md" required>
+                    </div>
+                    <button type="submit" class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600">
+                        تسجيل الدخول
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">نتائج الاختبار</h2>
+            <div id="test-results" class="space-y-2">
+                <p class="text-gray-600">لم يتم إجراء أي اختبارات بعد</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mt-8 text-center space-x-4">
+            <a href="email-verification.html" class="inline-block bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600">
+                صفحة التحقق من البريد الإلكتروني
+            </a>
+            <a href="login.html" class="inline-block bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600">
+                صفحة تسجيل الدخول
+            </a>
+            <a href="register.html" class="inline-block bg-teal-500 text-white px-6 py-3 rounded-md hover:bg-teal-600">
+                صفحة التسجيل
+            </a>
+        </div>
+    </div>
+
+    <!-- Firebase Auth Script -->
+    <script src="firebase-auth.js"></script>
+    
+    <script>
+        // Test functions
+        function addTestResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultElement = document.createElement('div');
+            resultElement.className = `p-3 rounded-md ${
+                type === 'success' ? 'bg-green-100 text-green-800' :
+                type === 'error' ? 'bg-red-100 text-red-800' :
+                type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                'bg-blue-100 text-blue-800'
+            }`;
+            resultElement.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsDiv.appendChild(resultElement);
+        }
+
+        // Test registration
+        document.getElementById('test-register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('test-name').value;
+            const email = document.getElementById('test-email').value;
+            const password = document.getElementById('test-password').value;
+
+            try {
+                addTestResult('بدء عملية التسجيل...', 'info');
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                await user.sendEmailVerification({
+                    url: window.location.origin + '/index.html',
+                    handleCodeInApp: false
+                });
+                
+                await user.updateProfile({ displayName: name });
+                
+                await db.collection('users').doc(user.uid).set({
+                    name: name,
+                    email: email,
+                    emailVerified: false,
+                    createdAt: new Date(),
+                    lastLogin: new Date()
+                });
+                
+                await auth.signOut();
+                
+                addTestResult('تم إنشاء الحساب بنجاح! سيتم توجيهك لصفحة التحقق', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'email-verification.html';
+                }, 2000);
+                
+            } catch (error) {
+                addTestResult(`خطأ في التسجيل: ${error.message}`, 'error');
+            }
+        });
+
+        // Test login
+        document.getElementById('test-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('test-login-email').value;
+            const password = document.getElementById('test-login-password').value;
+
+            try {
+                addTestResult('بدء عملية تسجيل الدخول...', 'info');
+                
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                await user.reload();
+                
+                if (!user.emailVerified) {
+                    addTestResult('البريد الإلكتروني غير محقق. سيتم توجيهك لصفحة التحقق', 'warning');
+                    await auth.signOut();
+                    setTimeout(() => {
+                        window.location.href = 'email-verification.html';
+                    }, 2000);
+                } else {
+                    addTestResult('تم تسجيل الدخول بنجاح! البريد الإلكتروني محقق', 'success');
+                    await db.collection('users').doc(user.uid).update({
+                        lastLogin: new Date(),
+                        emailVerified: true
+                    });
+                }
+                
+            } catch (error) {
+                addTestResult(`خطأ في تسجيل الدخول: ${error.message}`, 'error');
+            }
+        });
+
+        // Check current auth state
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                addTestResult(`مستخدم مسجل: ${user.email} (محقق: ${user.emailVerified})`, 'info');
+            } else {
+                addTestResult('لا يوجد مستخدم مسجل', 'info');
+            }
+        });
+    </script>
+</body>
+</html> 

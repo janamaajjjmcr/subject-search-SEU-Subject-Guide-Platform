@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الأزرار</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>اختبار الأزرار</h1>
+        <p>اضغط على الأزرار أدناه لاختبار عملها:</p>
+        
+        <button id="test-button-1" class="button btn-primary">
+            زر اختبار 1 - إعادة إرسال بريد التحقق
+        </button>
+        
+        <button id="test-button-2" class="button btn-primary">
+            زر اختبار 2 - تحقق من حالة الحساب
+        </button>
+        
+        <button id="test-button-3" class="button btn-secondary">
+            زر اختبار 3 - الذهاب لصفحة تسجيل الدخول
+        </button>
+        
+        <button id="test-button-4" class="button btn-secondary">
+            زر اختبار 4 - تصفح الموقع كزائر
+        </button>
+        
+        <h3>سجل الأحداث:</h3>
+        <div id="event-log" class="log"></div>
+        
+        <h3>اختبار العناصر:</h3>
+        <div id="element-test" class="log"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('event-log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function testElement(elementId) {
+            const element = document.getElementById(elementId);
+            const testDiv = document.getElementById('element-test');
+            if (element) {
+                testDiv.innerHTML += `✅ ${elementId}: موجود\n`;
+                log(`العنصر ${elementId} موجود`);
+            } else {
+                testDiv.innerHTML += `❌ ${elementId}: غير موجود\n`;
+                log(`العنصر ${elementId} غير موجود`);
+            }
+        }
+
+        // Test elements when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            log('تم تحميل الصفحة');
+            
+            // Test all buttons
+            testElement('test-button-1');
+            testElement('test-button-2');
+            testElement('test-button-3');
+            testElement('test-button-4');
+            
+            // Add event listeners
+            document.getElementById('test-button-1').addEventListener('click', function() {
+                log('تم الضغط على زر إعادة إرسال بريد التحقق');
+                alert('زر إعادة إرسال بريد التحقق يعمل!');
+            });
+            
+            document.getElementById('test-button-2').addEventListener('click', function() {
+                log('تم الضغط على زر تحقق من حالة الحساب');
+                alert('زر تحقق من حالة الحساب يعمل!');
+            });
+            
+            document.getElementById('test-button-3').addEventListener('click', function() {
+                log('تم الضغط على زر الذهاب لصفحة تسجيل الدخول');
+                alert('زر الذهاب لصفحة تسجيل الدخول يعمل!');
+            });
+            
+            document.getElementById('test-button-4').addEventListener('click', function() {
+                log('تم الضغط على زر تصفح الموقع كزائر');
+                alert('زر تصفح الموقع كزائر يعمل!');
+            });
+            
+            log('تم إضافة جميع event listeners');
+        });
+
+        // Test if we can access elements from email-verification.html
+        function testEmailVerificationElements() {
+            log('اختبار عناصر صفحة التحقق...');
+            
+            // Try to access elements that should exist in email-verification.html
+            const elements = [
+                'resend-email',
+                'check-verification', 
+                'go-to-login',
+                'go-home',
+                'user-email',
+                'persistent-verification-message',
+                'success-message',
+                'countdown'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    log(`✅ ${elementId}: موجود في الصفحة الحالية`);
+                } else {
+                    log(`❌ ${elementId}: غير موجود في الصفحة الحالية (متوقع)`);
+                }
+            });
+        }
+
+        // Run element test after a delay
+        setTimeout(testEmailVerificationElements, 1000);
+    </script>
+</body>
+</html> 
