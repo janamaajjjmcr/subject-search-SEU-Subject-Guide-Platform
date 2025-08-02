@@ -269,7 +269,7 @@ npx serve .
 # 1️⃣ Fork المستودع على GitHub
 
 # 2️⃣ استنسخ نسختك
-git clone https://github.com/fxrg/subject-search-SEU-Subject-Guide-Platform.git
+git clone https://github.com/fxrg/subject-search.git
 
 # 3️⃣ أنشئ فرع جديد للميزة
 git checkout -b feature/user-authentication
@@ -284,7 +284,7 @@ npm test  # أو أي أداة اختبار تستخدمها
 git commit -m "✨ Add user authentication system"
 
 # 7️⃣ ادفع للمستودع
-git push origin feature/user-authentication
+git push origin feature/add-somthing 
 
 # 8️⃣ افتح Pull Request مع وصف مفصل
 ```
