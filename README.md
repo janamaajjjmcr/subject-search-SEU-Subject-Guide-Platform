@@ -5,7 +5,7 @@
 ![SEU Guide Platform](https://img.shields.io/badge/🎓_SEU-Guide_Platform-4285f4?style=for-the-badge&logoColor=white)
 ‏[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Now-success?style=for-the-badge)](https://fxrg.github.io/subject-search-/)
 [![GitHub Stars](https://img.shields.io/github/stars/janamaajjjmcr/subject-search-SEU-Subject-Guide-Platform?style=for-the-badge&logo=github)](https://github.com/janamaajjjmcr/subject-search-SEU-Subject-Guide-Platform/stargazers)
-[![Contributors](https://img.shields.io/badge/Made%20by-SEU%20Students-orange?style=for-the-badge)](https://github.com/fxrg13)
+[![Contributors](https://img.shields.io/badge/Made%20by-SEU%20Students-orange?style=for-the-badge)](https://github.com/turki013)
 
 **🚀 منصة تفاعلية ذكية لطلاب الجامعة السعودية الإلكترونية**
 
