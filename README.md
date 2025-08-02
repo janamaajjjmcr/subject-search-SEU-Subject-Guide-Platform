@@ -297,10 +297,10 @@ git push origin feature/add-somthing
 
 ### 📊 **إحصائيات مذهلة**
 
-![GitHub repo size](https://img.shields.io/github/repo-size/fxrg/subject-search?style=for-the-badge&logo=github)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/fxrg/subject-search?style=for-the-badge&logo=git)
-![GitHub issues](https://img.shields.io/github/issues/fxrg/subject-search?style=for-the-badge&logo=github)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/fxrg/subject-search?style=for-the-badge&logo=github)
+![GitHub repo size](https://img.shields.io/github/repo-size/fxrg/subject-search-?style=for-the-badge&logo=github)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/fxrg/subject-search-?style=for-the-badge&logo=git)
+![GitHub issues](https://img.shields.io/github/issues/fxrg/subject-search-?style=for-the-badge&logo=github)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/fxrg/subject-search-?style=for-the-badge&logo=github)
 
 ### 🌟 **فريق التطوير**
 
