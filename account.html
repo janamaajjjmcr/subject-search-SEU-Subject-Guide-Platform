@@ -319,7 +319,7 @@
                 <!-- Back to Main -->
                 <a href="index.html" class="flex items-center text-stardust hover:text-aurora transition duration-300 font-medium">
                     <i class="fas fa-arrow-right mr-2"></i>
-                    العودة للرئيسية
+                    <span data-i18n="backToMain">العودة للرئيسية</span>
                 </a>
                 
                 <!-- Logo/Title -->
@@ -329,16 +329,24 @@
                     </div>
                     <div>
                         <h1 class="text-2xl md:text-3xl font-bold font-playfair">
-                            <span class="gradient-text">حسابي</span>
+                            <span class="gradient-text" data-i18n="myAccount">حسابي</span>
                         </h1>
                         <p class="text-stardust/70 mt-1 font-medium">إدارة الحساب والمواد</p>
                     </div>
                 </div>
                 
-                <!-- Theme Toggle -->
-                <button id="theme-toggle" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition duration-300">
-                    <i class="fas fa-sun text-aurora"></i>
-                </button>
+                <!-- Language Toggle & Theme Toggle -->
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <button id="language-toggle" 
+                            class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition duration-300" 
+                            aria-label="Toggle language" 
+                            title="تبديل اللغة / Switch Language">
+                        <span class="text-aurora text-lg">🌐</span>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition duration-300">
+                        <i class="fas fa-sun text-aurora"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -564,7 +572,20 @@
                         موادي المضافة
                     </h2>
                     <div class="flex items-center space-x-4 space-x-reverse text-stardust/70">
-                        <span>إجمالي المواد: <span id="total-courses" class="font-bold text-aurora">0</span></span>
+                        <div class="stats-grid flex space-x-6 space-x-reverse">
+                            <div class="stat">
+                                <span class="text-sm">المواد المضافة محلياً:</span>
+                                <span id="total-courses" class="font-bold text-aurora">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="text-sm">المواد المضافة إلى القاعدة:</span>
+                                <span id="total-firebase" class="font-bold text-plasma">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="text-sm">إجمالي مساهماتك:</span>
+                                <span id="total-contributions" class="font-bold text-accent">—</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -746,5 +767,32 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
+    
+    <!-- Language Toggle Script -->
+    <script src="language-toggle.js"></script>
+    
+    <!-- Easter Egg Script -->
+    <script src="easter-egg.js"></script>
+    
+    <!-- Account Enhancements Script -->
+    <script src="account-enhancements.js"></script>
+    
+    <!-- Total Contributions Calculator -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const totalEl = document.getElementById('total-contributions');
+            function updateTotal() {
+                const localCount = parseInt(document.getElementById('total-courses').textContent) || 0;
+                const firebaseCount = parseInt(document.getElementById('total-firebase').textContent) || 0;
+                if (totalEl) {
+                    totalEl.textContent = localCount + firebaseCount;
+                }
+            }
+            // Update every second to keep sync
+            setInterval(updateTotal, 1000);
+            // Update immediately
+            updateTotal();
+        });
+    </script>
 </body>
 </html>

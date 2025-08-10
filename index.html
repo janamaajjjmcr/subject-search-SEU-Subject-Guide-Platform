@@ -1886,13 +1886,20 @@ ul {
                         <h1 class="text-2xl md:text-3xl font-bold font-playfair">
                             <span class="gradient-text"> جامعة SEU </span>
                         </h1>
-                        <p class="text-stardust/70 mt-1 font-medium">كلية الحوسبة</p>
+                        <p class="text-stardust/70 mt-1 font-medium" data-i18n="collegeComputing">كلية الحوسبة</p>
                     </div>
                 </div>
                 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-6 space-x-reverse">
-                    <a href="#" class="text-stardust hover:text-white transition duration-300">الرئيسية</a>
+                    <!-- Language Toggle Button -->
+                    <button id="language-toggle" 
+                            class="text-stardust hover:text-white transition duration-300 text-xl" 
+                            aria-label="Toggle language" 
+                            title="تبديل اللغة / Switch Language">
+                        🌐
+                    </button>
+                    <a href="#" class="text-stardust hover:text-white transition duration-300" data-i18n="mainPage">الرئيسية</a>
                     <a href="#cs" class="text-stardust hover:text-white transition duration-300">علوم الحاسب</a>
                     <a href="#ds" class="text-stardust hover:text-white transition duration-300">علوم البيانات</a>
                     <a href="#it" class="text-stardust hover:text-white transition duration-300">تقنية المعلومات</a>
@@ -1922,7 +1929,7 @@ ul {
                         </div>
                         
                         <!-- Add Course Button (only shown when logged in) -->
-                        <button id="add-course-btn" onclick="openAddCourseModal()" class="hidden bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm">
+                        <button id="add-course-btn" onclick="openAddCourseModal()" class="hidden bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg hover:scale-105 transition duration-300 text-sm" data-i18n="addCourse">
                             إضافة مادة
                         </button>
                     </div>
@@ -1980,7 +1987,7 @@ ul {
             <!-- Mobile Navigation Menu -->
             <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-nebula/20 pt-4">
                 <nav class="space-y-3">
-                    <a href="#" class="block text-stardust hover:text-white transition duration-300 py-2">الرئيسية</a>
+                    <a href="#" class="block text-stardust hover:text-white transition duration-300 py-2" data-i18n="mainPage">الرئيسية</a>
                     <a href="#cs" class="block text-stardust hover:text-white transition duration-300 py-2">علوم الحاسب</a>
                     <a href="#ds" class="block text-stardust hover:text-white transition duration-300 py-2">علوم البيانات</a>
                     <a href="#it" class="block text-stardust hover:text-white transition duration-300 py-2">تقنية المعلومات</a>
@@ -2039,9 +2046,9 @@ ul {
         <div class="container mx-auto relative z-10">
             <div class="max-w-4xl mx-auto text-center animate-fade-in">
                 <h1 class="text-5xl md:text-7xl font-bold mb-6 font-playfair leading-tight">
-                    <span class="gradient-text">جامعة SEU</span><br>نظام المواد الأكاديمية
+                    <span class="gradient-text">جامعة SEU</span><br><span data-i18n="academicMaterials"></span>نظام المواد الأكاديمية</span>
                 </h1>
-                <p class="text-xl md:text-2xl text-stardust/80 mb-10 max-w-3xl mx-auto">
+                <p class="text-xl md:text-2xl text-stardust/80 mb-10 max-w-3xl mx-auto" data-i18n="universityPlatform">
                     منصة شاملة لجميع كليات الجامعة - اختر كليتك واستكشف المواد الدراسية
                 </p>
                 
@@ -2052,7 +2059,7 @@ ul {
                         <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center mb-6 mx-auto shadow-lg">
                             <i class="fas fa-chart-line text-white text-2xl"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4 text-center">كلية العلوم الإدارية والمالية</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4 text-center" data-i18n="businessCollege">كلية العلوم الإدارية والمالية</h3>
                         <p class="text-stardust/80 text-center mb-6">محاسبة • مالية • إدارة أعمال • تجارة إلكترونية</p>
                         <div class="text-center">
                             <span class="inline-flex items-center text-emerald-400 group-hover:text-white transition duration-300 font-medium">
@@ -2066,7 +2073,7 @@ ul {
                         <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center mb-6 mx-auto shadow-lg">
                             <i class="fas fa-heartbeat text-white text-2xl"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4 text-center">كلية الصحة</h3>
+                        <h3 class="text-2xl font-bold text-white mb-4 text-center" data-i18n="healthCollege">كلية الصحة</h3>
                         <p class="text-stardust/80 text-center mb-6">صحة عامة • معلوماتية صحية</p>
                         <div class="text-center">
                             <span class="inline-flex items-center text-red-400 group-hover:text-white transition duration-300 font-medium">
@@ -5304,5 +5311,14 @@ ul {
     موقع طلاب الحاسوب السعودية - دليل شامل للمواد الجامعية
     تطوير: fxrg.github.io/subject-search - المرجع الأكاديمي الشامل
     -->
+    
+    <!-- Language Toggle Script -->
+    <script src="language-toggle.js"></script>
+    
+    <!-- Easter Egg Script -->
+    <script src="easter-egg.js"></script>
+    
+    <!-- Account Enhancements Script -->
+    <script src="account-enhancements.js"></script>
 </body>
 </html>

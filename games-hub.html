@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مركز الألعاب السري - Secret Games Hub</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      color: white;
+      padding: clamp(1rem, 4vw, 2rem);
+      overflow-x: hidden;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    
+    h1 {
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      font-size: clamp(2rem, 8vw, 3rem);
+      text-align: center;
+      line-height: 1.2;
+      margin-top: clamp(1rem, 3vw, 2rem);
+    }
+    
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 90vw, 320px), 1fr));
+      gap: clamp(1rem, 4vw, 2rem);
+      max-width: 1200px;
+      width: 100%;
+      padding: 0;
+      justify-items: center;
+    }
+    
+    .game-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: clamp(15px, 3vw, 20px);
+      padding: clamp(1.5rem, 5vw, 2rem);
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      width: 100%;
+      max-width: 350px;
+      min-height: clamp(280px, 40vw, 320px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      -webkit-touch-callout: none;
+    }
+    
+    .game-card:hover, .game-card:active, .game-card:focus {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+    }
+    
+    .game-card:active {
+      transform: translateY(-2px) scale(1.01);
+    }
+    
+    .game-icon {
+      font-size: clamp(3rem, 12vw, 4rem);
+      margin-bottom: clamp(0.8rem, 3vw, 1rem);
+      display: block;
+      line-height: 1;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    }
+    
+    .game-title {
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      font-weight: bold;
+      margin-bottom: clamp(0.8rem, 3vw, 1rem);
+      color: #ffffff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      line-height: 1.3;
+    }
+    
+    .game-description {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(0.85rem, 3vw, 0.95rem);
+      line-height: 1.5;
+      margin-bottom: clamp(1rem, 4vw, 1.5rem);
+      flex-grow: 1;
+    }
+    
+    .secret-code {
+      background: rgba(0, 0, 0, 0.4);
+      padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.8rem, 3vw, 1rem);
+      border-radius: clamp(8px, 2vw, 10px);
+      font-family: monospace;
+      font-weight: bold;
+      color: #4ecdc4;
+      font-size: clamp(0.8rem, 3vw, 0.9rem);
+      border: 1px solid rgba(78, 205, 196, 0.3);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .back-button {
+      position: fixed;
+      top: clamp(15px, 3vw, 20px);
+      left: clamp(15px, 3vw, 20px);
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: clamp(10px, 3vw, 15px) clamp(16px, 4vw, 24px);
+      border-radius: clamp(20px, 4vw, 25px);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      font-size: clamp(0.8rem, 3vw, 1rem);
+      z-index: 1000;
+      min-height: 44px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .back-button:hover, .back-button:active, .back-button:focus {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      outline: none;
+    }
+    
+    .back-button:active {
+      transform: translateY(0);
+    }
+    
+    .main-container {
+      text-align: center;
+      max-width: 1200px;
+      width: 100%;
+      margin-top: clamp(60px, 10vw, 80px);
+    }
+    
+    .subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      margin-bottom: clamp(2rem, 6vw, 3rem);
+      text-align: center;
+      line-height: 1.4;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      padding: 0 clamp(1rem, 4vw, 2rem);
+    }
+    
+    .easter-egg-info {
+      margin-top: clamp(2rem, 6vw, 3rem);
+      background: rgba(0, 0, 0, 0.2);
+      padding: clamp(1.5rem, 5vw, 2rem);
+      border-radius: clamp(12px, 3vw, 15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    
+    .easter-egg-info h3 {
+      color: #4ecdc4;
+      margin-bottom: clamp(0.8rem, 3vw, 1rem);
+      font-size: clamp(1.1rem, 4vw, 1.3rem);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    .easter-egg-info p {
+      font-size: clamp(0.9rem, 3vw, 1rem);
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: clamp(0.5rem, 2vw, 0.8rem);
+    }
+    
+    .easter-egg-info p:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* Mobile-First Responsive Design */
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem 0.5rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        margin-top: 0.5rem;
+      }
+      
+      .games-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        max-width: 100%;
+      }
+      
+      .game-card {
+        padding: 1.2rem;
+        min-height: 240px;
+        margin: 0 auto;
+        max-width: 100%;
+      }
+      
+      .game-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .game-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+      }
+      
+      .game-description {
+        font-size: 0.8rem;
+        margin-bottom: 0.8rem;
+      }
+      
+      .secret-code {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+      }
+      
+      .back-button {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+      
+      .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        padding: 0 0.5rem;
+      }
+      
+      .easter-egg-info {
+        margin-top: 1.5rem;
+        padding: 1rem;
+      }
+      
+      .easter-egg-info h3 {
+        font-size: 1rem;
+      }
+      
+      .easter-egg-info p {
+        font-size: 0.85rem;
+      }
+    }
+    
+    @media (min-width: 481px) and (max-width: 768px) {
+      .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      .game-card {
+        padding: 1.5rem;
+        min-height: 260px;
+      }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+    
+    @media (min-width: 769px) {
+      .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+      }
+    }
+    
+    /* Touch-friendly interactions */
+    @media (hover: none) and (pointer: coarse) {
+      .game-card:hover {
+        transform: none;
+      }
+      
+      .game-card:active {
+        transform: scale(0.98);
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      .back-button:hover {
+        transform: none;
+      }
+      
+      .back-button:active {
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0.95);
+      }
+    }
+    
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .game-icon {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      h1, .game-title {
+        text-rendering: optimizeLegibility;
+      }
+    }
+    
+    /* Landscape orientation on mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .main-container {
+        margin-top: 60px;
+      }
+      
+      h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+      }
+      
+      .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+      }
+      
+      .game-card {
+        padding: 1rem;
+        min-height: 200px;
+      }
+      
+      .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-button">العودة للموقع</a>
+  
+  <div class="main-container">
+    <h1>🎮 مركز الألعاب السري</h1>
+    <p class="subtitle">اكتشفت المنطقة السرية! مرحباً بك في مجموعة الألعاب المخفية</p>
+    
+    <div class="games-grid">
+      <!-- Tic Tac Toe Game -->
+      <div class="game-card" role="button" tabindex="0" onclick="window.location.href='hidden-games.html'" onkeypress="handleKeyPress(event, 'hidden-games.html')" aria-label="إكس أو ضد الكمبيوتر - اضغط للعب">
+        <div class="game-icon">⭕</div>
+        <div class="game-title">إكس أو ضد الكمبيوتر</div>
+        <div class="game-description">
+          لعبة إكس أو الكلاسيكية مع ذكاء اصطناعي متطور يستخدم خوارزمية Minimax. 
+          تحدى الكمبيوتر واثبت مهاراتك الاستراتيجية!
+        </div>
+        <div class="secret-code">الكود السري: "tictac"</div>
+      </div>
+      
+      <!-- Dot Collector Game -->
+      <div class="game-card" role="button" tabindex="0" onclick="window.location.href='snake-game.html'" onkeypress="handleKeyPress(event, 'snake-game.html')" aria-label="لعبة تجميع النقاط - اضغط للعب">
+        <div class="game-icon">🎯</div>
+        <div class="game-title">لعبة تجميع النقاط</div>
+        <div class="game-description">
+          لعبة بسيطة وممتعة! حرك الدائرة المضيئة لجمع النقاط الملونة 
+          وتجنب النقاط الحمراء. اجمع أكبر عدد من النقاط في الوقت المحدد!
+        </div>
+        <div class="secret-code">الكود السري: "dots"</div>
+      </div>
+      
+      <!-- Breakout Game -->
+      <div class="game-card" role="button" tabindex="0" onclick="window.location.href='breakout-game.html'" onkeypress="handleKeyPress(event, 'breakout-game.html')" aria-label="لعبة تكسير الطوب - اضغط للعب">
+        <div class="game-icon">🧱</div>
+        <div class="game-title">لعبة تكسير الطوب</div>
+        <div class="game-description">
+          استخدم المضرب لترد الكرة واكسر جميع الطوب الملون! 
+          لعبة كلاسيكية مليئة بالإثارة والتحدي مع فيزياء واقعية.
+        </div>
+        <div class="secret-code">الكود السري: "break"</div>
+      </div>
+    </div>
+    
+    <div class="easter-egg-info">
+      <h3>💡 كيفية الوصول للألعاب بشكل سري:</h3>
+      <p>يمكنك الوصول لأي لعبة من أي صفحة في الموقع عبر كتابة الكود السري المكتوب تحت كل لعبة!</p>
+      <p>مثال: اكتب "dots" في أي مكان في الموقع وستنتقل للعبة تجميع النقاط مباشرة 🎮</p>
+    </div>
+  </div>
+
+  <!-- Add language toggle and easter egg scripts -->
+  <script src="language-toggle.js"></script>
+  <script src="easter-egg.js"></script>
+  
+  <script>
+    // Keyboard navigation support
+    function handleKeyPress(event, url) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        window.location.href = url;
+      }
+    }
+    
+    // Add focus styles for keyboard navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      const gameCards = document.querySelectorAll('.game-card');
+      
+      gameCards.forEach(card => {
+        card.addEventListener('focus', function() {
+          this.style.outline = '3px solid #4ecdc4';
+          this.style.outlineOffset = '2px';
+        });
+        
+        card.addEventListener('blur', function() {
+          this.style.outline = 'none';
+        });
+      });
+      
+      // Add smooth scroll behavior for better UX
+      document.documentElement.style.scrollBehavior = 'smooth';
+      
+      // Improve touch interactions
+      if ('ontouchstart' in window) {
+        gameCards.forEach(card => {
+          card.addEventListener('touchstart', function() {
+            this.style.transform = 'translateY(-2px) scale(1.01)';
+          }, { passive: true });
+          
+          card.addEventListener('touchend', function() {
+            setTimeout(() => {
+              this.style.transform = '';
+            }, 150);
+          }, { passive: true });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

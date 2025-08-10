@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الألعاب السرية - Tic Tac Toe</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      color: white;
+      touch-action: manipulation;
+      user-select: none;
+      padding: clamp(1rem, 4vw, 2rem);
+      overflow-x: hidden;
+    }
+    
+    h1 {
+      margin-bottom: clamp(1rem, 4vw, 1.5rem);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      font-size: clamp(1.6rem, 6vw, 2.5rem);
+      text-align: center;
+      margin-top: clamp(60px, 10vw, 80px);
+      line-height: 1.2;
+    }
+    
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(6px, 2vw, 12px);
+      margin-bottom: clamp(1.5rem, 4vw, 2rem);
+      width: min(320px, 85vw);
+      height: min(320px, 85vw);
+      padding: clamp(8px, 2vw, 12px);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: clamp(15px, 3vw, 20px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    
+    .cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: clamp(10px, 2vw, 15px);
+      cursor: pointer;
+      font-size: clamp(1.8rem, 7vw, 2.8rem);
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      touch-action: manipulation;
+      min-height: 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+    
+    .cell:hover::before, .cell:active::before {
+      transform: translateX(100%);
+    }
+    
+    .cell:hover, .cell:active, .cell:focus {
+      background: rgba(255, 255, 255, 1);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      outline: none;
+    }
+    
+    .cell:active {
+      transform: translateY(0) scale(0.98);
+    }
+    
+    .cell.x {
+      color: #e74c3c;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .cell.o {
+      color: #3498db;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    #message {
+      margin-top: clamp(1rem, 3vw, 1.5rem);
+      font-weight: bold;
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+      text-align: center;
+      min-height: clamp(2rem, 5vw, 2.5rem);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      padding: clamp(0.5rem, 2vw, 1rem);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: clamp(10px, 2vw, 15px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      line-height: 1.4;
+    }
+    
+    .back-button, .restart-button {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: clamp(10px, 3vw, 15px) clamp(16px, 4vw, 24px);
+      border-radius: clamp(20px, 4vw, 25px);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(15px);
+      font-size: clamp(0.85rem, 3vw, 1rem);
+      min-height: 44px;
+      min-width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .back-button:hover, .restart-button:hover,
+    .back-button:active, .restart-button:active,
+    .back-button:focus, .restart-button:focus {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      outline: none;
+    }
+    
+    .back-button:active, .restart-button:active {
+      transform: translateY(0) scale(0.95);
+    }
+    
+    .back-button {
+      position: fixed;
+      top: clamp(15px, 3vw, 20px);
+      left: clamp(15px, 3vw, 20px);
+      z-index: 1000;
+    }
+    
+    .game-container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: clamp(2rem, 5vw, 3rem);
+      border-radius: clamp(15px, 3vw, 20px);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      width: min(400px, 90vw);
+      margin-top: clamp(1rem, 3vw, 2rem);
+    }
+    
+    /* Mobile-First Responsive Design */
+    @media (max-width: 480px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      h1 {
+        font-size: 1.4rem;
+        margin-top: 50px;
+        margin-bottom: 0.8rem;
+      }
+      
+      #board {
+        width: min(280px, 90vw);
+        height: min(280px, 90vw);
+        gap: 4px;
+        padding: 6px;
+      }
+      
+      .cell {
+        font-size: 1.6rem;
+        border-radius: 8px;
+      }
+      
+      .game-container {
+        padding: 1.2rem;
+        width: min(320px, 95vw);
+        margin-top: 0.5rem;
+      }
+      
+      #message {
+        font-size: 1rem;
+        min-height: 1.8rem;
+        padding: 0.4rem;
+      }
+      
+      .back-button, .restart-button {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+      
+      .back-button {
+        top: 10px;
+        left: 10px;
+      }
+    }
+    
+    @media (min-width: 481px) and (max-width: 768px) {
+      #board {
+        width: min(300px, 85vw);
+        height: min(300px, 85vw);
+      }
+      
+      .game-container {
+        width: min(360px, 90vw);
+      }
+    }
+    
+    /* Touch-friendly interactions */
+    @media (hover: none) and (pointer: coarse) {
+      .cell:hover {
+        transform: none;
+      }
+      
+      .cell:hover::before {
+        transform: translateX(-100%);
+      }
+      
+      .cell:active {
+        transform: scale(0.95);
+        background: rgba(255, 255, 255, 0.95);
+      }
+      
+      .back-button:hover, .restart-button:hover {
+        transform: none;
+      }
+      
+      .back-button:active, .restart-button:active {
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0.95);
+      }
+    }
+    
+    /* Landscape orientation on mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+      body {
+        justify-content: flex-start;
+        padding: 0.5rem;
+      }
+      
+      h1 {
+        font-size: 1.3rem;
+        margin-top: 40px;
+        margin-bottom: 0.5rem;
+      }
+      
+      #board {
+        width: min(250px, 80vw);
+        height: min(250px, 80vw);
+      }
+      
+      .game-container {
+        padding: 1rem;
+        margin-top: 0.5rem;
+      }
+      
+      #message {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        min-height: 1.5rem;
+      }
+    }
+    
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .cell {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      h1, #message {
+        text-rendering: optimizeLegibility;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-button">العودة للموقع</a>
+  
+  <div class="game-container">
+    <h1>🎮 لعبة إكس أو ضد الكمبيوتر</h1>
+    <div id="board"></div>
+    <div id="message">دورك! (X) - أنت ضد الكمبيوتر</div>
+  </div>
+  <script>
+    // Enhanced Tic Tac Toe implementation with AI opponent
+    const boardEl = document.getElementById('board');
+    const messageEl = document.getElementById('message');
+    let currentPlayer = 'X'; // Player is always X
+    let cells = Array(9).fill(null);
+    let gameActive = true;
+    let isPlayerTurn = true;
+
+    /**
+     * Check for a winning combination.
+     */
+    function checkWin(player) {
+      const winCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]             // Diagonals
+      ];
+      return winCombinations.some(combo =>
+        combo.every(index => cells[index] === player)
+      );
+    }
+
+    /**
+     * Check if the board is full (draw)
+     */
+    function isBoardFull() {
+      return cells.every(cell => cell !== null);
+    }
+
+    /**
+     * Get available moves (empty cells)
+     */
+    function getAvailableMoves() {
+      return cells.map((cell, index) => cell === null ? index : null).filter(val => val !== null);
+    }
+
+    /**
+     * Minimax algorithm for AI decision making
+     */
+    function minimax(board, depth, isMaximizing) {
+      if (checkWin('O')) return 10 - depth;
+      if (checkWin('X')) return depth - 10;
+      if (isBoardFull()) return 0;
+
+      if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (board[i] === null) {
+            board[i] = 'O';
+            let score = minimax(board, depth + 1, false);
+            board[i] = null;
+            bestScore = Math.max(score, bestScore);
+          }
+        }
+        return bestScore;
+      } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (board[i] === null) {
+            board[i] = 'X';
+            let score = minimax(board, depth + 1, true);
+            board[i] = null;
+            bestScore = Math.min(score, bestScore);
+          }
+        }
+        return bestScore;
+      }
+    }
+
+    /**
+     * Get the best move for AI using minimax
+     */
+    function getBestMove() {
+      let bestScore = -Infinity;
+      let move = -1;
+      
+      for (let i = 0; i < 9; i++) {
+        if (cells[i] === null) {
+          cells[i] = 'O';
+          let score = minimax(cells, 0, false);
+          cells[i] = null;
+          
+          if (score > bestScore) {
+            bestScore = score;
+            move = i;
+          }
+        }
+      }
+      return move;
+    }
+
+    /**
+     * Make AI move
+     */
+    function makeAIMove() {
+      if (!gameActive || isPlayerTurn) return;
+      
+      messageEl.textContent = 'الكمبيوتر يفكر...';
+      
+      setTimeout(() => {
+        const bestMove = getBestMove();
+        if (bestMove !== -1) {
+          cells[bestMove] = 'O';
+          const cellEl = boardEl.children[bestMove];
+          cellEl.textContent = 'O';
+          cellEl.style.color = '#ff6b6b';
+          
+          if (checkWin('O')) {
+            messageEl.textContent = 'الكمبيوتر فاز! 🤖';
+            gameActive = false;
+          } else if (isBoardFull()) {
+            messageEl.textContent = 'تعادل! 🤝';
+            gameActive = false;
+          } else {
+            isPlayerTurn = true;
+            messageEl.textContent = 'دورك! (X)';
+          }
+        }
+      }, 500); // Small delay to make it feel more natural
+    }
+
+    /**
+     * Handle a cell click by player
+     */
+    function handleClick(e) {
+      const index = parseInt(e.target.dataset.index);
+      if (isNaN(index) || cells[index] || !gameActive || !isPlayerTurn) return;
+      
+      // Player move
+      cells[index] = 'X';
+      e.target.textContent = 'X';
+      e.target.style.color = '#4ecdc4';
+      
+      if (checkWin('X')) {
+        messageEl.textContent = 'أنت فزت! 🎉';
+        gameActive = false;
+        return;
+      } 
+      
+      if (isBoardFull()) {
+        messageEl.textContent = 'تعادل! 🤝';
+        gameActive = false;
+        return;
+      }
+      
+      // Switch to AI turn
+      isPlayerTurn = false;
+      makeAIMove();
+    }
+
+    /**
+     * Reset and initialize the game
+     */
+    function initGame() {
+      boardEl.innerHTML = '';
+      cells = Array(9).fill(null);
+      currentPlayer = 'X';
+      gameActive = true;
+      isPlayerTurn = true;
+      messageEl.textContent = 'دورك! (X) - أنت ضد الكمبيوتر';
+      
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        cell.style.transition = 'all 0.3s ease';
+        boardEl.appendChild(cell);
+      }
+      boardEl.addEventListener('click', handleClick);
+    }
+
+    // Add restart button
+    const restartBtn = document.createElement('button');
+    restartBtn.textContent = '🔄 لعبة جديدة';
+    restartBtn.className = 'restart-button';
+    restartBtn.style.cssText = `
+      margin-top: 2rem;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    `;
+    restartBtn.addEventListener('click', initGame);
+    
+    const gameContainer = document.querySelector('.game-container');
+    gameContainer.appendChild(restartBtn);
+    
+    // Initialize the game
+    initGame();
+  </script>
+</body>
+</html>

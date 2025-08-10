@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لعبة تجميع النقاط - Dot Collector Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      color: white;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    
+    h1 {
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+    }
+    
+    #gameCanvas {
+      border: 4px solid rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      max-width: 90vw;
+      max-height: 50vh;
+      cursor: pointer;
+      display: block !important;
+      margin: 1rem auto;
+      min-width: 200px;
+      min-height: 200px;
+    }
+    
+    #gameInfo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      margin-top: 1rem;
+      gap: 2rem;
+    }
+    
+    #score, #level, #timeLeft {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    
+    #gameOver {
+      display: none;
+      margin-top: 2rem;
+      text-align: center;
+      background: rgba(255, 0, 0, 0.2);
+      padding: 2rem;
+      border-radius: 15px;
+      border: 2px solid rgba(255, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      max-width: 90vw;
+    }
+    
+    .back-button, .restart-button {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      margin: 10px;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      touch-action: manipulation;
+    }
+    
+    .back-button:hover, .restart-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 8px 16px;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+    }
+    
+    .game-container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: clamp(1rem, 3vw, 3rem);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      max-width: 95vw;
+    }
+    
+    .instructions {
+      margin-top: 1rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: clamp(0.8rem, 2vw, 14px);
+      line-height: 1.4;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: clamp(0.8rem, 3vw, 1.2rem);
+      margin-top: clamp(1rem, 3vw, 1.5rem);
+      flex-wrap: wrap;
+      padding: clamp(0.5rem, 2vw, 1rem);
+    }
+    
+    .control-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: clamp(10px, 3vw, 16px);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: clamp(16px, 4vw, 20px);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      width: clamp(45px, 12vw, 60px);
+      height: clamp(45px, 12vw, 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      user-select: none;
+      min-height: 44px;
+      min-width: 44px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .control-btn:hover, .control-btn:active {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: scale(0.95);
+    }
+    
+    @media (max-width: 768px) {
+      .controls {
+        margin-top: 1.5rem;
+      }
+      
+      .control-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-button">العودة للموقع</a>
+  
+  <div class="game-container">
+    <h1>🎯 لعبة تجميع النقاط</h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    
+    <div id="gameInfo">
+      <div id="score">النقاط: 0</div>
+      <div id="level">المستوى: 1</div>
+      <div id="timeLeft">⏰ الوقت: 30</div>
+    </div>
+    
+    <div class="instructions">
+      🎮 <strong>التحكم:</strong><br>
+      🖱️ <strong>الماوس:</strong> حرك المؤشر لتحريك الدائرة<br>
+      ⌨️ <strong>الكيبورد:</strong> أسهم الكيبورد أو WASD<br>
+      📱 <strong>اللمس:</strong> المس واسحب أو استخدم الأزرار<br><br>
+      <strong>⚡ ابدأ بتحريك الدائرة لجمع النقاط!</strong><br><br>
+      🔵 النقطة الزرقاء (+5 نقاط)<br>
+      🟢 النقطة الخضراء (+10 نقاط)<br>
+      � النقطة الذهبية (+20 نقاط)<br>
+      � تجنب النقاط الحمراء (-10 نقاط)<br>
+      🏆 اجمع أكبر عدد من النقاط في الوقت المحدد!
+    </div>
+    
+    <!-- Mobile Controls -->
+    <div class="controls">
+      <button class="control-btn" id="upBtn">⬆️</button>
+      <div style="width: 100%; display: flex; justify-content: center; gap: 1rem;">
+        <button class="control-btn" id="leftBtn">⬅️</button>
+        <button class="control-btn" id="downBtn">⬇️</button>
+        <button class="control-btn" id="rightBtn">➡️</button>
+      </div>
+    </div>
+    
+    <div id="gameOver">
+      <h2>🎮 انتهت اللعبة!</h2>
+      <p>النقاط النهائية: <span id="finalScore">0</span></p>
+      <p>المستوى المكتمل: <span id="finalLevel">1</span></p>
+      <p>⭐ أداء رائع! حاول مرة أخرى للحصول على نقاط أكثر</p>
+      <button class="restart-button" onclick="restartGame()">🔄 لعب مرة أخرى</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreElement = document.getElementById('score');
+    const levelElement = document.getElementById('level');
+    const timeLeftElement = document.getElementById('timeLeft');
+    const gameOverElement = document.getElementById('gameOver');
+    const finalScoreElement = document.getElementById('finalScore');
+    const finalLevelElement = document.getElementById('finalLevel');
+
+    // Game variables
+    let player = { x: 200, y: 200, radius: 15 };
+    let dots = [];
+    let score = 0;
+    let level = 1;
+    let timeLeft = 30;
+    let gameRunning = false;
+    let gameStarted = false;
+    let keys = {};
+    let mouseX = 200;
+    let mouseY = 200;
+    let useMouseControl = false;
+
+    // Dot types
+    const DOT_TYPES = {
+      blue: { color: '#3498db', points: 5, size: 8 },
+      green: { color: '#2ecc71', points: 10, size: 10 },
+      gold: { color: '#f1c40f', points: 20, size: 12 },
+      red: { color: '#e74c3c', points: -10, size: 10 }
+    };
+
+    // Resize canvas for mobile
+    function resizeCanvas() {
+      const maxWidth = Math.min(400, window.innerWidth - 40);
+      const maxHeight = Math.min(400, window.innerHeight * 0.5);
+      const size = Math.min(maxWidth, maxHeight);
+      const finalSize = Math.max(300, size);
+      
+      canvas.width = finalSize;
+      canvas.height = finalSize;
+      canvas.style.width = finalSize + 'px';
+      canvas.style.height = finalSize + 'px';
+      
+      // Update player position to center
+      player.x = canvas.width / 2;
+      player.y = canvas.height / 2;
+      mouseX = player.x;
+      mouseY = player.y;
+    }
+
+    // Generate random dot
+    function generateDot() {
+      const types = Object.keys(DOT_TYPES);
+      let type;
+      
+      // Probability distribution
+      const rand = Math.random();
+      if (rand < 0.4) type = 'blue';      // 40% - easy points
+      else if (rand < 0.7) type = 'green'; // 30% - medium points
+      else if (rand < 0.85) type = 'gold'; // 15% - high points
+      else type = 'red';                   // 15% - penalty
+      
+      const dotType = DOT_TYPES[type];
+      const margin = 30;
+      
+      let dot = {
+        x: margin + Math.random() * (canvas.width - 2 * margin),
+        y: margin + Math.random() * (canvas.height - 2 * margin),
+        radius: dotType.size,
+        color: dotType.color,
+        points: dotType.points,
+        type: type,
+        pulse: 0
+      };
+      
+      // Make sure dot doesn't spawn too close to player
+      const dist = Math.sqrt((dot.x - player.x) ** 2 + (dot.y - player.y) ** 2);
+      if (dist < 50) {
+        dot.x = player.x + (Math.random() < 0.5 ? -60 : 60);
+        dot.y = player.y + (Math.random() < 0.5 ? -60 : 60);
+        
+        // Keep within bounds
+        dot.x = Math.max(margin, Math.min(canvas.width - margin, dot.x));
+        dot.y = Math.max(margin, Math.min(canvas.height - margin, dot.y));
+      }
+      
+      return dot;
+    }
+
+    // Generate multiple dots
+    function generateDots() {
+      const numDots = Math.min(8 + level, 15); // Increase dots with level
+      dots = [];
+      for (let i = 0; i < numDots; i++) {
+        dots.push(generateDot());
+      }
+    }
+
+    // Check collision between player and dot
+    function checkCollision(dot) {
+      const dist = Math.sqrt((player.x - dot.x) ** 2 + (player.y - dot.y) ** 2);
+      return dist < (player.radius + dot.radius);
+    }
+
+    // Update game state
+    function update() {
+      if (!gameRunning || !gameStarted) return;
+
+      // Move player based on input
+      const speed = 4;
+      
+      if (useMouseControl) {
+        // Smooth mouse following
+        const dx = mouseX - player.x;
+        const dy = mouseY - player.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 5) {
+          player.x += (dx / distance) * Math.min(speed, distance * 0.1);
+          player.y += (dy / distance) * Math.min(speed, distance * 0.1);
+        }
+      } else {
+        // Keyboard controls
+        if (keys['ArrowUp'] || keys['w']) player.y -= speed;
+        if (keys['ArrowDown'] || keys['s']) player.y += speed;
+        if (keys['ArrowLeft'] || keys['a']) player.x -= speed;
+        if (keys['ArrowRight'] || keys['d']) player.x += speed;
+      }
+
+      // Keep player within bounds
+      player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+      player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
+
+      // Check collisions with dots
+      for (let i = dots.length - 1; i >= 0; i--) {
+        const dot = dots[i];
+        dot.pulse += 0.1; // For animation effect
+        
+        if (checkCollision(dot)) {
+          score += dot.points;
+          scoreElement.textContent = `النقاط: ${score}`;
+          
+          // Remove collected dot and generate new one
+          dots.splice(i, 1);
+          dots.push(generateDot());
+          
+          // Level up every 100 points
+          if (score > 0 && score % 100 === 0 && score / 100 === level) {
+            level++;
+            levelElement.textContent = `المستوى: ${level}`;
+            timeLeft += 10; // Bonus time
+          }
+        }
+      }
+    }
+
+    // Draw everything
+    function draw() {
+      // Clear canvas with animated background
+      const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
+      gradient.addColorStop(0, '#1a1a2e');
+      gradient.addColorStop(1, '#16213e');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (!gameStarted) {
+        // Draw start message
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('حرك الدائرة لبدء اللعبة!', canvas.width/2, canvas.height/2 - 20);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.font = '14px Arial';
+        ctx.fillText('Move the circle to start!', canvas.width/2, canvas.height/2 + 20);
+      }
+
+      // Draw dots with pulsing effect
+      for (let dot of dots) {
+        const pulseSize = dot.radius + Math.sin(dot.pulse) * 2;
+        
+        ctx.shadowColor = dot.color;
+        ctx.shadowBlur = 15;
+        ctx.fillStyle = dot.color;
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, pulseSize, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Add glow effect
+        ctx.shadowBlur = 5;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, pulseSize * 0.6, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+
+      // Draw player with trail effect
+      ctx.shadowColor = '#26d0ce';
+      ctx.shadowBlur = 20;
+      ctx.fillStyle = '#26d0ce';
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // Player inner glow
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.radius * 0.5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Draw score info overlay
+      if (gameStarted) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.fillRect(10, 10, 200, 60);
+        ctx.fillStyle = 'white';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`النقاط: ${score}`, 20, 30);
+        ctx.fillText(`المستوى: ${level}`, 20, 50);
+      }
+    }
+
+    // Game timer
+    function startTimer() {
+      const timer = setInterval(() => {
+        if (!gameRunning) {
+          clearInterval(timer);
+          return;
+        }
+        
+        timeLeft--;
+        timeLeftElement.textContent = `⏰ الوقت: ${timeLeft}`;
+        
+        if (timeLeft <= 0) {
+          gameOver();
+          clearInterval(timer);
+        }
+      }, 1000);
+    }
+
+    // Game over
+    function gameOver() {
+      gameRunning = false;
+      gameStarted = false;
+      finalScoreElement.textContent = score;
+      finalLevelElement.textContent = level;
+      gameOverElement.style.display = 'block';
+    }
+
+    // Restart game
+    function restartGame() {
+      player.x = canvas.width / 2;
+      player.y = canvas.height / 2;
+      mouseX = player.x;
+      mouseY = player.y;
+      score = 0;
+      level = 1;
+      timeLeft = 30;
+      gameRunning = true;
+      gameStarted = false;
+      
+      scoreElement.textContent = 'النقاط: 0';
+      levelElement.textContent = 'المستوى: 1';
+      timeLeftElement.textContent = '⏰ الوقت: 30';
+      gameOverElement.style.display = 'none';
+      
+      generateDots();
+      startTimer();
+    }
+
+    // Start game
+    function startGame() {
+      if (!gameStarted) {
+        gameStarted = true;
+        gameRunning = true;
+        startTimer();
+      }
+    }
+
+    // Input handling
+    document.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+      startGame();
+    });
+
+    document.addEventListener('keyup', (e) => {
+      keys[e.key] = false;
+    });
+
+    // Mouse controls
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = ((e.clientX - rect.left) / canvas.clientWidth) * canvas.width;
+      mouseY = ((e.clientY - rect.top) / canvas.clientHeight) * canvas.height;
+      useMouseControl = true;
+      startGame();
+    });
+
+    canvas.addEventListener('click', () => {
+      startGame();
+    });
+
+    // Touch controls
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      mouseX = ((e.touches[0].clientX - rect.left) / canvas.clientWidth) * canvas.width;
+      mouseY = ((e.touches[0].clientY - rect.top) / canvas.clientHeight) * canvas.height;
+      useMouseControl = true;
+      startGame();
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      mouseX = ((e.touches[0].clientX - rect.left) / canvas.clientWidth) * canvas.width;
+      mouseY = ((e.touches[0].clientY - rect.top) / canvas.clientHeight) * canvas.height;
+      useMouseControl = true;
+    });
+
+    // Button controls
+    document.getElementById('upBtn').addEventListener('click', () => {
+      keys['ArrowUp'] = true;
+      useMouseControl = false;
+      startGame();
+      setTimeout(() => keys['ArrowUp'] = false, 100);
+    });
+
+    document.getElementById('downBtn').addEventListener('click', () => {
+      keys['ArrowDown'] = true;
+      useMouseControl = false;
+      startGame();
+      setTimeout(() => keys['ArrowDown'] = false, 100);
+    });
+
+    document.getElementById('leftBtn').addEventListener('click', () => {
+      keys['ArrowLeft'] = true;
+      useMouseControl = false;
+      startGame();
+      setTimeout(() => keys['ArrowLeft'] = false, 100);
+    });
+
+    document.getElementById('rightBtn').addEventListener('click', () => {
+      keys['ArrowRight'] = true;
+      useMouseControl = false;
+      startGame();
+      setTimeout(() => keys['ArrowRight'] = false, 100);
+    });
+
+    // Game loop
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Initialize game
+    function initGame() {
+      resizeCanvas();
+      generateDots();
+      gameRunning = true;
+      gameStarted = false;
+      gameLoop();
+    }
+
+    // Start when page loads
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('load', () => {
+      setTimeout(initGame, 100);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الميزات الجديدة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .test-button {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            background: #45b7aa;
+        }
+        
+        #language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- زر تبديل اللغة -->
+    <button id="language-toggle" title="تبديل اللغة">🌐</button>
+    
+    <div class="test-container">
+        <h1 data-i18n="testTitle">اختبار الميزات الجديدة</h1>
+        
+        <div class="feature">
+            <h2>🌐 تبديل اللغة</h2>
+            <p data-i18n="languageTest">انقر على زر 🌐 في الأعلى لتبديل اللغة</p>
+            <p><strong data-i18n="status">الحالة:</strong> <span data-i18n="working">يعمل!</span></p>
+        </div>
+        
+        <div class="feature">
+            <h2>🎮 الألعاب السرية المحدثة</h2>
+            <p data-i18n="gamesTest">اكتب الأكواد التالية لفتح الألعاب:</p>
+            <div style="margin: 1rem 0; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 10px;">
+                <p>🎮 "games" - مركز الألعاب (جميع الألعاب)</p>
+                <p>⭕ "game" - إكس أو ضد الكمبيوتر</p>
+                <p>🐍 "snake" - لعبة الثعبان</p>
+                <p>🧱 "break" - لعبة تكسير الطوب</p>
+            </div>
+            <button class="test-button" onclick="window.location.href='games-hub.html'" data-i18n="openGamesHub">فتح مركز الألعاب</button>
+            <button class="test-button" onclick="window.location.href='hidden-games.html'" data-i18n="openTicTacToe">إكس أو</button>
+            <button class="test-button" onclick="window.location.href='snake-game.html'" data-i18n="openSnake">الثعبان</button>
+            <button class="test-button" onclick="window.location.href='breakout-game.html'" data-i18n="openBreakout">تكسير الطوب</button>
+        </div>
+        
+        <div class="feature">
+            <h2>📊 إحصائيات الحساب</h2>
+            <p data-i18n="accountTest">تحقق من صفحة الحساب لرؤية الإحصائيات المحسنة</p>
+            <button class="test-button" onclick="window.location.href='account.html'" data-i18n="openAccount">فتح صفحة الحساب</button>
+        </div>
+        
+        <div class="feature">
+            <h2>🏠 العودة للموقع</h2>
+            <button class="test-button" onclick="window.location.href='index.html'" data-i18n="backHome">العودة للرئيسية</button>
+        </div>
+    </div>
+    
+    <!-- تحميل السكريپتات -->
+    <script src="language-toggle.js"></script>
+    <script src="easter-egg.js"></script>
+    
+    <script>
+        // إضافة ترجمات خاصة بصفحة الاختبار
+        (() => {
+            const testTranslations = {
+                ar: {
+                    testTitle: 'اختبار الميزات الجديدة',
+                    languageTest: 'انقر على زر 🌐 في الأعلى لتبديل اللغة',
+                    gamesTest: 'اكتب الأكواد التالية لفتح الألعاب:',
+                    accountTest: 'تحقق من صفحة الحساب لرؤية الإحصائيات المحسنة',
+                    status: 'الحالة:',
+                    working: 'يعمل!',
+                    openGamesHub: 'فتح مركز الألعاب',
+                    openTicTacToe: 'إكس أو',
+                    openSnake: 'الثعبان',
+                    openBreakout: 'تكسير الطوب',
+                    openAccount: 'فتح صفحة الحساب',
+                    backHome: 'العودة للرئيسية'
+                },
+                en: {
+                    testTitle: 'New Features Test',
+                    languageTest: 'Click the 🌐 button above to toggle language',
+                    gamesTest: 'Type the following codes to open games:',
+                    accountTest: 'Check the account page to see enhanced statistics',
+                    status: 'Status:',
+                    working: 'Working!',
+                    openGamesHub: 'Open Games Hub',
+                    openTicTacToe: 'Tic Tac Toe',
+                    openSnake: 'Snake Game',
+                    openBreakout: 'Breakout Game',
+                    openAccount: 'Open Account Page',
+                    backHome: 'Back to Home'
+                }
+            };
+            
+            // دمج الترجمات مع النظام الموجود
+            window.addEventListener('DOMContentLoaded', () => {
+                const lang = localStorage.getItem('siteLanguage') || 'ar';
+                const dict = testTranslations[lang] || testTranslations.ar;
+                
+                Object.keys(dict).forEach(key => {
+                    const element = document.querySelector(`[data-i18n="${key}"]`);
+                    if (element) {
+                        element.textContent = dict[key];
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
