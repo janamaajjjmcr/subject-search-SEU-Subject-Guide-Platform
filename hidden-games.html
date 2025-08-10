@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الألعاب السرية - Tic Tac Toe</title>
+  <title>الألعاب السرية - Tic Tac Toe مع مستويات الصعوبة</title>
   <style>
     * {
       box-sizing: border-box;
@@ -169,8 +169,105 @@
       backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      width: min(400px, 90vw);
+      width: min(450px, 95vw);
       margin-top: clamp(1rem, 3vw, 2rem);
+    }
+    
+    .difficulty-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(8px, 2vw, 12px);
+      margin-bottom: clamp(1.5rem, 4vw, 2rem);
+      width: 100%;
+    }
+    
+    .difficulty-btn {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: clamp(10px, 3vw, 15px);
+      border-radius: clamp(12px, 3vw, 18px);
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      font-size: clamp(0.85rem, 3vw, 1rem);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .difficulty-btn:hover, .difficulty-btn:focus {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      outline: none;
+    }
+    
+    .difficulty-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+    
+    .difficulty-btn.active {
+      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+      border-color: #4ecdc4;
+      color: white;
+      box-shadow: 0 6px 25px rgba(78, 205, 196, 0.3);
+    }
+    
+    .difficulty-btn.easy { border-left: 4px solid #2ecc71; }
+    .difficulty-btn.medium { border-left: 4px solid #f39c12; }
+    .difficulty-btn.hard { border-left: 4px solid #e74c3c; }
+    .difficulty-btn.impossible { border-left: 4px solid #8e44ad; }
+    
+    .score-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(8px, 2vw, 15px);
+      margin-bottom: clamp(1rem, 3vw, 1.5rem);
+      padding: clamp(10px, 3vw, 15px);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: clamp(10px, 2vw, 15px);
+      backdrop-filter: blur(10px);
+    }
+    
+    .score-item {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    }
+    
+    .score-number {
+      display: block;
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    
+    .player-wins { color: #4ecdc4; }
+    .draws { color: #f39c12; }
+    .ai-wins { color: #e74c3c; }
+    
+    .current-difficulty {
+      background: rgba(0, 0, 0, 0.3);
+      padding: clamp(8px, 2vw, 12px);
+      border-radius: clamp(8px, 2vw, 12px);
+      margin-bottom: clamp(1rem, 3vw, 1.5rem);
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
+      font-weight: bold;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .difficulty-description {
+      font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 4px;
+      font-style: italic;
     }
     
     /* Mobile-First Responsive Design */
@@ -198,9 +295,17 @@
       }
       
       .game-container {
-        padding: 1.2rem;
-        width: min(320px, 95vw);
-        margin-top: 0.5rem;
+        width: min(360px, 95vw);
+      }
+      
+      .difficulty-buttons {
+        gap: 6px;
+      }
+      
+      .difficulty-btn {
+        padding: 8px;
+        font-size: 0.75rem;
+        min-height: 40px;
       }
       
       #message {
@@ -227,7 +332,20 @@
       }
       
       .game-container {
-        width: min(360px, 90vw);
+        width: min(420px, 90vw);
+      }
+      
+      .difficulty-buttons {
+        gap: 10px;
+      }
+      
+      .difficulty-btn {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+      
+      .score-board {
+        gap: 12px;
       }
     }
     
@@ -246,13 +364,13 @@
         background: rgba(255, 255, 255, 0.95);
       }
       
-      .back-button:hover, .restart-button:hover {
+      .difficulty-btn:hover, .difficulty-btn:active {
+        background: rgba(255, 255, 255, 0.3);
         transform: none;
       }
       
-      .back-button:active, .restart-button:active {
-        background: rgba(255, 255, 255, 0.4);
-        transform: scale(0.95);
+      .difficulty-btn.active {
+        background: linear-gradient(135deg, #4ecdc4, #44a08d);
       }
     }
     
@@ -277,6 +395,38 @@
       .game-container {
         padding: 1rem;
         margin-top: 0.5rem;
+        width: min(500px, 95vw);
+      }
+      
+      .difficulty-buttons {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 1rem;
+      }
+      
+      .difficulty-btn {
+        padding: 8px;
+        font-size: 0.75rem;
+      }
+      
+      .current-difficulty {
+        margin-bottom: 0.8rem;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+      
+      .score-board {
+        gap: 8px;
+        margin-bottom: 0.8rem;
+        padding: 8px;
+      }
+      
+      .score-number {
+        font-size: 1rem;
+      }
+      
+      .score-item {
+        font-size: 0.7rem;
       }
       
       #message {
@@ -303,21 +453,99 @@
   <a href="index.html" class="back-button">العودة للموقع</a>
   
   <div class="game-container">
-    <h1>🎮 لعبة إكس أو ضد الكمبيوتر</h1>
+    <h1>🎮 لعبة إكس أو مع مستويات الصعوبة</h1>
+    
+    <div class="current-difficulty" id="difficultyDisplay">
+      <div>المستوى الحالي: <span id="currentLevel">سهل</span></div>
+      <div class="difficulty-description" id="levelDescription">الكمبيوتر يلعب بشكل عشوائي مع بعض الأخطاء</div>
+    </div>
+    
+    <div class="difficulty-buttons">
+      <button class="difficulty-btn easy active" data-level="easy">
+        🌱 سهل
+      </button>
+      <button class="difficulty-btn medium" data-level="medium">
+        ⚡ متوسط
+      </button>
+      <button class="difficulty-btn hard" data-level="hard">
+        🔥 صعب
+      </button>
+      <button class="difficulty-btn impossible" data-level="impossible">
+        👑 مستحيل
+      </button>
+    </div>
+    
+    <div class="score-board">
+      <div class="score-item">
+        <span class="score-number player-wins" id="playerWins">0</span>
+        <div>انتصاراتك</div>
+      </div>
+      <div class="score-item">
+        <span class="score-number draws" id="drawCount">0</span>
+        <div>التعادل</div>
+      </div>
+      <div class="score-item">
+        <span class="score-number ai-wins" id="aiWins">0</span>
+        <div>انتصارات الكمبيوتر</div>
+      </div>
+    </div>
+    
     <div id="board"></div>
-    <div id="message">دورك! (X) - أنت ضد الكمبيوتر</div>
+    <div id="message">اختر المستوى وابدأ اللعب! أنت (X) ضد الكمبيوتر (O)</div>
   </div>
   <script>
-    // Enhanced Tic Tac Toe implementation with AI opponent
+    // Enhanced Tic Tac Toe with 4 difficulty levels
     const boardEl = document.getElementById('board');
     const messageEl = document.getElementById('message');
-    let currentPlayer = 'X'; // Player is always X
+    const difficultyDisplay = document.getElementById('difficultyDisplay');
+    const currentLevelEl = document.getElementById('currentLevel');
+    const levelDescriptionEl = document.getElementById('levelDescription');
+    const playerWinsEl = document.getElementById('playerWins');
+    const drawCountEl = document.getElementById('drawCount');
+    const aiWinsEl = document.getElementById('aiWins');
+    
     let cells = Array(9).fill(null);
-    let gameActive = true;
+    let gameActive = false;
     let isPlayerTurn = true;
+    let currentDifficulty = 'easy';
+    
+    // Game statistics
+    let stats = {
+      playerWins: 0,
+      draws: 0,
+      aiWins: 0
+    };
+    
+    // Difficulty configurations
+    const difficultyConfig = {
+      easy: {
+        name: 'سهل',
+        description: 'الكمبيوتر يلعب بشكل عشوائي مع بعض الأخطاء',
+        errorChance: 0.7, // 70% chance of making random moves
+        emoji: '🌱'
+      },
+      medium: {
+        name: 'متوسط', 
+        description: 'الكمبيوتر يحاول الفوز أحياناً ولكن يرتكب أخطاء',
+        errorChance: 0.4, // 40% chance of making random moves
+        emoji: '⚡'
+      },
+      hard: {
+        name: 'صعب',
+        description: 'الكمبيوتر ذكي جداً ونادراً ما يخطئ',
+        errorChance: 0.1, // 10% chance of making random moves
+        emoji: '🔥'
+      },
+      impossible: {
+        name: 'مستحيل',
+        description: 'الكمبيوتر لا يخطئ أبداً - سيفوز أو يتعادل دائماً',
+        errorChance: 0, // 0% chance of making random moves
+        emoji: '👑'
+      }
+    };
 
     /**
-     * Check for a winning combination.
+     * Check for a winning combination
      */
     function checkWin(player) {
       const winCombinations = [
@@ -347,33 +575,37 @@
     /**
      * Minimax algorithm for AI decision making
      */
-    function minimax(board, depth, isMaximizing) {
+    function minimax(board, depth, isMaximizing, alpha = -Infinity, beta = Infinity) {
       if (checkWin('O')) return 10 - depth;
       if (checkWin('X')) return depth - 10;
       if (isBoardFull()) return 0;
 
       if (isMaximizing) {
-        let bestScore = -Infinity;
+        let maxEval = -Infinity;
         for (let i = 0; i < 9; i++) {
           if (board[i] === null) {
             board[i] = 'O';
-            let score = minimax(board, depth + 1, false);
+            let eval = minimax(board, depth + 1, false, alpha, beta);
             board[i] = null;
-            bestScore = Math.max(score, bestScore);
+            maxEval = Math.max(maxEval, eval);
+            alpha = Math.max(alpha, eval);
+            if (beta <= alpha) break; // Alpha-beta pruning
           }
         }
-        return bestScore;
+        return maxEval;
       } else {
-        let bestScore = Infinity;
+        let minEval = Infinity;
         for (let i = 0; i < 9; i++) {
           if (board[i] === null) {
             board[i] = 'X';
-            let score = minimax(board, depth + 1, true);
+            let eval = minimax(board, depth + 1, true, alpha, beta);
             board[i] = null;
-            bestScore = Math.min(score, bestScore);
+            minEval = Math.min(minEval, eval);
+            beta = Math.min(beta, eval);
+            if (beta <= alpha) break; // Alpha-beta pruning
           }
         }
-        return bestScore;
+        return minEval;
       }
     }
 
@@ -382,7 +614,7 @@
      */
     function getBestMove() {
       let bestScore = -Infinity;
-      let move = -1;
+      let bestMoves = [];
       
       for (let i = 0; i < 9; i++) {
         if (cells[i] === null) {
@@ -392,41 +624,78 @@
           
           if (score > bestScore) {
             bestScore = score;
-            move = i;
+            bestMoves = [i];
+          } else if (score === bestScore) {
+            bestMoves.push(i);
           }
         }
       }
-      return move;
+      
+      // Return random move from best moves to add variety
+      return bestMoves[Math.floor(Math.random() * bestMoves.length)];
     }
 
     /**
-     * Make AI move
+     * Get a random move from available moves
+     */
+    function getRandomMove() {
+      const availableMoves = getAvailableMoves();
+      return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    }
+
+    /**
+     * Get move based on current difficulty
+     */
+    function getAIMove() {
+      const config = difficultyConfig[currentDifficulty];
+      
+      // Check if AI should make an error based on difficulty
+      if (Math.random() < config.errorChance) {
+        return getRandomMove();
+      }
+      
+      // Otherwise, use optimal move
+      return getBestMove();
+    }
+
+    /**
+     * Make AI move with difficulty consideration
      */
     function makeAIMove() {
       if (!gameActive || isPlayerTurn) return;
       
       messageEl.textContent = 'الكمبيوتر يفكر...';
       
+      // Add thinking delay based on difficulty
+      const thinkingTime = currentDifficulty === 'impossible' ? 1000 : 
+                          currentDifficulty === 'hard' ? 800 : 
+                          currentDifficulty === 'medium' ? 600 : 400;
+      
       setTimeout(() => {
-        const bestMove = getBestMove();
-        if (bestMove !== -1) {
-          cells[bestMove] = 'O';
-          const cellEl = boardEl.children[bestMove];
+        const aiMove = getAIMove();
+        if (aiMove !== undefined) {
+          cells[aiMove] = 'O';
+          const cellEl = boardEl.children[aiMove];
           cellEl.textContent = 'O';
-          cellEl.style.color = '#ff6b6b';
+          cellEl.classList.add('o');
           
           if (checkWin('O')) {
-            messageEl.textContent = 'الكمبيوتر فاز! 🤖';
+            messageEl.textContent = `الكمبيوتر فاز في مستوى ${difficultyConfig[currentDifficulty].name}! 🤖`;
             gameActive = false;
+            stats.aiWins++;
+            updateStats();
+            playWinAnimation('O');
           } else if (isBoardFull()) {
             messageEl.textContent = 'تعادل! 🤝';
             gameActive = false;
+            stats.draws++;
+            updateStats();
           } else {
             isPlayerTurn = true;
             messageEl.textContent = 'دورك! (X)';
           }
         }
-      }, 500); // Small delay to make it feel more natural
+      }, thinkingTime);
     }
 
     /**
@@ -439,17 +708,22 @@
       // Player move
       cells[index] = 'X';
       e.target.textContent = 'X';
-      e.target.style.color = '#4ecdc4';
+      e.target.classList.add('x');
       
       if (checkWin('X')) {
-        messageEl.textContent = 'أنت فزت! 🎉';
+        messageEl.textContent = `أحسنت! فزت في مستوى ${difficultyConfig[currentDifficulty].name}! 🎉`;
         gameActive = false;
+        stats.playerWins++;
+        updateStats();
+        playWinAnimation('X');
         return;
       } 
       
       if (isBoardFull()) {
         messageEl.textContent = 'تعادل! 🤝';
         gameActive = false;
+        stats.draws++;
+        updateStats();
         return;
       }
       
@@ -459,50 +733,155 @@
     }
 
     /**
+     * Play win animation
+     */
+    function playWinAnimation(winner) {
+      const winCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]             // Diagonals
+      ];
+      
+      const winCombo = winCombinations.find(combo =>
+        combo.every(index => cells[index] === winner)
+      );
+      
+      if (winCombo) {
+        winCombo.forEach((index, i) => {
+          setTimeout(() => {
+            boardEl.children[index].style.background = winner === 'X' ? 
+              'linear-gradient(45deg, #4ecdc4, #44a08d)' : 
+              'linear-gradient(45deg, #ff6b6b, #ee5a24)';
+            boardEl.children[index].style.transform = 'scale(1.1)';
+            boardEl.children[index].style.boxShadow = '0 8px 25px rgba(0,0,0,0.4)';
+          }, i * 200);
+        });
+      }
+    }
+
+    /**
+     * Update statistics display
+     */
+    function updateStats() {
+      playerWinsEl.textContent = stats.playerWins;
+      drawCountEl.textContent = stats.draws;
+      aiWinsEl.textContent = stats.aiWins;
+    }
+
+    /**
+     * Set difficulty level
+     */
+    function setDifficulty(level) {
+      currentDifficulty = level;
+      const config = difficultyConfig[level];
+      
+      // Update UI
+      currentLevelEl.textContent = config.name;
+      levelDescriptionEl.textContent = config.description;
+      
+      // Update difficulty buttons
+      document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.level === level) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Restart game with new difficulty
+      initGame();
+    }
+
+    /**
      * Reset and initialize the game
      */
     function initGame() {
       boardEl.innerHTML = '';
       cells = Array(9).fill(null);
-      currentPlayer = 'X';
       gameActive = true;
       isPlayerTurn = true;
-      messageEl.textContent = 'دورك! (X) - أنت ضد الكمبيوتر';
+      messageEl.textContent = `دورك! (X) - مستوى ${difficultyConfig[currentDifficulty].name}`;
       
       for (let i = 0; i < 9; i++) {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.dataset.index = i;
-        cell.style.transition = 'all 0.3s ease';
         boardEl.appendChild(cell);
       }
       boardEl.addEventListener('click', handleClick);
     }
+
+    /**
+     * Reset all statistics
+     */
+    function resetStats() {
+      stats = { playerWins: 0, draws: 0, aiWins: 0 };
+      updateStats();
+    }
+
+    // Add event listeners for difficulty buttons
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setDifficulty(btn.dataset.level);
+      });
+    });
 
     // Add restart button
     const restartBtn = document.createElement('button');
     restartBtn.textContent = '🔄 لعبة جديدة';
     restartBtn.className = 'restart-button';
     restartBtn.style.cssText = `
-      margin-top: 2rem;
-      padding: 12px 24px;
+      margin-top: 1.5rem;
+      margin-right: 10px;
+      padding: 12px 20px;
       background: rgba(255, 255, 255, 0.2);
       color: white;
       border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 25px;
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
     `;
     restartBtn.addEventListener('click', initGame);
+
+    // Add reset stats button  
+    const resetStatsBtn = document.createElement('button');
+    resetStatsBtn.textContent = '📊 مسح الإحصائيات';
+    resetStatsBtn.className = 'restart-button';
+    resetStatsBtn.style.cssText = `
+      margin-top: 1.5rem;
+      padding: 12px 20px;
+      background: rgba(231, 76, 60, 0.2);
+      color: white;
+      border: 2px solid rgba(231, 76, 60, 0.3);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+    `;
+    resetStatsBtn.addEventListener('click', resetStats);
     
     const gameContainer = document.querySelector('.game-container');
-    gameContainer.appendChild(restartBtn);
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.textAlign = 'center';
+    buttonContainer.appendChild(restartBtn);
+    buttonContainer.appendChild(resetStatsBtn);
+    gameContainer.appendChild(buttonContainer);
     
     // Initialize the game
-    initGame();
+    updateStats();
+    setDifficulty('easy');
   </script>
 </body>
 </html>

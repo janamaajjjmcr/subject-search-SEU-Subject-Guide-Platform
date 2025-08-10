@@ -28,44 +28,87 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://fxrg.github.io/subject-search">
     
-    <!-- Schema.org Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      "name": "كلية الحوسبة - جامعة SEU",
-      "description": "كلية الحوسبة في جامعة الشرق الأوسط توفر تخصصات علوم الحاسب وتقنية المعلومات وعلوم البيانات",
-      "url": "https://fxrg.github.io/subject-search",
-      "sameAs": [
-        "https://fxrg.github.io/subject-search"
-      ],
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "SA"
+   <!-- Schema.org Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "كلية الحوسبة - جامعة SEU",
+  "description": "كلية الحوسبة في جامعة الشرق الأوسط توفر تخصصات علوم الحاسب وتقنية المعلومات وعلوم البيانات",
+  "url": "https://fxrg.github.io/subject-search",
+  "sameAs": [
+    "https://fxrg.github.io/subject-search"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "SA"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "مقررات كلية الحوسبة",
+    "itemListElement": [
+      {
+        "@type": "Course",
+        "name": "علوم الحاسب",
+        "description": "تخصص علوم الحاسب يغطي البرمجة وهندسة البرمجيات وخوارزميات",
+        "provider": {
+          "@type": "CollegeOrUniversity",
+          "name": "Saudi Electronic University",
+          "sameAs": "https://www.seu.edu.sa"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "SAR"
+        },
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": "Onsite / Online"
+        }
       },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "مقررات كلية الحوسبة",
-        "itemListElement": [
-          {
-            "@type": "Course",
-            "name": "علوم الحاسب",
-            "description": "تخصص علوم الحاسب يغطي البرمجة وهندسة البرمجيات وخوارزميات"
-          },
-          {
-            "@type": "Course", 
-            "name": "تقنية المعلومات",
-            "description": "تخصص تقنية المعلومات يركز على الشبكات وأمن المعلومات وإدارة قواعد البيانات"
-          },
-          {
-            "@type": "Course",
-            "name": "علوم البيانات", 
-            "description": "تخصص علوم البيانات يشمل تحليل البيانات والذكاء الاصطناعي"
-          }
-        ]
+      {
+        "@type": "Course",
+        "name": "تقنية المعلومات",
+        "description": "تخصص تقنية المعلومات يركز على الشبكات وأمن المعلومات وإدارة قواعد البيانات",
+        "provider": {
+          "@type": "CollegeOrUniversity",
+          "name": "Saudi Electronic University",
+          "sameAs": "https://www.seu.edu.sa"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "SAR"
+        },
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": "Onsite / Online"
+        }
+      },
+      {
+        "@type": "Course",
+        "name": "علوم البيانات",
+        "description": "تخصص علوم البيانات يشمل تحليل البيانات والذكاء الاصطناعي",
+        "provider": {
+          "@type": "CollegeOrUniversity",
+          "name": "Saudi Electronic University",
+          "sameAs": "https://www.seu.edu.sa"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "SAR"
+        },
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": "Onsite / Online"
+        }
       }
-    }
-    </script>
+    ]
+  }
+}
+</script>
+
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y2FL6V8X3L"></script>
