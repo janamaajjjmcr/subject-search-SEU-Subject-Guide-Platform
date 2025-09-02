@@ -27,7 +27,7 @@
       backToMain: 'العودة للرئيسية',
       mainPage: 'الرئيسية',
       home: 'الرئيسية',
-      allColleges: 'كل الكليات',
+      allColleges: 'جميع الكليات',
       computerScience: 'علوم الحاسب',
       informationTechnology: 'تقنية المعلومات',
       dataScience: 'علوم البيانات',
@@ -52,7 +52,43 @@
       health: 'الصحة',
       searchCourses: 'البحث عن المواد',
       noResourcesAvailable: 'لا تتوفر موارد لهذه المادة حالياً',
-      courseNotFound: 'المادة غير موجودة في النظام'
+      courseNotFound: 'المادة غير موجودة في النظام',
+      // New translations
+      languageText: 'العربية',
+      mobileLanguageText: 'العربية / English',
+      shareCourse: 'مشاركة المادة',
+      courseDetails: 'تفاصيل المادة',
+      courseMaterials: 'مواد المقرر',
+      downloadCurriculum: 'تحميل المنهج',
+      educationalResources: 'الموارد التعليمية',
+      additionalMaterials: 'مواد إضافية',
+      recommendedBook: 'كتاب مقرر موصى به',
+      interactiveLearning: 'منصة التعلم التفاعلية',
+      shareWith: 'مشاركة المادة',
+      qrCodeAccess: 'كود QR للوصول السريع',
+      scanCode: 'امسح الكود للوصول المباشر للمادة',
+      directLink: 'الرابط المباشر للمادة',
+      websiteLink: 'رابط الموقع مع تحديد المادة',
+      copy: 'نسخ',
+      copied: 'تم النسخ!',
+      shareSocial: 'مشاركة عبر وسائل التواصل',
+      whatsapp: 'واتساب',
+      telegram: 'تيليجرام',
+      twitter: 'تويتر',
+      facebook: 'فيسبوك',
+      watchOnYouTube: 'مشاهدة على يوتيوب',
+      openChat: 'فتح المحادثة',
+      enterCourse: 'دخول المقرر',
+      openFiles: 'فتح الملفات',
+      download: 'تحميل',
+      educationalContent: 'محتوى تعليمي',
+      recordedLectures: 'محاضرات مسجلة',
+      educationalFiles: 'ملفات تعليمية',
+      compressedFiles: 'ملفات مضغوطة',
+      educationalResource: 'مورد تعليمي',
+      blackBoard: 'بلاك بورد',
+      googleDrive: 'جوجل درايف',
+      mega: 'ميجا'
     },
     en: {
       siteTitle: 'SEU Computing College – Course & Subject Search',
@@ -88,7 +124,43 @@
       health: 'Health',
       searchCourses: 'Search Courses',
       noResourcesAvailable: 'No resources available for this course currently',
-      courseNotFound: 'Course not found in the system'
+      courseNotFound: 'Course not found in the system',
+      // New translations
+      languageText: 'English',
+      mobileLanguageText: 'English / العربية',
+      shareCourse: 'Share Course',
+      courseDetails: 'Course Details',
+      courseMaterials: 'Course Materials',
+      downloadCurriculum: 'Download Curriculum',
+      educationalResources: 'Educational Resources',
+      additionalMaterials: 'Additional Materials',
+      recommendedBook: 'Recommended Course Book',
+      interactiveLearning: 'Interactive Learning Platform',
+      shareWith: 'Share Course',
+      qrCodeAccess: 'QR Code for Quick Access',
+      scanCode: 'Scan code for direct access to course',
+      directLink: 'Direct Course Link',
+      websiteLink: 'Website Link with Course Selection',
+      copy: 'Copy',
+      copied: 'Copied!',
+      shareSocial: 'Share via Social Media',
+      whatsapp: 'WhatsApp',
+      telegram: 'Telegram',
+      twitter: 'Twitter',
+      facebook: 'Facebook',
+      watchOnYouTube: 'Watch on YouTube',
+      openChat: 'Open Chat',
+      enterCourse: 'Enter Course',
+      openFiles: 'Open Files',
+      download: 'Download',
+      educationalContent: 'Educational Content',
+      recordedLectures: 'Recorded Lectures',
+      educationalFiles: 'Educational Files',
+      compressedFiles: 'Compressed Files',
+      educationalResource: 'Educational Resource',
+      blackBoard: 'BlackBoard',
+      googleDrive: 'Google Drive',
+      mega: 'Mega'
     }
   };
 
@@ -116,6 +188,13 @@
     // Update navigation links
     const accountLink = document.getElementById('nav-account');
     if (accountLink) accountLink.textContent = dict.myAccount;
+    
+    // Update language toggle button text
+    const languageText = document.getElementById('language-text');
+    if (languageText) languageText.textContent = dict.languageText;
+    
+    const mobileLanguageText = document.getElementById('mobile-language-text');
+    if (mobileLanguageText) mobileLanguageText.textContent = dict.mobileLanguageText;
     
     // Update auth tabs with data-i18n attributes
     const loginTab = document.querySelector('[data-i18n="login"]');
@@ -145,6 +224,31 @@
       }
     });
     
+    // Update specific text elements that might not have data-i18n
+    // Main page header texts
+    const headerTitle = document.querySelector('.gradient-text');
+    if (headerTitle && headerTitle.textContent.includes('الجامعة السعودية الإلكترونية')) {
+      headerTitle.textContent = lang === 'ar' ? 'الجامعة السعودية الإلكترونية' : 'Saudi Electronic University';
+    }
+    
+    const academicSystemText = document.querySelector('h2');
+    if (academicSystemText && academicSystemText.textContent.includes('Academic Materials')) {
+      academicSystemText.textContent = dict.academicMaterials;
+    }
+    
+    const platformDescription = document.querySelector('p.text-xl');
+    if (platformDescription && platformDescription.textContent.includes('منصة شاملة')) {
+      platformDescription.textContent = dict.universityPlatform;
+    }
+    
+    // Update college names
+    const collegeNames = document.querySelectorAll('.college-name');
+    collegeNames.forEach(name => {
+      if (name.textContent.includes('الحوسبة')) name.textContent = dict.computing;
+      if (name.textContent.includes('الأعمال')) name.textContent = dict.business;
+      if (name.textContent.includes('الصحة')) name.textContent = dict.health;
+    });
+    
     // Update body class for styling purposes
     document.body.className = document.body.className.replace(/\b(lang-ar|lang-en)\b/g, '');
     document.body.classList.add(`lang-${lang}`);
@@ -167,9 +271,29 @@
   document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('siteLanguage') || 'ar';
     applyLanguage(savedLang);
+    
+    // Desktop language toggle button
     const btn = document.getElementById('language-toggle');
     if (btn) {
       btn.addEventListener('click', toggleLanguage);
+    }
+    
+    // Mobile language toggle button
+    const mobileBtn = document.getElementById('mobile-language-toggle');
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', () => {
+        toggleLanguage();
+        // Close mobile menu after language change
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+          setTimeout(() => {
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            if (menuBtn) {
+              menuBtn.click();
+            }
+          }, 300);
+        }
+      });
     }
   });
 })();

@@ -1798,20 +1798,20 @@ ul {
                     </div>
                     <div>
                         <h1 class="text-2xl md:text-3xl font-bold font-playfair">
-                            <span class="gradient-text"> جامعة SEU </span>
+                            <span class="gradient-text" data-ar="جامعة SEU" data-en="SEU University"> جامعة SEU </span>
                         </h1>
-                        <p class="text-stardust/70 mt-1 font-medium">كلية الحوسبة</p>
+                        <p class="text-stardust/70 mt-1 font-medium" data-ar="كلية العلوم الإدارية والمالية" data-en="College of Administrative and Financial Sciences">كلية العلوم الإدارية والمالية</p>
                     </div>
                 </div>
                 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-6 space-x-reverse">
-                    <a href="#" class="text-stardust hover:text-white transition duration-300">الرئيسية</a>
-                    <a href="#cs" class="text-stardust hover:text-white transition duration-300">إدارة الأعمال</a>
-                    <a href="#ds" class="text-stardust hover:text-white transition duration-300">المحاسبة</a>
-                    <a href="#it" class="text-stardust hover:text-white transition duration-300">الإدارة المالية</a>
-                    <a href="#ecommerce" class="text-stardust hover:text-white transition duration-300">التجارة الإلكترونية</a>
-                    <a href="index.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
+                    <a href="#" class="text-stardust hover:text-white transition duration-300" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+                    <a href="#cs" class="text-stardust hover:text-white transition duration-300" data-ar="إدارة الأعمال" data-en="Business Administration">إدارة الأعمال</a>
+                    <a href="#ds" class="text-stardust hover:text-white transition duration-300" data-ar="المحاسبة" data-en="Accounting">المحاسبة</a>
+                    <a href="#it" class="text-stardust hover:text-white transition duration-300" data-ar="الإدارة المالية" data-en="Financial Management">الإدارة المالية</a>
+                    <a href="#ecommerce" class="text-stardust hover:text-white transition duration-300" data-ar="التجارة الإلكترونية" data-en="E-Commerce">التجارة الإلكترونية</a>
+                    <a href="index.html" class="text-aurora hover:text-white transition duration-300 font-medium" data-ar="جميع الكليات" data-en="All Colleges">جميع الكليات</a>
                     
                     <!-- User Authentication Section -->
                     <div class="flex items-center gap-3">
@@ -1841,6 +1841,13 @@ ul {
                             إضافة مادة
                         </button>
                     </div>
+                    
+                    <!-- Language Toggle Button -->
+                    <button id="language-toggle" data-en="EN" data-ar="ع" class="group relative inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 px-4 text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
+                        <i class="fas fa-language mr-2"></i>
+                        <span>ع</span>
+                    </button>
+                    
                     <!-- Theme Toggle Button -->
                     <label for="toggle" id="theme-toggle-button">
                         <input type="checkbox" id="toggle">
@@ -1929,6 +1936,13 @@ ul {
                                 إنشاء حساب
                             </button>
                         </div>
+                    </div>
+                    <!-- Mobile Language Toggle -->
+                    <div class="pt-3 border-t border-nebula/20">
+                        <button id="mobile-language-toggle" data-en="Switch to English" data-ar="التبديل للإنجليزية" class="w-full group relative inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
+                            <i class="fas fa-language mr-2"></i>
+                            <span>التبديل للإنجليزية</span>
+                        </button>
                     </div>
                     <!-- Mobile Theme Toggle -->
                     <div class="pt-3">
@@ -2328,6 +2342,10 @@ ul {
                     <p class="text-stardust/70"><span id="modalCourseMajor"></span> • 3 ساعات</p>
                 </div>
                 <div class="flex items-center gap-3">
+                    <button onclick="shareCourse()" class="bg-aurora hover:bg-plasma text-white px-4 py-2 rounded-lg transition duration-300 flex items-center gap-2">
+                        <i class="fas fa-share-alt"></i>
+                        <span>مشاركة المادة</span>
+                    </button>
                     <button onclick="closeModal()" class="text-stardust hover:text-white text-2xl p-2 rounded-full hover:bg-nebula/30 transition duration-300">&times;</button>
                 </div>
             </div>
@@ -2376,6 +2394,84 @@ ul {
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="allCoursesContainer">
                 <!-- Courses will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Course Modal -->
+    <div id="shareCourseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">مشاركة المادة</h2>
+                    <p id="shareModalSubtitle" class="text-stardust/70 text-sm mt-1">شارك المادة مع الآخرين</p>
+                </div>
+                <button onclick="closeShareModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- QR Code -->
+                <div class="text-center p-4 bg-nebula/20 rounded-lg">
+                    <h3 class="text-white font-medium mb-3">كود QR للوصول السريع</h3>
+                    <div id="qrCodeContainer" class="flex justify-center mb-3">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p class="text-stardust/60 text-xs">امسح الكود للوصول المباشر للمادة</p>
+                </div>
+
+                <!-- Direct Link -->
+                <div>
+                    <label class="block text-white font-medium mb-2">
+                        <i class="fas fa-link mr-2 text-aurora"></i>
+                        الرابط المباشر للمادة
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="courseDirectLink" class="flex-1 bg-nebula/30 border border-stardust/20 rounded-lg px-3 py-2 text-white text-sm" readonly />
+                        <button onclick="copyDirectLink()" class="bg-aurora hover:bg-plasma text-white px-4 py-2 rounded-lg transition duration-300 text-sm">
+                            <span class="copy-btn-text">نسخ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Website Link -->
+                <div>
+                    <label class="block text-white font-medium mb-2">
+                        <i class="fas fa-globe mr-2 text-plasma"></i>
+                        رابط الموقع مع تحديد المادة
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="courseWebsiteLink" class="flex-1 bg-nebula/30 border border-stardust/20 rounded-lg px-3 py-2 text-white text-sm" readonly />
+                        <button onclick="copyWebsiteLink()" class="bg-plasma hover:bg-aurora text-white px-4 py-2 rounded-lg transition duration-300 text-sm">
+                            <span class="copy-btn-text-2">نسخ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Social Media Share -->
+                <div>
+                    <h3 class="text-white font-medium mb-3">
+                        <i class="fas fa-share-alt mr-2 text-photon"></i>
+                        مشاركة عبر وسائل التواصل
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="shareOnWhatsApp()" class="bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span class="text-sm">واتساب</span>
+                        </button>
+                        <button onclick="shareOnTelegram()" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-telegram text-lg"></i>
+                            <span class="text-sm">تيليجرام</span>
+                        </button>
+                        <button onclick="shareOnTwitter()" class="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-x-twitter text-lg"></i>
+                            <span class="text-sm">تويتر</span>
+                        </button>
+                        <button onclick="shareOnFacebook()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-facebook text-lg"></i>
+                            <span class="text-sm">فيسبوك</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2882,6 +2978,267 @@ ul {
             }
             
             document.getElementById("courseModal").classList.remove("hidden");
+        }
+
+        // Site Configuration for sharing
+        const SITE_CONFIG = {
+            PRODUCTION_URL: 'https://fxrg.github.io/subject-search-/business.html',
+            SITE_NAME: 'كلية العلوم الإدارية والمالية - الجامعة السعودية الإلكترونية',
+            SITE_DESCRIPTION: 'منصة البحث عن المواد الدراسية لكلية العلوم الإدارية والمالية في الجامعة السعودية الإلكترونية',
+            COLLEGE: 'business'
+        };
+
+        // Share Course Variables and Functions
+        let currentShareCourse = null;
+        
+        function shareCourse() {
+            const courseCode = document.getElementById("modalCourseCode").textContent;
+            const courseTitle = document.getElementById("modalCourseTitle").textContent;
+            
+            currentShareCourse = {
+                code: courseCode,
+                title: courseTitle
+            };
+            
+            // Update modal title
+            document.getElementById("shareModalSubtitle").textContent = `شارك مادة ${courseCode} - ${courseTitle}`;
+            
+            // Generate links
+            generateShareLinks(courseCode, courseTitle);
+            
+            // Show development notice if running locally
+            const isLocalDevelopment = window.location.hostname === 'localhost' || 
+                                      window.location.hostname === '127.0.0.1';
+            
+            if (isLocalDevelopment) {
+                // Add development notice to modal
+                const existingNotice = document.getElementById('dev-notice');
+                if (existingNotice) existingNotice.remove();
+                
+                const devNotice = document.createElement('div');
+                devNotice.id = 'dev-notice';
+                devNotice.className = 'bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-3 mb-4 text-center';
+                devNotice.innerHTML = `
+                    <div class="flex items-center justify-center text-yellow-300 text-sm">
+                        <i class="fas fa-info-circle ml-2"></i>
+                        <span>وضع التطوير: الروابط تستخدم GitHub Pages (${SITE_CONFIG.PRODUCTION_URL})</span>
+                    </div>
+                `;
+                
+                const shareModalContent = document.querySelector('#shareCourseModal .space-y-6');
+                shareModalContent.insertBefore(devNotice, shareModalContent.firstChild);
+            }
+            
+            // Show share modal
+            document.getElementById("shareCourseModal").classList.remove("hidden");
+            
+            // Generate QR code
+            generateQRCode();
+        }
+        
+        function generateShareLinks(courseCode, courseTitle) {
+            // Use the production URL for sharing links
+            const isLocalhost = window.location.hostname === 'localhost' || 
+                               window.location.hostname === '127.0.0.1' || 
+                               window.location.hostname === '';
+            
+            let baseUrl;
+            if (isLocalhost) {
+                // If running locally, use production URL for sharing
+                baseUrl = SITE_CONFIG.PRODUCTION_URL;
+            } else {
+                // If already on live site, use current URL
+                baseUrl = window.location.origin + window.location.pathname;
+            }
+            
+            const directLink = `${baseUrl}?course=${encodeURIComponent(courseCode)}`;
+            const websiteLink = `${baseUrl}#course-${courseCode}`;
+            
+            document.getElementById("courseDirectLink").value = directLink;
+            document.getElementById("courseWebsiteLink").value = websiteLink;
+        }
+        
+        async function copyDirectLink() {
+            const link = document.getElementById("courseDirectLink").value;
+            const button = event.target.closest('button');
+            const textSpan = button.querySelector('.copy-btn-text');
+            
+            try {
+                await navigator.clipboard.writeText(link);
+                textSpan.textContent = 'تم النسخ!';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-aurora');
+                
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-aurora');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                textSpan.textContent = 'تم النسخ!';
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                }, 2000);
+            }
+        }
+        
+        async function copyWebsiteLink() {
+            const link = document.getElementById("courseWebsiteLink").value;
+            const button = event.target.closest('button');
+            const textSpan = button.querySelector('.copy-btn-text-2');
+            
+            try {
+                await navigator.clipboard.writeText(link);
+                textSpan.textContent = 'تم النسخ!';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-plasma');
+                
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-plasma');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                textSpan.textContent = 'تم النسخ!';
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                }, 2000);
+            }
+        }
+        
+        function shareOnWhatsApp() {
+            const link = document.getElementById("courseDirectLink").value;
+            const message = `📚 أريد مشاركة مادة ${currentShareCourse.code} - ${currentShareCourse.title} معك!\n\n🔗 يمكنك الوصول لها مباشرة من خلال هذا الرابط:\n${link}\n\n🎓 ${SITE_CONFIG.SITE_NAME}\n✨ ${SITE_CONFIG.SITE_DESCRIPTION}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        function shareOnTelegram() {
+            const link = document.getElementById("courseDirectLink").value;
+            const message = `📚 مادة ${currentShareCourse.code} - ${currentShareCourse.title}\n\n🔗 الرابط المباشر: ${link}\n\n🎓 ${SITE_CONFIG.SITE_NAME}`;
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`;
+            window.open(telegramUrl, '_blank');
+        }
+        
+        function shareOnTwitter() {
+            const link = document.getElementById("courseDirectLink").value;
+            const message = `📚 مادة ${currentShareCourse.code} - ${currentShareCourse.title} من كلية العلوم الإدارية والمالية 🎓\n\n${SITE_CONFIG.SITE_DESCRIPTION}\n\n#الجامعة_السعودية_الإلكترونية #كلية_الأعمال #SEU`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(link)}`;
+            window.open(twitterUrl, '_blank');
+        }
+        
+        function shareOnFacebook() {
+            const link = document.getElementById("courseDirectLink").value;
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
+            window.open(facebookUrl, '_blank');
+        }
+        
+        function generateQRCode() {
+            const link = document.getElementById("courseDirectLink").value;
+            const qrContainer = document.getElementById("qrCodeContainer");
+            
+            // Clear previous QR code
+            qrContainer.innerHTML = '<div class="loading-spinner"></div>';
+            
+            // Generate QR code using qr-server API
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}&bgcolor=FFFFFF&color=000000`;
+            
+            const img = new Image();
+            img.onload = function() {
+                qrContainer.innerHTML = '';
+                qrContainer.appendChild(img);
+            };
+            img.onerror = function() {
+                qrContainer.innerHTML = `
+                    <div class="text-center text-gray-500">
+                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                        <p class="text-sm">لا يمكن إنشاء كود QR</p>
+                    </div>
+                `;
+            };
+            img.src = qrUrl;
+            img.alt = 'QR Code';
+            img.className = 'max-w-full h-auto';
+        }
+        
+        function closeShareModal() {
+            document.getElementById("shareCourseModal").classList.add("hidden");
+            currentShareCourse = null;
+            
+            // Remove development notice if exists
+            const devNotice = document.getElementById('dev-notice');
+            if (devNotice) devNotice.remove();
+        }
+        
+        // Show share notification
+        function showShareNotification(courseCode, courseTitle) {
+            const isLocalDevelopment = window.location.hostname === 'localhost' || 
+                                      window.location.hostname === '127.0.0.1';
+            
+            if (!isLocalDevelopment) return;
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                max-width: 350px;
+                animation: slideInRight 0.5s ease-out;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-share-alt" style="font-size: 18px; color: #fbbf24;"></i>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">تم الوصول عبر رابط مشترك</div>
+                        <div style="font-size: 14px; opacity: 0.9;">مادة ${courseCode} - ${courseTitle}</div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; margin-left: auto;">&times;</button>
+                </div>
+            `;
+            
+            // Add slide-in animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideInRight 0.5s ease-out reverse';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 5000);
         }
 
         // Function to close the modal
@@ -4329,5 +4686,8 @@ ul {
             </form>
         </div>
     </div>
+    
+    <!-- Language Toggle Script -->
+    <script src="language-toggle.js"></script>
 </body>
 </html>

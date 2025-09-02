@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الشير - المواد الدراسية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        .glass-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(109, 99, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-center mb-6">اختبار ميزة الشير للمواد الدراسية</h1>
+        
+        <div id="course-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Course cards will be generated here -->
+        </div>
+        
+        <!-- Course Modal -->
+        <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+            <div class="glass-card max-w-2xl w-full max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="modalCourseTitle" class="text-2xl font-bold"></h2>
+                    <button onclick="closeModal()" class="text-white hover:text-red-500 text-2xl">&times;</button>
+                </div>
+                <p id="modalCourseCode" class="text-lg font-semibold mb-2"></p>
+                <p id="modalCourseDesc" class="text-gray-300 mb-4"></p>
+                <p id="modalCourseMajor" class="text-blue-300 mb-4"></p>
+                <div class="flex gap-4">
+                    <button onclick="shareCourse()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        شارك المادة
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Share Modal -->
+        <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 hidden">
+            <div class="glass-card max-w-lg w-full">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">شارك المادة</h3>
+                    <button onclick="closeShareModal()" class="text-white hover:text-red-500 text-2xl">&times;</button>
+                </div>
+                <div id="shareContent">
+                    <!-- Share links will be generated here -->
+                </div>
+            </div>
+        </div>
+        
+        <div id="urlTest" class="glass-card mt-6">
+            <h3 class="text-lg font-bold mb-2">اختبار URL Parameters</h3>
+            <p id="urlInfo">جاري التحقق من الرابط...</p>
+        </div>
+    </div>
+
+    <script>
+        // Course data
+        const courses = {
+            'CS230': {
+                title: "البرمجة الشيئية",
+                desc: "هذه المادة تقدم مفاهيم البرمجة الشيئية باستخدام لغة الجافا. سيتعلم الطلاب التفكير الحسابي واستراتيجيات حل المشكلات",
+                credits: 3,
+                major: "علوم الحاسب"
+            },
+            'DS231': {
+                title: "هياكل البيانات والخوارزميات",
+                desc: "دراسة هياكل البيانات الأساسية والخوارزميات المختلفة وتحليل الوقت والمساحة",
+                credits: 3,
+                major: "علوم البيانات"
+            },
+            'IT240': {
+                title: "شبكات الحاسوب",
+                desc: "مقدمة في شبكات الحاسوب والبروتوكولات والأمان",
+                credits: 3,
+                major: "تقنية المعلومات"
+            }
+        };
+
+        // Global variables
+        let currentCourse = null;
+
+        // Function to render course cards
+        function renderCourses() {
+            const container = document.getElementById('course-list');
+            container.innerHTML = '';
+            
+            for (const [code, course] of Object.entries(courses)) {
+                const card = document.createElement('div');
+                card.className = 'glass-card cursor-pointer hover:bg-opacity-80 transition-all';
+                card.innerHTML = `
+                    <h3 class="text-lg font-bold mb-2">${code}</h3>
+                    <p class="text-blue-300 mb-2">${course.title}</p>
+                    <p class="text-gray-400 text-sm mb-2">${course.major}</p>
+                    <p class="text-gray-300 text-sm">${course.desc.substring(0, 100)}...</p>
+                `;
+                card.onclick = () => openCourseModal(code);
+                container.appendChild(card);
+            }
+        }
+
+        // Function to open course modal
+        function openCourseModal(courseCode) {
+            const course = courses[courseCode];
+            if (!course) return;
+
+            currentCourse = { code: courseCode, ...course };
+            
+            document.getElementById('modalCourseCode').textContent = courseCode;
+            document.getElementById('modalCourseTitle').textContent = course.title;
+            document.getElementById('modalCourseDesc').textContent = course.desc;
+            document.getElementById('modalCourseMajor').textContent = course.major;
+            document.getElementById('courseModal').classList.remove('hidden');
+        }
+
+        // Function to close course modal
+        function closeModal() {
+            document.getElementById('courseModal').classList.add('hidden');
+        }
+
+        // Function to share course
+        function shareCourse() {
+            if (!currentCourse) return;
+
+            // Determine the correct base URL
+            const baseUrl = window.location.hostname === 'fxrg.github.io' 
+                ? 'https://fxrg.github.io/subject-search-/share-test.html' 
+                : window.location.origin + window.location.pathname;
+            
+            const shareUrl = `${baseUrl}?course=${currentCourse.code}`;
+            
+            document.getElementById('shareContent').innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-400 mb-2">مشاركة: ${currentCourse.title} (${currentCourse.code})</p>
+                        <label class="block text-sm font-semibold mb-2">رابط المشاركة:</label>
+                        <div class="flex">
+                            <input type="text" id="shareUrl" value="${shareUrl}" 
+                                   class="flex-1 bg-gray-700 text-white px-3 py-2 rounded-l-lg text-sm" readonly>
+                            <button onclick="copyToClipboard()" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg">
+                                نسخ
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="shareOnWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm">
+                            واتساب
+                        </button>
+                        <button onclick="shareOnTelegram()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm">
+                            تلغرام
+                        </button>
+                        <button onclick="shareOnTwitter()" class="bg-blue-400 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-sm">
+                            تويتر
+                        </button>
+                    </div>
+                    <div>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(shareUrl)}" 
+                             alt="QR Code" class="mx-auto">
+                        <p class="text-center text-sm text-gray-400 mt-2">امسح الكود للوصول السريع</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('shareModal').classList.remove('hidden');
+        }
+
+        // Function to close share modal
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.add('hidden');
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard() {
+            const shareUrl = document.getElementById('shareUrl');
+            shareUrl.select();
+            document.execCommand('copy');
+            alert('تم نسخ الرابط!');
+        }
+
+        // Social media sharing functions
+        function shareOnWhatsApp() {
+            const url = document.getElementById('shareUrl').value;
+            const text = `شاهد مادة ${currentCourse.title} (${currentCourse.code})`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+        }
+
+        function shareOnTelegram() {
+            const url = document.getElementById('shareUrl').value;
+            const text = `شاهد مادة ${currentCourse.title} (${currentCourse.code})`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareOnTwitter() {
+            const url = document.getElementById('shareUrl').value;
+            const text = `شاهد مادة ${currentCourse.title} (${currentCourse.code})`;
+            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // Handle URL parameters
+        function handleUrlParameter() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseParam = urlParams.get('course');
+            const urlInfo = document.getElementById('urlInfo');
+            
+            if (courseParam) {
+                const courseCode = courseParam.toUpperCase();
+                
+                // For GitHub Pages, get the correct base URL
+                const baseUrl = window.location.hostname === 'fxrg.github.io' 
+                    ? 'https://fxrg.github.io/subject-search-/' 
+                    : window.location.origin + window.location.pathname;
+                
+                urlInfo.innerHTML = `
+                    <p><strong>تم العثور على معامل course:</strong> ${courseCode}</p>
+                    <p><strong>الرابط الحالي:</strong> ${window.location.href}</p>
+                    <p><strong>Base URL:</strong> ${baseUrl}</p>
+                `;
+                
+                if (courses[courseCode]) {
+                    urlInfo.innerHTML += `<p class="text-green-400">✅ تم العثور على المادة وسيتم فتحها تلقائياً</p>`;
+                    setTimeout(() => {
+                        openCourseModal(courseCode);
+                        // Clear URL parameter to avoid reopening
+                        const newUrl = baseUrl.replace(/\/[^\/]*$/, '/') + 'share-test.html';
+                        window.history.replaceState({}, '', newUrl);
+                    }, 2000);
+                } else {
+                    urlInfo.innerHTML += `<p class="text-red-400">❌ لم يتم العثور على المادة</p>`;
+                }
+            } else {
+                const baseUrl = window.location.hostname === 'fxrg.github.io' 
+                    ? 'https://fxrg.github.io/subject-search-/' 
+                    : window.location.origin + window.location.pathname;
+                    
+                urlInfo.innerHTML = `
+                    <p>لا توجد معاملات في الرابط</p>
+                    <p><strong>الرابط الحالي:</strong> ${window.location.href}</p>
+                    <p><strong>Base URL:</strong> ${baseUrl}</p>
+                    <p class="text-gray-400 text-sm mt-2">جرب إضافة ?course=CS230 أو ?course=DS231 للاختبار</p>
+                    <div class="mt-4 space-y-2">
+                        <p class="font-semibold">روابط اختبار:</p>
+                        <a href="?course=CS230" class="block text-blue-400 hover:text-blue-300">اختبار CS230</a>
+                        <a href="?course=DS231" class="block text-blue-400 hover:text-blue-300">اختبار DS231</a>
+                        <a href="?course=IT240" class="block text-blue-400 hover:text-blue-300">اختبار IT240</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCourses();
+            handleUrlParameter();
+        });
+    </script>
+</body>
+</html>

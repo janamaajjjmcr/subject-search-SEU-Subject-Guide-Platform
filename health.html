@@ -723,6 +723,42 @@ service cloud.firestore {
             background: rgba(45, 45, 77, 0.7);
             transform: translateY(-3px);
         }
+
+        /* Mobile Responsive Styles for Resource Cards */
+        @media (max-width: 768px) {
+            .resource-card.telegram-card,
+            .resource-card.blackboard-card,
+            .resource-card.drive-card,
+            .resource-card.mega-card,
+            .resource-card.default-card {
+                transform: scale(0.95);
+                padding: 12px;
+            }
+            
+            .resource-card.telegram-card:hover,
+            .resource-card.blackboard-card:hover,
+            .resource-card.drive-card:hover,
+            .resource-card.mega-card:hover,
+            .resource-card.default-card:hover {
+                transform: scale(0.98);
+            }
+            
+            .telegram-card h3,
+            .blackboard-card h3,
+            .drive-card h3,
+            .mega-card h3,
+            .default-card h3 {
+                font-size: 1rem;
+            }
+            
+            .telegram-card p,
+            .blackboard-card p,
+            .drive-card p,
+            .mega-card p,
+            .default-card p {
+                font-size: 0.875rem;
+            }
+        }
         
         .level-badge {
             position: absolute;
@@ -1811,18 +1847,18 @@ ul {
                     </div>
                     <div>
                         <h1 class="text-2xl md:text-3xl font-bold font-playfair">
-                            <span class="gradient-text"> جامعة SEU </span>
+                            <span class="gradient-text" data-ar="جامعة SEU" data-en="SEU University"> جامعة SEU </span>
                         </h1>
-                        <p class="text-stardust/70 mt-1 font-medium">كلية الصحة</p>
+                        <p class="text-stardust/70 mt-1 font-medium" data-ar="كلية الصحة" data-en="Health College">كلية الصحة</p>
                     </div>
                 </div>
                 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-6 space-x-reverse">
-                    <a href="#" class="text-stardust hover:text-white transition duration-300">الرئيسية</a>
-                    <a href="#public-health" class="text-stardust hover:text-white transition duration-300">الصحة العامة</a>
-                    <a href="#health-informatics" class="text-stardust hover:text-white transition duration-300">المعلوماتية الصحية</a>
-                    <a href="index.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
+                    <a href="#" class="text-stardust hover:text-white transition duration-300" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+                    <a href="#public-health" class="text-stardust hover:text-white transition duration-300" data-ar="الصحة العامة" data-en="Public Health">الصحة العامة</a>
+                    <a href="#health-informatics" class="text-stardust hover:text-white transition duration-300" data-ar="المعلوماتية الصحية" data-en="Health Informatics">المعلوماتية الصحية</a>
+                    <a href="index.html" class="text-aurora hover:text-white transition duration-300 font-medium" data-ar="جميع الكليات" data-en="All Colleges">جميع الكليات</a>
                     
                     <!-- User Authentication Section -->
                     <div class="flex items-center gap-3">
@@ -1852,6 +1888,13 @@ ul {
                             إضافة مادة
                         </button>
                     </div>
+                    
+                    <!-- Language Toggle Button -->
+                    <button id="language-toggle" data-en="EN" data-ar="ع" class="group relative inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 px-4 text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
+                        <i class="fas fa-language mr-2"></i>
+                        <span>ع</span>
+                    </button>
+                    
                     <!-- Theme Toggle Button -->
                     <label for="toggle" id="theme-toggle-button">
                         <input type="checkbox" id="toggle">
@@ -1938,6 +1981,13 @@ ul {
                                 إنشاء حساب
                             </button>
                         </div>
+                    </div>
+                    <!-- Mobile Language Toggle -->
+                    <div class="pt-3 border-t border-nebula/20">
+                        <button id="mobile-language-toggle" data-en="Switch to English" data-ar="التبديل للإنجليزية" class="w-full group relative inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
+                            <i class="fas fa-language mr-2"></i>
+                            <span>التبديل للإنجليزية</span>
+                        </button>
                     </div>
                     <!-- Mobile Theme Toggle -->
                     <div class="pt-3">
@@ -2251,6 +2301,10 @@ ul {
                     <p class="text-stardust/70"><span id="modalCourseMajor"></span> • 3 ساعات</p>
                 </div>
                 <div class="flex items-center gap-3">
+                    <button onclick="shareCourse()" class="bg-aurora hover:bg-plasma text-white px-4 py-2 rounded-lg transition duration-300 flex items-center gap-2">
+                        <i class="fas fa-share-alt"></i>
+                        <span>مشاركة المادة</span>
+                    </button>
                     <button onclick="closeModal()" class="text-stardust hover:text-white text-2xl p-2 rounded-full hover:bg-nebula/30 transition duration-300">&times;</button>
                 </div>
             </div>
@@ -2283,6 +2337,84 @@ ul {
                         <a href="https://t.me/Computing_and_Informatics" target="_blank" class="hover:text-white">منصة التعلم التفاعلية</a>
                     </li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Course Modal -->
+    <div id="shareCourseModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="glass-card rounded-2xl p-8 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">مشاركة المادة</h2>
+                    <p id="shareModalSubtitle" class="text-stardust/70 text-sm mt-1">شارك المادة مع الآخرين</p>
+                </div>
+                <button onclick="closeShareModal()" class="text-stardust hover:text-white text-2xl">&times;</button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- QR Code -->
+                <div class="text-center p-4 bg-nebula/20 rounded-lg">
+                    <h3 class="text-white font-medium mb-3">كود QR للوصول السريع</h3>
+                    <div id="qrCodeContainer" class="flex justify-center mb-3">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p class="text-stardust/60 text-xs">امسح الكود للوصول المباشر للمادة</p>
+                </div>
+
+                <!-- Direct Link -->
+                <div>
+                    <label class="block text-white font-medium mb-2">
+                        <i class="fas fa-link mr-2 text-aurora"></i>
+                        الرابط المباشر للمادة
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="courseDirectLink" class="flex-1 bg-nebula/30 border border-stardust/20 rounded-lg px-3 py-2 text-white text-sm" readonly />
+                        <button onclick="copyDirectLink()" class="bg-aurora hover:bg-plasma text-white px-4 py-2 rounded-lg transition duration-300 text-sm">
+                            <span class="copy-btn-text">نسخ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Website Link -->
+                <div>
+                    <label class="block text-white font-medium mb-2">
+                        <i class="fas fa-globe mr-2 text-plasma"></i>
+                        رابط الموقع مع تحديد المادة
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="courseWebsiteLink" class="flex-1 bg-nebula/30 border border-stardust/20 rounded-lg px-3 py-2 text-white text-sm" readonly />
+                        <button onclick="copyWebsiteLink()" class="bg-plasma hover:bg-aurora text-white px-4 py-2 rounded-lg transition duration-300 text-sm">
+                            <span class="copy-btn-text-2">نسخ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Social Media Share -->
+                <div>
+                    <h3 class="text-white font-medium mb-3">
+                        <i class="fas fa-share-alt mr-2 text-photon"></i>
+                        مشاركة عبر وسائل التواصل
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="shareOnWhatsApp()" class="bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span class="text-sm">واتساب</span>
+                        </button>
+                        <button onclick="shareOnTelegram()" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-telegram text-lg"></i>
+                            <span class="text-sm">تيليجرام</span>
+                        </button>
+                        <button onclick="shareOnTwitter()" class="bg-gray-800 hover:bg-gray-900 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-x-twitter text-lg"></i>
+                            <span class="text-sm">تويتر</span>
+                        </button>
+                        <button onclick="shareOnFacebook()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i class="fab fa-facebook text-lg"></i>
+                            <span class="text-sm">فيسبوك</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2605,86 +2737,168 @@ ul {
             
             if (course.resources && course.resources.length > 0) {
                 course.resources.forEach(resource => {
-                    let icon = '';
-                    let platform = '';
-                    switch(resource.type) {
-                        case 'youtube':
-                            icon = '<i class="fab fa-youtube text-xl text-red-500 mr-2"></i>';
-                            platform = 'يوتيوب';
-                            break;
-                        case 'drive':
-                            icon = '<i class="fab fa-google-drive text-xl text-blue-500 mr-2"></i>';
-                            platform = 'جوجل درايف';
-                            break;
-                        case 'telegram':
-                            icon = '<i class="fab fa-telegram text-xl text-blue-400 mr-2"></i>';
-                            platform = 'تلجرام';
-                            break;
-                        case 'mega':
-                            icon = '<i class="fas fa-cloud-download-alt text-xl text-purple-500 mr-2"></i>';
-                            platform = 'ميجا';
-                            break;
-                        default:
-                            icon = '<i class="fas fa-link text-xl text-photon mr-2"></i>';
-                            platform = 'رابط';
-                    }
-                    
                     const resourceCard = document.createElement('div');
                     
-                    // Check if it's a YouTube resource to use the modern card design
-                    if (resource.type === 'youtube') {
-                        resourceCard.className = 'modern-card';
-                        resourceCard.innerHTML = `
-                            <div class="modern-img">
-                                <div class="modern-save">
-                                    <svg class="svg" width="683" height="683" viewBox="0 0 683 683" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clip-path="url(#clip0_993_25)">
-                                            <mask id="mask0_993_25" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="683" height="683">
-                                                <path d="M0 -0.00012207H682.667V682.667H0V-0.00012207Z" fill="white"></path>
-                                            </mask>
-                                            <g mask="url(#mask0_993_25)">
-                                                <path d="M148.535 19.9999C137.179 19.9999 126.256 24.5092 118.223 32.5532C110.188 40.5866 105.689 51.4799 105.689 62.8439V633.382C105.689 649.556 118.757 662.667 134.931 662.667H135.039C143.715 662.667 151.961 659.218 158.067 653.09C186.451 624.728 270.212 540.966 304.809 506.434C314.449 496.741 327.623 491.289 341.335 491.289C355.045 491.289 368.22 496.741 377.859 506.434C412.563 541.074 496.752 625.242 524.816 653.348C530.813 659.314 538.845 662.667 547.308 662.667C563.697 662.667 576.979 649.395 576.979 633.019V62.8439C576.979 51.4799 572.48 40.5866 564.447 32.5532C556.412 24.5092 545.489 19.9999 534.133 19.9999H148.535Z" stroke="#CED8DE" stroke-width="40" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                    // Apply different designs based on resource type
+                    switch(resource.type) {
+                        case 'youtube':
+                            // YouTube - Modern Card Design
+                            resourceCard.className = 'modern-card resource-card youtube-card';
+                            resourceCard.innerHTML = `
+                                <div class="modern-img">
+                                    <div class="modern-save">
+                                        <svg class="svg" width="683" height="683" viewBox="0 0 683 683" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_993_25)">
+                                                <mask id="mask0_993_25" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="683" height="683">
+                                                    <path d="M0 -0.00012207H682.667V682.667H0V-0.00012207Z" fill="white"></path>
+                                                </mask>
+                                                <g mask="url(#mask0_993_25)">
+                                                    <path d="M148.535 19.9999C137.179 19.9999 126.256 24.5092 118.223 32.5532C110.188 40.5866 105.689 51.4799 105.689 62.8439V633.382C105.689 649.556 118.757 662.667 134.931 662.667H135.039C143.715 662.667 151.961 659.218 158.067 653.09C186.451 624.728 270.212 540.966 304.809 506.434C314.449 496.741 327.623 491.289 341.335 491.289C355.045 491.289 368.22 496.741 377.859 506.434C412.563 541.074 496.752 625.242 524.816 653.348C530.813 659.314 538.845 662.667 547.308 662.667C563.697 662.667 576.979 649.395 576.979 633.019V62.8439C576.979 51.4799 572.48 40.5866 564.447 32.5532C556.412 24.5092 545.489 19.9999 534.133 19.9999H148.535Z" stroke="#CED8DE" stroke-width="40" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </g>
                                             </g>
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_993_25">
-                                                <rect width="682.667" height="682.667" fill="white"></rect>
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
+                                            <defs>
+                                                <clipPath id="clip0_993_25">
+                                                    <rect width="682.667" height="682.667" fill="white"></rect>
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="modern-text">
-                                <p class="h3">${resource.text}</p>
-                                <p class="p">فيديو تعليمي - ${platform}</p>
-                                <div class="modern-icon-box">
-                                    <svg version="1.1" class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001">
-                                        <g>
-                                            <path style="fill:#3D6687;" d="M165,68.715l-26.327-26.327l37.363-37.363c3.739-3.739,9.801-3.739,13.54,0l12.786,12.786c3.739,3.739,3.739,9.801,0,13.54L165,68.715z"></path>
-                                            <path style="fill:#3D6687;" d="M234.998,101.725l-26.327-26.327l37.363-37.363c3.739-3.739,9.801-3.739,13.54,0l12.786,12.786c3.739,3.739,3.739,9.801,0,13.54L234.998,101.725z"></path>
-                                        </g>
-                                    </svg>
-                                    <p class="span">مشاهدة الآن</p>
+                                <div class="modern-text">
+                                    <p class="h3">${resource.text}</p>
+                                    <p class="p">مشاهدة على يوتيوب</p>
+                                    <div class="like-btn">
+                                        <svg fill="#fff" viewBox="0 0 24 24" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
-                        // Add click event to open YouTube link
-                        resourceCard.addEventListener('click', function() {
-                            window.open(resource.link, '_blank');
-                        });
-                    } else {
-                        // Use the original design for non-YouTube resources
-                        resourceCard.className = 'resource-card';
-                        resourceCard.innerHTML = `
-                            <a href="${resource.link}" target="_blank" class="flex items-center">
-                                ${icon}
-                                <div>
-                                    <h4 class="font-bold text-white">${resource.text}</h4>
-                                    <p class="text-stardust/70 text-sm">${platform}</p>
+                            `;
+                            break;
+                            
+                        case 'telegram':
+                            // Telegram - Chat Bubble Design
+                            resourceCard.className = 'bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl p-4 hover:scale-105 transition-all duration-300 cursor-pointer shadow-lg resource-card telegram-card';
+                            resourceCard.innerHTML = `
+                                <div class="flex items-center space-x-3 space-x-reverse">
+                                    <div class="bg-white bg-opacity-20 rounded-full p-3">
+                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.61 7.56c-.12.57-.44.7-.89.44l-2.46-1.82-1.19 1.14c-.13.13-.24.24-.49.24l.17-2.49L16.89 9.4c.19-.17-.04-.27-.3-.1l-5.78 3.64L8.29 12.5c-.51-.16-.52-.51.11-.76l10.68-4.12c.42-.16.79.1.65.76z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-white font-bold text-lg">${resource.text}</h3>
+                                        <p class="text-blue-100 text-sm">محتوى تعليمي - تيليجرام</p>
+                                        <div class="flex items-center mt-2 text-white text-sm">
+                                            <span>فتح المحادثة</span>
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
-                            </a>
-                        `;
+                            `;
+                            break;
+                            
+                        case 'blackboard':
+                            // Blackboard - Academic Board Design
+                            resourceCard.className = 'bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-gray-600 rounded-lg p-4 hover:border-gray-400 transition-all duration-300 cursor-pointer resource-card blackboard-card';
+                            resourceCard.innerHTML = `
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3 space-x-reverse">
+                                        <div class="bg-yellow-400 rounded p-2">
+                                            <svg class="w-6 h-6 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-white font-semibold text-lg">${resource.text}</h3>
+                                            <p class="text-gray-300 text-sm">محاضرات مسجلة - بلاك بورد</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-yellow-400 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        دخول
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                            
+                        case 'drive':
+                            // Google Drive - File Folder Design
+                            resourceCard.className = 'bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg p-4 hover:shadow-xl transition-all duration-300 cursor-pointer relative overflow-hidden resource-card drive-card';
+                            resourceCard.innerHTML = `
+                                <div class="absolute top-0 right-0 w-20 h-20 bg-white bg-opacity-10 rounded-full -translate-y-10 translate-x-10"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-2 space-x-reverse">
+                                            <div class="bg-white bg-opacity-20 p-2 rounded">
+                                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M6.26 10.5l5.74-9.93 5.74 9.93H6.26zm6.62 10.5L7.14 13.5h11.72L13.12 21zm-7.66-7.5L1.4 17.5 7.14 21l5.74-3.5H5.22z"/>
+                                                </svg>
+                                            </div>
+                                            <span class="text-white text-sm font-medium">Google Drive</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-white font-bold text-lg mb-1">${resource.text}</h3>
+                                    <p class="text-blue-100 text-sm mb-3">ملفات تعليمية</p>
+                                    <div class="flex items-center text-white text-sm">
+                                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                                        </svg>
+                                        فتح الملفات
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                            
+                        case 'mega':
+                            // Mega - Download Box Design
+                            resourceCard.className = 'bg-gradient-to-br from-red-500 to-red-700 rounded-xl p-4 hover:from-red-600 hover:to-red-800 transition-all duration-300 cursor-pointer border border-red-400 resource-card mega-card';
+                            resourceCard.innerHTML = `
+                                <div class="text-center">
+                                    <div class="bg-white bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                            <path d="M12,11L16,15H14V18H10V15H8L12,11Z"/>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-white font-bold text-lg mb-1">${resource.text}</h3>
+                                    <p class="text-red-100 text-sm mb-3">ملفات مضغوطة - ميجا</p>
+                                    <div class="bg-white bg-opacity-20 rounded-full px-4 py-1 text-white text-sm font-medium">
+                                        ⬇ تحميل
+                                    </div>
+                                </div>
+                            `;
+                            break;
+                            
+                        default:
+                            // Default - Simple Link Design
+                            resourceCard.className = 'bg-gradient-to-r from-gray-600 to-gray-800 rounded-lg p-4 border-r-4 border-stardust hover:border-photon transition-all duration-300 cursor-pointer resource-card default-card';
+                            resourceCard.innerHTML = `
+                                <div class="flex items-center space-x-3 space-x-reverse">
+                                    <div class="bg-stardust rounded p-2">
+                                        <svg class="w-5 h-5 text-nebula" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H6.99C4.66 7 2.8 8.86 2.8 11.19c0 2.33 1.86 4.19 4.19 4.19H11v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm5-6h4v1.9h-4V7zm0 11h4c2.33 0 4.19-1.86 4.19-4.19C21.2 8.86 19.34 7 17.01 7H13v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V18z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-white font-semibold text-lg">${resource.text}</h3>
+                                        <p class="text-gray-300 text-sm">مورد تعليمي</p>
+                                    </div>
+                                    <div class="text-stardust">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            `;
                     }
+                    
+                    // Add click event to open link
+                    resourceCard.addEventListener('click', function() {
+                        window.open(resource.link, '_blank');
+                    });
+                    
                     resourcesContainer.appendChild(resourceCard);
                 });
             } else {
@@ -2798,6 +3012,267 @@ ul {
             }
             
             document.getElementById("courseModal").classList.remove("hidden");
+        }
+
+        // Site Configuration for sharing
+        const SITE_CONFIG = {
+            PRODUCTION_URL: 'https://fxrg.github.io/subject-search-/health.html',
+            SITE_NAME: 'كلية الصحة - الجامعة السعودية الإلكترونية',
+            SITE_DESCRIPTION: 'منصة البحث عن المواد الدراسية لكلية الصحة في الجامعة السعودية الإلكترونية',
+            COLLEGE: 'health'
+        };
+
+        // Share Course Variables and Functions
+        let currentShareCourse = null;
+        
+        function shareCourse() {
+            const courseCode = document.getElementById("modalCourseCode").textContent;
+            const courseTitle = document.getElementById("modalCourseTitle").textContent;
+            
+            currentShareCourse = {
+                code: courseCode,
+                title: courseTitle
+            };
+            
+            // Update modal title
+            document.getElementById("shareModalSubtitle").textContent = `شارك مادة ${courseCode} - ${courseTitle}`;
+            
+            // Generate links
+            generateShareLinks(courseCode, courseTitle);
+            
+            // Show development notice if running locally
+            const isLocalDevelopment = window.location.hostname === 'localhost' || 
+                                      window.location.hostname === '127.0.0.1';
+            
+            if (isLocalDevelopment) {
+                // Add development notice to modal
+                const existingNotice = document.getElementById('dev-notice');
+                if (existingNotice) existingNotice.remove();
+                
+                const devNotice = document.createElement('div');
+                devNotice.id = 'dev-notice';
+                devNotice.className = 'bg-yellow-600/20 border border-yellow-500/30 rounded-lg p-3 mb-4 text-center';
+                devNotice.innerHTML = `
+                    <div class="flex items-center justify-center text-yellow-300 text-sm">
+                        <i class="fas fa-info-circle ml-2"></i>
+                        <span>وضع التطوير: الروابط تستخدم GitHub Pages (${SITE_CONFIG.PRODUCTION_URL})</span>
+                    </div>
+                `;
+                
+                const shareModalContent = document.querySelector('#shareCourseModal .space-y-6');
+                shareModalContent.insertBefore(devNotice, shareModalContent.firstChild);
+            }
+            
+            // Show share modal
+            document.getElementById("shareCourseModal").classList.remove("hidden");
+            
+            // Generate QR code
+            generateQRCode();
+        }
+        
+        function generateShareLinks(courseCode, courseTitle) {
+            // Use the production URL for sharing links
+            const isLocalhost = window.location.hostname === 'localhost' || 
+                               window.location.hostname === '127.0.0.1' || 
+                               window.location.hostname === '';
+            
+            let baseUrl;
+            if (isLocalhost) {
+                // If running locally, use production URL for sharing
+                baseUrl = SITE_CONFIG.PRODUCTION_URL;
+            } else {
+                // If already on live site, use current URL
+                baseUrl = window.location.origin + window.location.pathname;
+            }
+            
+            const directLink = `${baseUrl}?course=${encodeURIComponent(courseCode)}`;
+            const websiteLink = `${baseUrl}#course-${courseCode}`;
+            
+            document.getElementById("courseDirectLink").value = directLink;
+            document.getElementById("courseWebsiteLink").value = websiteLink;
+        }
+        
+        async function copyDirectLink() {
+            const link = document.getElementById("courseDirectLink").value;
+            const button = event.target.closest('button');
+            const textSpan = button.querySelector('.copy-btn-text');
+            
+            try {
+                await navigator.clipboard.writeText(link);
+                textSpan.textContent = 'تم النسخ!';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-aurora');
+                
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-aurora');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                textSpan.textContent = 'تم النسخ!';
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                }, 2000);
+            }
+        }
+        
+        async function copyWebsiteLink() {
+            const link = document.getElementById("courseWebsiteLink").value;
+            const button = event.target.closest('button');
+            const textSpan = button.querySelector('.copy-btn-text-2');
+            
+            try {
+                await navigator.clipboard.writeText(link);
+                textSpan.textContent = 'تم النسخ!';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-plasma');
+                
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-plasma');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                textSpan.textContent = 'تم النسخ!';
+                setTimeout(() => {
+                    textSpan.textContent = 'نسخ';
+                }, 2000);
+            }
+        }
+        
+        function shareOnWhatsApp() {
+            const link = document.getElementById("courseDirectLink").value;
+            const message = `📚 أريد مشاركة مادة ${currentShareCourse.code} - ${currentShareCourse.title} معك!\n\n🔗 يمكنك الوصول لها مباشرة من خلال هذا الرابط:\n${link}\n\n🎓 ${SITE_CONFIG.SITE_NAME}\n✨ ${SITE_CONFIG.SITE_DESCRIPTION}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        function shareOnTelegram() {
+            const link = document.getElementById("courseDirectLink").value;
+            const message = `📚 مادة ${currentShareCourse.code} - ${currentShareCourse.title}\n\n🔗 الرابط المباشر: ${link}\n\n🎓 ${SITE_CONFIG.SITE_NAME}`;
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`;
+            window.open(telegramUrl, '_blank');
+        }
+        
+        function shareOnTwitter() {
+            const link = document.getElementById("courseDirectLink").value;
+            const message = `📚 مادة ${currentShareCourse.code} - ${currentShareCourse.title} من كلية الصحة 🎓\n\n${SITE_CONFIG.SITE_DESCRIPTION}\n\n#الجامعة_السعودية_الإلكترونية #كلية_الصحة #SEU`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(link)}`;
+            window.open(twitterUrl, '_blank');
+        }
+        
+        function shareOnFacebook() {
+            const link = document.getElementById("courseDirectLink").value;
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
+            window.open(facebookUrl, '_blank');
+        }
+        
+        function generateQRCode() {
+            const link = document.getElementById("courseDirectLink").value;
+            const qrContainer = document.getElementById("qrCodeContainer");
+            
+            // Clear previous QR code
+            qrContainer.innerHTML = '<div class="loading-spinner"></div>';
+            
+            // Generate QR code using qr-server API
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}&bgcolor=FFFFFF&color=000000`;
+            
+            const img = new Image();
+            img.onload = function() {
+                qrContainer.innerHTML = '';
+                qrContainer.appendChild(img);
+            };
+            img.onerror = function() {
+                qrContainer.innerHTML = `
+                    <div class="text-center text-gray-500">
+                        <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                        <p class="text-sm">لا يمكن إنشاء كود QR</p>
+                    </div>
+                `;
+            };
+            img.src = qrUrl;
+            img.alt = 'QR Code';
+            img.className = 'max-w-full h-auto';
+        }
+        
+        function closeShareModal() {
+            document.getElementById("shareCourseModal").classList.add("hidden");
+            currentShareCourse = null;
+            
+            // Remove development notice if exists
+            const devNotice = document.getElementById('dev-notice');
+            if (devNotice) devNotice.remove();
+        }
+        
+        // Show share notification
+        function showShareNotification(courseCode, courseTitle) {
+            const isLocalDevelopment = window.location.hostname === 'localhost' || 
+                                      window.location.hostname === '127.0.0.1';
+            
+            if (!isLocalDevelopment) return;
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                max-width: 350px;
+                animation: slideInRight 0.5s ease-out;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-share-alt" style="font-size: 18px; color: #fbbf24;"></i>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">تم الوصول عبر رابط مشترك</div>
+                        <div style="font-size: 14px; opacity: 0.9;">مادة ${courseCode} - ${courseTitle}</div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; margin-left: auto;">&times;</button>
+                </div>
+            `;
+            
+            // Add slide-in animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideInRight 0.5s ease-out reverse';
+                    setTimeout(() => notification.remove(), 500);
+                }
+            }, 5000);
         }
 
         // Function to close the modal
@@ -2981,6 +3456,42 @@ ul {
     <script>
         // Search icon positioning functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Handle URL parameters for direct course access
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseParam = urlParams.get('course');
+            
+            if (courseParam) {
+                const courseCode = courseParam.toUpperCase();
+                
+                // Check if course exists in static courses
+                let course = courses[courseCode];
+                let courseTitle = course ? course.title : '';
+                
+                if (course) {
+                    console.log(`🔗 Opening course from URL parameter: ${courseCode}`);
+                    // Small delay to ensure page is fully loaded
+                    setTimeout(() => {
+                        openModal(courseCode, courseTitle);
+                        showShareNotification(courseCode, courseTitle);
+                    }, 500);
+                } else if (window.userCourses && window.userCourses[courseCode]) {
+                    // Check Firebase courses when available
+                    course = window.userCourses[courseCode];
+                    courseTitle = course.title;
+                    
+                    console.log(`🔗 Opening Firebase course from URL parameter: ${courseCode}`);
+                    setTimeout(() => {
+                        openModal(courseCode, courseTitle);
+                        showShareNotification(courseCode, courseTitle);
+                    }, 1000); // Longer delay for Firebase
+                } else {
+                    console.log(`❌ Course not found: ${courseCode}`);
+                    setTimeout(() => {
+                        alert(`المادة ${courseCode} غير موجودة في النظام`);
+                    }, 500);
+                }
+            }
+            
             const icon = document.querySelector('.icon');
             const input = document.querySelector('.input');
             let isExpanded = false;
@@ -4227,5 +4738,8 @@ ul {
             </form>
         </div>
     </div>
+    
+    <!-- Language Toggle Script -->
+    <script src="language-toggle.js"></script>
 </body>
 </html>
