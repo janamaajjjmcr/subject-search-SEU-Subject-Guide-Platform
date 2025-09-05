@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>كلية العلوم الإدارية والمالية | جامعة SEU</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -722,6 +725,67 @@ service cloud.firestore {
         .resource-card:hover {
             background: rgba(45, 45, 77, 0.7);
             transform: translateY(-3px);
+        }
+
+        /* Mobile Responsive Styles for Resource Cards */
+        @media (max-width: 768px) {
+            .modern-card {
+                transform: scale(0.95);
+            }
+            
+            .modern-card:hover {
+                transform: scale(0.98);
+            }
+            
+            /* Telegram Card Mobile */
+            .resource-card.telegram-card {
+                padding: 12px;
+                border-radius: 16px;
+            }
+            
+            .resource-card.telegram-card h3 {
+                font-size: 16px;
+            }
+            
+            /* Blackboard Card Mobile */
+            .resource-card.blackboard-card {
+                padding: 12px;
+                border-radius: 8px;
+            }
+            
+            .resource-card.blackboard-card h3 {
+                font-size: 16px;
+            }
+            
+            /* Drive Card Mobile */
+            .resource-card.drive-card {
+                padding: 12px;
+                border-radius: 8px;
+            }
+            
+            .resource-card.drive-card h3 {
+                font-size: 16px;
+            }
+            
+            /* Mega Card Mobile */
+            .resource-card.mega-card {
+                padding: 12px;
+                border-radius: 12px;
+            }
+            
+            .resource-card.mega-card h3 {
+                font-size: 16px;
+            }
+            
+            /* Default Card Mobile */
+            .resource-card.default-card {
+                padding: 12px;
+                border-radius: 8px;
+            }
+            
+            .resource-card.default-card h3 {
+                font-size: 16px;
+            }
         }
         
         .level-badge {
@@ -1785,6 +1849,78 @@ ul {
             }
         }
     </style>
+    
+    <!-- Mobile Course Cards Optimization -->
+    <style>
+        /* تحسين كروت المواد للجوال */
+        @media (max-width: 768px) {
+            .course-card {
+                transform: scale(1) !important;
+                padding: 1.5rem !important;
+                margin-bottom: 1rem !important;
+                background: linear-gradient(135deg, rgba(26, 31, 44, 0.15) 0%, rgba(40, 46, 69, 0.08) 100%) !important;
+                border: 1px solid rgba(156, 163, 175, 0.15) !important;
+                border-radius: 1rem !important;
+                transition: all 0.4s ease !important;
+            }
+            
+            .course-card:hover {
+                transform: translateY(-2px) !important;
+                border-color: rgba(156, 163, 175, 0.4) !important;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+            }
+            
+            .course-card .w-14 {
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+            
+            .course-card h3 {
+                font-size: 1.125rem !important;
+                line-height: 1.4 !important;
+                margin-bottom: 0.75rem !important;
+            }
+            
+            .course-card p {
+                font-size: 0.875rem !important;
+                line-height: 1.5 !important;
+                margin-bottom: 1.25rem !important;
+            }
+            
+            .level-badge {
+                font-size: 0.75rem !important;
+                padding: 0.25rem 0.75rem !important;
+            }
+            
+            /* تحسين الشبكة للجوال */
+            .grid {
+                grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+                gap: 1.25rem !important;
+            }
+            
+            /* تحسين الأيقونات */
+            .course-card i {
+                font-size: 1.25rem !important;
+            }
+        }
+        
+        /* تأثيرات إضافية للجوال */
+        @media (max-width: 640px) {
+            .course-card {
+                padding: 1.25rem !important;
+                border-radius: 0.875rem !important;
+            }
+            
+            .course-card h3 {
+                font-size: 1rem !important;
+            }
+            
+            .course-card p {
+                font-size: 0.8125rem !important;
+                margin-bottom: 1rem !important;
+            }
+        }
+    </style>
 </head>
 <body class="min-h-screen flex flex-col">
     <!-- Header -->
@@ -2342,10 +2478,6 @@ ul {
                     <p class="text-stardust/70"><span id="modalCourseMajor"></span> • 3 ساعات</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="shareCourse()" class="bg-aurora hover:bg-plasma text-white px-4 py-2 rounded-lg transition duration-300 flex items-center gap-2">
-                        <i class="fas fa-share-alt"></i>
-                        <span>مشاركة المادة</span>
-                    </button>
                     <button onclick="closeModal()" class="text-stardust hover:text-white text-2xl p-2 rounded-full hover:bg-nebula/30 transition duration-300">&times;</button>
                 </div>
             </div>
@@ -2354,9 +2486,15 @@ ul {
                 <h3 class="text-xl font-bold text-white mb-3">وصف المادة</h3>
                 <p id="modalCourseDesc" class="text-stardust/70 mb-6"></p>
 
-                <a href="https://drive.google.com/drive/u/2/folders/171QmzC3gsixrvVAUKqi2AWA0RAYLgxZC" target="_blank" class="gradient-bg text-white py-2 px-6 rounded-full font-medium transition duration-300 inline-flex items-center">
-                    <i class="fas fa-download mr-2"></i> تحميل المنهج
-                </a>
+                <div class="flex flex-wrap gap-3">
+                    <a href="https://drive.google.com/drive/u/2/folders/171QmzC3gsixrvVAUKqi2AWA0RAYLgxZC" target="_blank" class="gradient-bg text-white py-2 px-6 rounded-full font-medium transition duration-300 inline-flex items-center">
+                        <i class="fas fa-download mr-2"></i> تحميل المنهج
+                    </a>
+                    
+                    <button onclick="shareCourse()" class="bg-gradient-to-r from-aurora to-plasma text-white py-2 px-6 rounded-full font-medium transition duration-300 inline-flex items-center hover:scale-105">
+                        <i class="fas fa-share-alt mr-2"></i> مشاركة المادة
+                    </button>
+                </div>
             </div>
 
             <div class="mb-8">
@@ -4689,5 +4827,29 @@ ul {
     
     <!-- Language Toggle Script -->
     <script src="language-toggle.js"></script>
+    
+    <!-- Cache Busting Script -->
+    <script>
+        // تطهير cache المتصفح
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(name => {
+                    caches.delete(name);
+                });
+            });
+        }
+        
+        // فرض إعادة تحميل CSS
+        const currentTime = new Date().getTime();
+        const links = document.getElementsByTagName('link');
+        for (let i = 0; i < links.length; i++) {
+            if (links[i].rel === 'stylesheet') {
+                links[i].href = links[i].href + '?v=' + currentTime;
+            }
+        }
+        
+        console.log('✅ تم تحديث كروت المواد - سبتمبر 2025');
+        console.log('📱 اختبر على الجوال الآن');
+    </script>
 </body>
 </html>
