@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+﻿﻿<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كلية الحوسبة | الجامعة السعودية الإلكترونية - بحث المواد والمقررات الدراسية</title>
+    <title data-i18n="siteTitle">كلية الحوسبة | الجامعة السعودية الإلكترونية - بحث المواد والمقررات الدراسية</title>
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="محرك بحث شامل لمواد كلية الحوسبة في الجامعة السعودية الإلكترونية. ابحث عن مقررات علوم الحاسب، تقنية المعلومات، علوم البيانات والمواد العامة مع المصادر التعليمية والمراجع. دليل المواد الأكاديمية الرقمي الشامل للطلاب السعوديين">
@@ -1270,14 +1270,22 @@ ul {
             }
         }
 
-        /* Theme Toggle Button Styles */
+        /* Theme Toggle Button Styles (desktop, modern switch) */
         #theme-toggle-button {
-            font-size: 17px;
+            font-size: 16px;
             position: relative;
-            display: inline-block;
-            width: 7em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 9999px;
+            border: 1px solid rgba(224,224,255,.25);
+            background: linear-gradient(180deg, rgba(108,99,255,.12), rgba(108,99,255,.06));
+            backdrop-filter: blur(6px);
             cursor: pointer;
             margin-left: 16px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.15);
+            user-select: none;
         }
 
         #toggle {
@@ -1286,57 +1294,41 @@ ul {
             height: 0;
         }
 
-        #container,
-        #patches,
-        #stars,
-        #button,
-        #sun,
-        #moon,
-        #cloud {
-            transition-property: all;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 0.25s;
+        /* Switch visuals */
+        #theme-toggle-button .toggle {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            border-radius: 9999px;
+            background: #83cbd8;
+            transition: background .25s ease;
+            border: 1px solid rgba(0,0,0,.08);
         }
-
-        #toggle:checked + svg #container {
-            fill: #2b4360;
+        #theme-toggle-button .knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,.18);
+            transition: transform .25s ease;
         }
-
-        #toggle:checked + svg #button {
-            transform: translate(28px, 2.333px);
+        #theme-toggle-button .icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: .9;
+            pointer-events: none;
         }
-
-        #sun {
-            opacity: 1;
-        }
-
-        #toggle:checked + svg #sun {
-            opacity: 0;
-        }
-
-        #moon {
-            opacity: 0;
-        }
-
-        #toggle:checked + svg #moon {
-            opacity: 1;
-        }
-
-        #cloud {
-            opacity: 1;
-        }
-
-        #toggle:checked + svg #cloud {
-            opacity: 0;
-        }
-
-        #stars {
-            opacity: 0;
-        }
-
-        #toggle:checked + svg #stars {
-            opacity: 1;
-        }
+        #theme-toggle-button .icon.sun { left: 10px; }
+        #theme-toggle-button .icon.moon { right: 10px; opacity: .4; }
+        #toggle:checked + .toggle { background: #2b4360; }
+        #toggle:checked + .toggle .knob { transform: translateX(28px); }
+        #toggle:checked + .toggle .icon.sun { opacity: .35; }
+        #toggle:checked + .toggle .icon.moon { opacity: .95; }
 
         /* Light Mode Styles */
         body.light-mode {
@@ -2101,6 +2093,7 @@ ul {
                     <a href="#ds" class="text-stardust hover:text-white transition duration-300">علوم البيانات</a>
                     <a href="#it" class="text-stardust hover:text-white transition duration-300">تقنية المعلومات</a>
                     <a href="all-colleges.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
+                    <a href="blogs.html" class="text-stardust hover:text-white transition duration-300" data-i18n="blogs">المدونة</a>
                     
                     <!-- User Authentication Section -->
                     <div class="flex items-center gap-3">
@@ -2130,46 +2123,14 @@ ul {
                             إضافة مادة
                         </button>
                     </div>
-                    <!-- Theme Toggle Button -->
-                    <label for="toggle" id="theme-toggle-button">
+                    <!-- Theme Toggle Button (modern switch) -->
+                    <label for="toggle" id="theme-toggle-button" aria-label="Toggle theme">
                         <input type="checkbox" id="toggle">
-                        <svg viewBox="0 0 69.667 44" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <filter id="container">
-                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                    <feMerge> 
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/> 
-                                    </feMerge>
-                                </filter>
-                            </defs>
-                            <g transform="translate(3.5 3.5)">
-                                <rect fill="#83cbd8" transform="translate(0 0)" rx="17.5" height="35" width="60.667" id="container"></rect>
-                                <g transform="translate(2.333 2.333)" id="button">
-                                    <g id="sun">
-                                        <circle fill="#f8e664" r="15.167" cy="15.167" cx="15.167"></circle>
-                                        <circle fill="#fcf4b9" transform="translate(8.167 8.167)" r="7" cy="7" cx="7"></circle>
-                                    </g>
-                                    <g id="moon">
-                                        <circle fill="#cce6ee" transform="translate(-28 0)" r="15.167" cy="15.167" cx="15.167"></circle>
-                                        <g fill="#a6cad0" transform="translate(-24.415 -1.009)" id="patches">
-                                            <circle transform="translate(43.009 4.496)" r="2" cy="2" cx="2"></circle>
-                                            <circle transform="translate(39.366 17.952)" r="2" cy="2" cx="2"></circle>
-                                            <circle transform="translate(33.016 8.044)" r="1" cy="1" cx="1"></circle>
-                                            <circle transform="translate(51.081 18.888)" r="1" cy="1" cx="1"></circle>
-                                        </g>
-                                    </g>
-                                    <g id="cloud">
-                                        <path fill="#a5c5d0" d="M47.729,6.243A5.507,5.507,0,0,0,36.455,2.972a7.56,7.56,0,0,0-12.946,5.431,6.757,6.757,0,0,0-4.24-.4A1.473,1.473,0,0,0,20.943,9.6a2.926,2.926,0,0,0-.687,1.833,3.736,3.736,0,0,0-1.51.687,3.736,3.736,0,0,0-.687,1.51,2.926,2.926,0,0,0,1.833-.687A1.473,1.473,0,0,0,21.563,11.429a6.757,6.757,0,0,0,4.24.4,7.56,7.56,0,0,0,12.946-5.431A5.507,5.507,0,0,0,47.729,6.243Z"></path>
-                                    </g>
-                                    <g id="stars">
-                                        <path fill="#ffffff" d="M65.5,18A3.5,3.5,0,0,1,62,21.5,3.5,3.5,0,0,1,58.5,18a3.5,3.5,0,0,1,3.5-3.5A3.5,3.5,0,0,1,65.5,18Z"></path>
-                                        <path fill="#ffffff" d="M23,21a2,2,0,0,1-2,2,2,2,0,0,1-2-2,2,2,0,0,1,2-2A2,2,0,0,1,23,21Z"></path>
-                                        <path fill="#ffffff" d="M59,5a1,1,0,0,1-1,1,1,1,0,0,1-1-1,1,1,0,0,1,1-1A1,1,0,0,1,59,5Z"></path>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
+                        <div class="toggle">
+                            <span class="icon sun" aria-hidden="true">☀</span>
+                            <span class="icon moon" aria-hidden="true">🌙</span>
+                            <div class="knob" aria-hidden="true"></div>
+                        </div>
                     </label>
                 </nav>
                 
@@ -2189,6 +2150,7 @@ ul {
                     <a href="#ds" class="block text-stardust hover:text-white transition duration-300 py-2">علوم البيانات</a>
                     <a href="#it" class="block text-stardust hover:text-white transition duration-300 py-2">تقنية المعلومات</a>
                     <a href="all-colleges.html" class="block text-aurora hover:text-white transition duration-300 py-2 font-medium">جميع الكليات</a>
+                    <a href="blogs.html" class="block text-stardust hover:text-white transition duration-300 py-2" data-i18n="blogs">المدونة</a>
                     
                     <!-- Mobile Language Toggle -->
                     <div class="pt-2 border-t border-nebula/10 mt-2">
@@ -2326,7 +2288,7 @@ ul {
         <!-- Search Bar -->
         <div class="mb-16 animate-fade-in relative">
             <div class="input-wrapper">
-                <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS 230)..." class="input">
+                <input type="text" id="courseSearch" placeholder="ابحث عن المقررات بالكود (مثل CS 230)..." class="input" data-i18n-placeholder="searchCourseCodeExample">
                 <button class="icon">
                     <i class="fas fa-search"></i>
                 </button>
@@ -2354,7 +2316,7 @@ ul {
         <section id="cs" class="mb-24 animate-fade-in">
             <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
                 <div>
-                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
+                    <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block" data-i18n="bachelor">بكالوريوس</span>
                     <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
                         <span class="gradient-text">علوم الحاسب</span>
                     </h2>
@@ -2439,14 +2401,12 @@ ul {
                 <div>
                     <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-3 inline-block">بكالوريوس</span>
                     <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-4">
-                        <span class="gradient-text">علوم البيانات</span>
+                        <span class="gradient-text" data-i18n="dataScience">علوم البيانات</span>
                     </h2>
-                    <p class="text-stardust/80 max-w-2xl text-lg">
-مجال يركز على تحليل البيانات واستخلاص الأنماط والمعلومات المفيدة منها باستخدام تقنيات مثل التعلم الآلي والإحصاء، بهدف دعم اتخاذ القرارات وتحقيق رؤى استراتيجية.
-                    </p>
+                    <p class="text-stardust/80 max-w-2xl text-lg" data-i18n="dsDescription">مجال يركز على تحليل البيانات واستخلاص الأنماط والمعلومات المفيدة منها باستخدام تقنيات مثل التعلم الآلي والإحصاء، بهدف دعم اتخاذ القرارات وتحقيق رؤى استراتيجية.</p>
                 </div>
                 <a href="javascript:void(0)" class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('ds')">
-                    عرض جميع المواد <i class="fas fa-arrow-left ml-2"></i>
+                    <span data-i18n="viewAllCourses">عرض جميع المواد</span> <i class="fas fa-arrow-left ml-2"></i>
                 </a>
             </div>
             
@@ -2467,7 +2427,7 @@ ul {
                             <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
                         </div>
                         <button onclick="openModal('DS230', 'البرمجة الشيئية')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
-                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            <span data-i18n="exploreCourse">استكشاف المادة</span> <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                         </button>
                     </div>
                 </div>
@@ -2488,7 +2448,7 @@ ul {
                             <span class="bg-nebula/30 text-photon text-xs px-3 py-1 rounded-full">3 ساعات</span>
                         </div>
                         <button onclick="openModal('DS231', 'برمجة علوم البيانات')" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
-                            استكشاف المادة <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                            <span data-i18n="exploreCourse">استكشاف المادة</span> <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                         </button>
                     </div>
                 </div>
@@ -2525,7 +2485,7 @@ ul {
                         <span class="gradient-text">تقنية المعلومات</span>
                     </h2>
                     <p class="text-stardust/80 max-w-2xl text-lg">
-                        تركز على إدارة واستخدام تكنولوجيا المعلومات في الشركات والمؤسسات. تشمل مجالات مثل الشبكات، إدارة الأنظمة، أمن المعلومات، ودعم تكنولوجيا المعلومات.
+                        <span data-i18n="itDescription">تركز على إدارة واستخدام تكنولوجيا المعلومات في الشركات والمؤسسات. تشمل مجالات مثل الشبكات، إدارة الأنظمة، أمن المعلومات، ودعم تكنولوجيا المعلومات.</span>
                     </p>
                 </div>
                 <a href="javascript:void(0)" class="flex items-center text-photon hover:text-white mt-6 md:mt-0 transition duration-300" onclick="showAllCourses('it')">
@@ -2608,12 +2568,11 @@ ul {
                 
                 <div class="relative z-10">
                     <div class="text-center mb-16">
-                        <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">لماذا تختارنا</span>
+                        <span class="gradient-bg-original text-white text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block" data-i18n="whyUs">لماذا تختارنا</span>
                         <h2 class="text-4xl md:text-5xl font-bold font-playfair mb-6">
-                            <span class="gradient-text">أفضل كلية</span>
+                            <span class="gradient-text" data-i18n="bestCollege">أفضل كلية</span>
                         </h2>
-                        <p class="text-stardust/80 max-w-3xl mx-auto text-lg">
-كلية الحوسبة توفر مزيجًا من التعليم الأكاديمي المتخصص والخبرة العملية التي تؤهل الطلاب لمواكبة التطورات السريعة في صناعة التكنولوجيا.                        </p>
+                        <p class="text-stardust/80 max-w-3xl mx-auto text-lg" data-i18n="bestCollegeDesc">كلية الحوسبة توفر مزيجًا من التعليم الأكاديمي المتخصص والخبرة العملية التي تؤهل الطلاب لمواكبة التطورات السريعة في صناعة التكنولوجيا.</p>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -2622,9 +2581,9 @@ ul {
                                 <i class="fas fa-graduation-cap text-white text-2xl"></i>
                             </div>
                             <h3 class="text-2xl font-bold text-white mb-4">DS</h3>
-                            <p class="text-stardust/70 mb-6"> مجال يركز على تحليل البيانات واستخلاص الأنماط والمعلومات المفيدة منها باستخدام تقنيات مثل التعلم الآلي والإحصاء، بهدف دعم اتخاذ القرارات وتحقيق رؤى استراتيجية.</p>
+                            <p class="text-stardust/70 mb-6" data-i18n="dsDescription"> مجال يركز على تحليل البيانات واستخلاص الأنماط والمعلومات المفيدة منها باستخدام تقنيات مثل التعلم الآلي والإحصاء، بهدف دعم اتخاذ القرارات وتحقيق رؤى استراتيجية.</p>
                             <a href="#" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
-                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                                <span data-i18n="learnMore">تعرف أكثر</span> <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                             </a>
                         </div>
                         
@@ -2635,7 +2594,7 @@ ul {
                             <h3 class="text-2xl font-bold text-white mb-4">CS</h3>
                             <p class="text-stardust/70 mb-6">مجال شامل يهتم بدراسة كافة جوانب الحوسبة، بدءًا من البرمجة وتصميم البرمجيات وصولًا إلى تطوير الأنظمة الحاسوبية والشبكات. هو مجال عام يتضمن العديد من التخصصات مثل الخوارزميات، الذكاء الاصطناعي، نظم التشغيل، هندسة البرمجيات، والشبكات. يتميز بتوسعه الواسع الذي يشمل تطبيقات متنوعة في مختلف المجالات.</p>
                             <a href="#" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
-                                تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
+                                <span data-i18n="learnMore">تعرف أكثر</span> <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                             </a>
                         </div>
                         
@@ -2644,7 +2603,7 @@ ul {
                                 <i class="fas fa-flask text-white text-2xl"></i>
                             </div>
                             <h3 class="text-2xl font-bold text-white mb-4">IT</h3>
-                            <p class="text-stardust/70 mb-6">تركز على إدارة واستخدام تكنولوجيا المعلومات في الشركات والمؤسسات. تشمل مجالات مثل الشبكات، إدارة الأنظمة، أمن المعلومات، ودعم تكنولوجيا المعلومات.</p>
+                            <p class="text-stardust/70 mb-6" data-i18n="itDescription">تركز على إدارة واستخدام تكنولوجيا المعلومات في الشركات والمؤسسات. تشمل مجالات مثل الشبكات، إدارة الأنظمة، أمن المعلومات، ودعم تكنولوجيا المعلومات.</p>
                             <a href="#" class="inline-flex items-center text-photon group-hover:text-white transition duration-300 font-medium">
                                 تعرف أكثر <i class="fas fa-arrow-left ml-2 transition-transform duration-300 group-hover:-translate-x-1"></i>
                             </a>

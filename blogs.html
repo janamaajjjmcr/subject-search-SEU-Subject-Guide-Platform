@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المدونة | كلية الحوسبة - SEU</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%236C63FF' d='M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2m4 9.09C7.45 10.59 7.45 13.41 16 12.91v-1.82Z'/></svg>" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- Firebase (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .glass { background: rgba(26, 26, 46, 0.6); backdrop-filter: blur(14px); border: 1px solid rgba(108,99,255,.18); }
+    .light-mode .glass { background: rgba(255,255,255,.85); border-color: rgba(99,102,241,.12); }
+
+    /* Desktop theme toggle polish (same ids as index.html) */
+    #theme-toggle-button { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 9999px; border: 1px solid rgba(224,224,255,.25); background: linear-gradient(180deg, rgba(108,99,255,.12), rgba(108,99,255,.06)); cursor: pointer; }
+    #theme-toggle-button:hover { border-color: rgba(165,166,255,.45); }
+    #theme-toggle-button svg { width: 58px; height: 34px; display: block; }
+    #toggle { opacity: 0; width: 0; height: 0; }
+    /* reuse the same transition rules as index if needed */
+  </style>
+</head>
+<body class="min-h-screen bg-[#0F0F1A] text-[#E0E0FF]">
+  <header class="sticky top-0 z-40 backdrop-blur-lg glass">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-plasma to-aurora flex items-center justify-center text-white"><i class="fas fa-laptop-code"></i></div>
+        <div>
+          <div class="font-extrabold text-lg">جامعة SEU</div>
+          <div class="text-sm opacity-70">قسم المدونة</div>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-5">
+        <a href="index.html" class="hover:text-white">الرئيسية</a>
+        <a href="blogs.html" class="text-aurora font-semibold">المدونة</a>
+        <a id="admin-link" href="blog-admin.html" class="hidden text-[#E0E0FF] hover:text-white px-3 py-1 rounded-lg border border-[#6C63FF]/30">لوحة الإدارة</a>
+        <label for="toggle" id="theme-toggle-button" class="ml-2">
+          <input type="checkbox" id="toggle">
+          <svg viewBox="0 0 69.667 44" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(3.5 3.5)">
+              <rect fill="#83cbd8" rx="17.5" height="35" width="60.667" id="container"></rect>
+              <g transform="translate(2.333 2.333)" id="button">
+                <g id="sun">
+                  <circle fill="#f8e664" r="15.167" cy="15.167" cx="15.167"></circle>
+                  <circle fill="#fcf4b9" transform="translate(8.167 8.167)" r="7" cy="7" cx="7"></circle>
+                </g>
+                <g id="moon">
+                  <circle fill="#cce6ee" transform="translate(-28 0)" r="15.167" cy="15.167" cx="15.167"></circle>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </label>
+      </nav>
+      <button id="mobile-menu-btn" class="md:hidden p-2">☰</button>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl md:text-4xl font-extrabold">مدونات الكلية</h1>
+      <a href="blog-admin.html" id="admin-link" class="hidden bg-gradient-to-r from-plasma to-aurora text-white px-4 py-2 rounded-lg">لوحة الإدارة</a>
+    </div>
+    <p class="text-[#E0E0FF]/80 mb-8">هنا ننشر تحديثات، نصائح، وإعلانات مهمة للطلاب. القراءة متاحة للجميع.</p>
+
+    <section id="posts" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+
+    <div id="empty" class="hidden text-center opacity-70 py-16">لا توجد منشورات بعد.</div>
+  </main>
+
+  <footer class="mt-auto py-10 text-center opacity-60">© <span id="year"></span> SEU</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" defer></script>
+  <script src="language-toggle.js" defer></script>
+  <script>
+    // Match site's firebase config (same as index.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+      authDomain: "seu-subjects.firebaseapp.com",
+      projectId: "seu-subjects",
+      storageBucket: "seu-subjects.firebasestorage.app",
+      messagingSenderId: "552315681734",
+      appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+      measurementId: "G-Y2FL6V8X3L"
+    };
+
+    // Init Firebase
+    try { firebase.initializeApp(firebaseConfig); } catch(e) {}
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+    // Theme persistence (share logic with index)
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.classList.toggle('light-mode', savedTheme === 'light');
+    const desktopToggle = document.getElementById('toggle');
+    if (desktopToggle) {
+      desktopToggle.checked = savedTheme === 'light';
+      desktopToggle.addEventListener('change', () => {
+        const isLight = desktopToggle.checked;
+        document.body.classList.toggle('light-mode', isLight);
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      });
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Show admin link for admin only
+  const ADMIN_UID = 'c3qEzVVU52NddP2LmNQXAldCZ5C2';
+    const adminLink = document.getElementById('admin-link');
+    auth.onAuthStateChanged((user) => {
+      adminLink.classList.toggle('hidden', !(user && user.uid === ADMIN_UID));
+    });
+
+    // Render helpers
+    const postsEl = document.getElementById('posts');
+    const emptyEl = document.getElementById('empty');
+
+    function renderPost(doc) {
+      const data = doc.data();
+      const date = data.createdAt?.toDate ? data.createdAt.toDate() : new Date();
+      const cover = data.coverUrl ? `<div class=\"h-40 w-full rounded-lg overflow-hidden mb-3 bg-[#1A1A2E]\"><img src=\"${escapeAttr(data.coverUrl)}\" alt=\"cover\" class=\"w-full h-full object-cover\"/></div>` : '';
+      const contentText = stripHtml(data.contentHtml || data.content || '');
+      const excerpt = contentText.length > 180 ? contentText.slice(0, 180) + '…' : contentText;
+      const card = document.createElement('article');
+      card.className = 'glass rounded-xl p-4 flex flex-col hover:translate-y-[-2px] transition';
+      card.addEventListener('click', () => {
+        location.href = `blog.html?id=${doc.id}`;
+      });
+      card.innerHTML = `
+        ${cover}
+        <header class="mb-2">
+          <h2 class="text-lg md:text-xl font-bold">${escapeHtml(data.title || 'بدون عنوان')}</h2>
+          <div class="text-xs opacity-70 mt-1">بواسطة ${escapeHtml(data.authorName || 'الإدارة')} • ${date.toLocaleDateString('ar-SA')}</div>
+        </header>
+        <p class="text-sm opacity-90 leading-6">${escapeHtml(excerpt)}</p>
+      `;
+      return card;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+    }
+    function stripHtml(html) {
+      const div = document.createElement('div');
+      div.innerHTML = html || '';
+      return (div.textContent || div.innerText || '').trim();
+    }
+    function escapeAttr(str){
+      return String(str).replace(/\"/g,'&quot;');
+    }
+
+    // Load posts ordered by date desc
+    async function loadPosts() {
+      try {
+        const snapshot = await db.collection('blogs').orderBy('createdAt','desc').limit(50).get();
+        postsEl.innerHTML = '';
+        if (snapshot.empty) { emptyEl.classList.remove('hidden'); return; }
+        emptyEl.classList.add('hidden');
+        snapshot.forEach(doc => postsEl.appendChild(renderPost(doc)));
+      } catch (err) {
+        console.error('Failed to load posts', err);
+        emptyEl.textContent = 'حدث خطأ في تحميل المنشورات.';
+        emptyEl.classList.remove('hidden');
+      }
+    }
+    loadPosts();
+  </script>
+</body>
+</html>

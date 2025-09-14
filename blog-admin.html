@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة كتابة المدونات | SEU</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+  <!-- Quill Editor -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .glass { background: rgba(26, 26, 46, 0.6); backdrop-filter: blur(14px); border: 1px solid rgba(108,99,255,.18); }
+    .light-mode .glass { background: rgba(255,255,255,.85); border-color: rgba(99,102,241,.12); }
+    #theme-toggle-button { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:9999px; border:1px solid rgba(224,224,255,.25); background:linear-gradient(180deg, rgba(108,99,255,.12), rgba(108,99,255,.06)); cursor:pointer; }
+    #theme-toggle-button:hover { border-color: rgba(165,166,255,.45); }
+    #theme-toggle-button svg { width:58px; height:34px; display:block; }
+    #toggle{opacity:0;width:0;height:0}
+    textarea { direction: rtl; }
+    /* Quill dark/light overrides */
+    #editor .ql-toolbar.ql-snow { background: rgba(20,20,40,.9); border-color: rgba(108,99,255,.25); }
+    #editor .ql-container.ql-snow { border-color: rgba(108,99,255,.25); }
+    #editor .ql-container.ql-snow .ql-editor { background: #0F0F1A; color: #E0E0FF; min-height: 320px; }
+    #editor .ql-container.ql-snow .ql-editor a { color: #93c5fd; }
+    #editor .ql-container.ql-snow .ql-editor.ql-blank::before { color: rgba(224,224,255,.45); }
+    /* Quill icons/text in dark */
+    .ql-snow .ql-stroke { stroke: #E0E0FF; }
+    .ql-snow .ql-fill { fill: #E0E0FF; }
+    .ql-snow .ql-picker { color: #E0E0FF; }
+    /* Rounded rectangle look */
+    #editor .ql-toolbar { border-top-left-radius: .5rem; border-top-right-radius: .5rem; }
+    #editor .ql-container { border-bottom-left-radius: .5rem; border-bottom-right-radius: .5rem; }
+    /* Light mode adjustments */
+    .light-mode #editor .ql-toolbar.ql-snow { background: #f8fafc; border-color: rgba(99,102,241,.2); }
+    .light-mode #editor .ql-container.ql-snow { border-color: rgba(99,102,241,.2); }
+    .light-mode #editor .ql-container.ql-snow .ql-editor { background:#ffffff; color:#0f172a; }
+    .light-mode #editor .ql-container.ql-snow .ql-editor.ql-blank::before { color: #94a3b8; }
+    .light-mode .ql-snow .ql-stroke { stroke: #0f172a; }
+    .light-mode .ql-snow .ql-fill { fill: #0f172a; }
+    .light-mode .ql-snow .ql-picker { color: #0f172a; }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0F0F1A] text-[#E0E0FF]">
+  <header class="sticky top-0 z-40 backdrop-blur-lg glass">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="blogs.html" class="text-aurora hover:underline">← العودة للمدونة</a>
+      <label for="toggle" id="theme-toggle-button" class="ml-2">
+        <input type="checkbox" id="toggle">
+        <svg viewBox="0 0 69.667 44" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(3.5 3.5)">
+            <rect fill="#83cbd8" rx="17.5" height="35" width="60.667" id="container"></rect>
+            <g transform="translate(2.333 2.333)" id="button">
+              <g id="sun"><circle fill="#f8e664" r="15.167" cy="15.167" cx="15.167"></circle><circle fill="#fcf4b9" transform="translate(8.167 8.167)" r="7" cy="7" cx="7"></circle></g>
+              <g id="moon"><circle fill="#cce6ee" transform="translate(-28 0)" r="15.167" cy="15.167" cx="15.167"></circle></g>
+            </g>
+          </g>
+        </svg>
+      </label>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-extrabold mb-6">لوحة كتابة المدونات</h1>
+    <div id="not-admin" class="hidden glass rounded-xl p-4 text-sm">
+      هذه الصفحة خاصة بالمشرف فقط. الرجاء تسجيل الدخول بحساب المشرف.
+    </div>
+
+    <form id="post-form" class="glass rounded-xl p-5 space-y-4 hidden">
+      <div>
+        <label class="block mb-2">العنوان</label>
+        <input id="title" class="w-full rounded-lg p-3 bg-transparent border border-[#6C63FF]/30 focus:outline-none focus:border-[#6C63FF]" placeholder="عنوان المنشور" />
+      </div>
+      <div>
+        <label class="block mb-2">صورة الغلاف (اختياري)</label>
+        <input id="cover" type="file" accept="image/*" class="block w-full text-sm" />
+        <div id="cover-preview" class="mt-2 hidden">
+          <img alt="cover" class="w-full max-h-60 object-cover rounded-md border border-[#6C63FF]/20" />
+        </div>
+      </div>
+      <div>
+        <label class="block mb-2">المحتوى</label>
+        <div id="editor" class="rounded-lg overflow-hidden"></div>
+      </div>
+      <div class="flex items-center justify-between">
+        <button type="submit" class="bg-gradient-to-r from-plasma to-aurora text-white px-5 py-3 rounded-lg hover:scale-105 transition">نشر</button>
+        <span id="status" class="opacity-70"></span>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // CONFIG (same as index.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+      authDomain: "seu-subjects.firebaseapp.com",
+      projectId: "seu-subjects",
+      storageBucket: "seu-subjects.firebasestorage.app",
+      messagingSenderId: "552315681734",
+      appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+      measurementId: "G-Y2FL6V8X3L"
+    };
+    try { firebase.initializeApp(firebaseConfig); } catch(e) {}
+  const db = firebase.firestore();
+    const auth = firebase.auth();
+  const storage = firebase.storage();
+
+    // THEME
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.classList.toggle('light-mode', savedTheme === 'light');
+    const desktopToggle = document.getElementById('toggle');
+    desktopToggle.checked = savedTheme === 'light';
+    desktopToggle.addEventListener('change', () => {
+      const isLight = desktopToggle.checked;
+      document.body.classList.toggle('light-mode', isLight);
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+
+    // Only admin can use: set your admin UID here
+  const ADMIN_UID = 'c3qEzVVU52NddP2LmNQXAldCZ5C2'; // حساب المشرف
+
+  const notAdmin = document.getElementById('not-admin');
+    const form = document.getElementById('post-form');
+    const titleEl = document.getElementById('title');
+    const coverInput = document.getElementById('cover');
+    const coverPreview = document.getElementById('cover-preview');
+    const coverPreviewImg = coverPreview.querySelector('img');
+    const statusEl = document.getElementById('status');
+
+    // Init Quill editor
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      placeholder: 'اكتب هنا... يمكنك إدراج صور ونص منسق',
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'align': [] }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      }
+    });
+    // Ensure editor starts empty (use placeholder only)
+    quill.setText('');
+
+    // Cover preview
+    coverInput.addEventListener('change', () => {
+      const file = coverInput.files?.[0];
+      if (!file) { coverPreview.classList.add('hidden'); return; }
+      const url = URL.createObjectURL(file);
+      coverPreviewImg.src = url;
+      coverPreview.classList.remove('hidden');
+    });
+
+    auth.onAuthStateChanged((user) => {
+      const isAdmin = user && user.uid === ADMIN_UID;
+      form.classList.toggle('hidden', !isAdmin);
+      notAdmin.classList.toggle('hidden', isAdmin);
+    });
+
+    // If editing existing post
+    const params = new URLSearchParams(location.search);
+    const editId = params.get('id');
+
+    async function loadForEdit() {
+      if (!editId) return;
+      try {
+        const snap = await db.collection('blogs').doc(editId).get();
+        if (!snap.exists) return;
+        const data = snap.data();
+        titleEl.value = data.title || '';
+        quill.root.innerHTML = data.contentHtml || '';
+        // Update button text to reflect edit mode
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = 'حفظ التعديلات';
+        if (data.coverUrl) {
+          coverPreviewImg.src = data.coverUrl;
+          coverPreview.classList.remove('hidden');
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    auth.onAuthStateChanged((user) => { if (user && user.uid === ADMIN_UID) loadForEdit(); });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user || user.uid !== ADMIN_UID) {
+        alert('غير مصرح');
+        return;
+      }
+      const title = (titleEl.value || '').trim();
+      const contentHtml = quill.root.innerHTML.trim();
+      if (!title || !contentHtml || contentHtml === '<p><br></p>') { alert('اكمل الحقول'); return; }
+      statusEl.textContent = 'جاري النشر...';
+      try {
+        // Optional cover upload
+        let coverUrl = '';
+        const file = coverInput.files?.[0];
+        if (file) {
+          const ref = storage.ref().child(`blogs/covers/${user.uid}_${Date.now()}_${file.name}`);
+          await ref.put(file);
+          coverUrl = await ref.getDownloadURL();
+        }
+
+        if (editId) {
+          const payload = {
+            title,
+            contentHtml,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          if (coverUrl) payload.coverUrl = coverUrl;
+          await db.collection('blogs').doc(editId).update(payload);
+          statusEl.textContent = 'تم التحديث ✅';
+        } else {
+          await db.collection('blogs').add({
+            title,
+            contentHtml,
+            coverUrl,
+            authorId: user.uid,
+            authorName: user.displayName || 'المشرف',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          statusEl.textContent = 'تم النشر ✅';
+          titleEl.value = '';
+          quill.root.innerHTML = '';
+          coverInput.value = '';
+          coverPreview.classList.add('hidden');
+        }
+      } catch (e) {
+        console.error(e);
+        statusEl.textContent = 'فشل النشر ❌';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,55 +98,5 @@
     
     <!-- تحميل السكريپتات -->
     <script src="language-toggle.js"></script>
-    <script src="easter-egg.js"></script>
-    
-    <script>
-        // إضافة ترجمات خاصة بصفحة الاختبار
-        (() => {
-            const testTranslations = {
-                ar: {
-                    testTitle: 'اختبار الميزات الجديدة',
-                    languageTest: 'انقر على زر 🌐 في الأعلى لتبديل اللغة',
-                    gamesTest: 'اكتب الأكواد التالية لفتح الألعاب:',
-                    accountTest: 'تحقق من صفحة الحساب لرؤية الإحصائيات المحسنة',
-                    status: 'الحالة:',
-                    working: 'يعمل!',
-                    openGamesHub: 'فتح مركز الألعاب',
-                    openTicTacToe: 'إكس أو',
-                    openSnake: 'الثعبان',
-                    openBreakout: 'تكسير الطوب',
-                    openAccount: 'فتح صفحة الحساب',
-                    backHome: 'العودة للرئيسية'
-                },
-                en: {
-                    testTitle: 'New Features Test',
-                    languageTest: 'Click the 🌐 button above to toggle language',
-                    gamesTest: 'Type the following codes to open games:',
-                    accountTest: 'Check the account page to see enhanced statistics',
-                    status: 'Status:',
-                    working: 'Working!',
-                    openGamesHub: 'Open Games Hub',
-                    openTicTacToe: 'Tic Tac Toe',
-                    openSnake: 'Snake Game',
-                    openBreakout: 'Breakout Game',
-                    openAccount: 'Open Account Page',
-                    backHome: 'Back to Home'
-                }
-            };
-            
-            // دمج الترجمات مع النظام الموجود
-            window.addEventListener('DOMContentLoaded', () => {
-                const lang = localStorage.getItem('siteLanguage') || 'ar';
-                const dict = testTranslations[lang] || testTranslations.ar;
-                
-                Object.keys(dict).forEach(key => {
-                    const element = document.querySelector(`[data-i18n="${key}"]`);
-                    if (element) {
-                        element.textContent = dict[key];
-                    }
-                });
-            });
-        })();
-    </script>
 </body>
 </html>

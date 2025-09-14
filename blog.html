@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تفاصيل المدونة | SEU</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .glass { background: rgba(26, 26, 46, 0.6); backdrop-filter: blur(14px); border: 1px solid rgba(108,99,255,.18); }
+    .light-mode .glass { background: rgba(255,255,255,.94); border-color: rgba(99,102,241,.12); }
+    .content a { color: #00D1B2; text-decoration: underline; }
+    .content img { max-width: 100%; height: auto; border-radius: 8px; }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0F0F1A] text-[#E0E0FF]">
+  <header class="sticky top-0 z-40 backdrop-blur-lg glass">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="blogs.html" class="text-aurora hover:underline">← العودة للمدونة</a>
+      <div class="flex items-center gap-2">
+        <a id="edit-btn" href="#" class="hidden px-4 py-2 rounded-lg border border-[#6C63FF]/30 hover:bg-[#6C63FF]/10">تعديل</a>
+        <button id="delete-btn" class="hidden px-4 py-2 rounded-lg border border-red-400/40 text-red-300 hover:bg-red-500/10">حذف</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <article id="post" class="glass rounded-xl overflow-hidden">
+      <div id="cover" class="hidden h-64 w-full bg-[#1A1A2E]"></div>
+      <div class="p-6">
+        <h1 id="title" class="text-3xl font-extrabold mb-2">...</h1>
+        <div id="meta" class="text-sm opacity-70 mb-6">...</div>
+        <div id="content" class="content prose prose-invert max-w-none leading-relaxed"></div>
+      </div>
+    </article>
+    <div id="not-found" class="hidden text-center opacity-70 py-16">المنشور غير موجود.</div>
+  </main>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+      authDomain: "seu-subjects.firebaseapp.com",
+      projectId: "seu-subjects",
+      storageBucket: "seu-subjects.firebasestorage.app",
+      messagingSenderId: "552315681734",
+      appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+      measurementId: "G-Y2FL6V8X3L"
+    };
+    try { firebase.initializeApp(firebaseConfig); } catch(e) {}
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const ADMIN_UID = 'c3qEzVVU52NddP2LmNQXAldCZ5C2';
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const postEl = document.getElementById('post');
+    const nfEl = document.getElementById('not-found');
+    const titleEl = document.getElementById('title');
+    const metaEl = document.getElementById('meta');
+    const contentEl = document.getElementById('content');
+    const coverEl = document.getElementById('cover');
+    const editBtn = document.getElementById('edit-btn');
+    const deleteBtn = document.getElementById('delete-btn');
+
+    function render(data) {
+      titleEl.textContent = data.title || 'بدون عنوان';
+      const date = data.createdAt?.toDate ? data.createdAt.toDate() : new Date();
+      metaEl.textContent = `بواسطة ${data.authorName || 'الإدارة'} • ${date.toLocaleDateString('ar-SA')}`;
+      const html = data.contentHtml || '';
+      contentEl.innerHTML = html; // المحتوى من المشرف فقط
+      if (data.coverUrl) {
+        coverEl.classList.remove('hidden');
+        coverEl.style.backgroundImage = `url('${data.coverUrl}')`;
+        coverEl.style.backgroundSize = 'cover';
+        coverEl.style.backgroundPosition = 'center';
+      }
+    }
+
+    async function load() {
+      if (!id) { postEl.classList.add('hidden'); nfEl.classList.remove('hidden'); return; }
+      const snap = await db.collection('blogs').doc(id).get();
+      if (!snap.exists) { postEl.classList.add('hidden'); nfEl.classList.remove('hidden'); return; }
+      render(snap.data());
+    }
+
+    // Admin controls
+    auth.onAuthStateChanged((user) => {
+      const isAdmin = user && user.uid === ADMIN_UID;
+      editBtn.classList.toggle('hidden', !(isAdmin && id));
+      deleteBtn.classList.toggle('hidden', !(isAdmin && id));
+      if (id) editBtn.href = `blog-admin.html?id=${id}`;
+    });
+
+    deleteBtn.addEventListener('click', async () => {
+      if (!confirm('هل تريد حذف هذا المنشور؟')) return;
+      try {
+        await db.collection('blogs').doc(id).delete();
+        location.href = 'blogs.html';
+      } catch (e) {
+        alert('فشل الحذف');
+        console.error(e);
+      }
+    });
+
+    load();
+  </script>
+</body>
+</html>

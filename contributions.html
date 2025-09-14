@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حسابي | مساهماتي والوسام</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; }
+    .glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); border-radius: 16px; }
+    .badge { display: inline-flex; align-items: center; gap: .5rem; padding: .5rem .8rem; border-radius: 9999px; font-weight: 700; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="sticky top-0 z-50 backdrop-blur-lg border-b" style="background-color: rgba(15, 23, 42, 0.85); border-color: rgba(99, 102, 241, 0.2)">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="text-slate-300 hover:text-white">
+        <i class="fa fa-home ms-2"></i> الرئيسية
+      </a>
+      <h1 class="text-xl font-bold">مساهماتي</h1>
+      <a href="auth.html" class="text-slate-300 hover:text-white">
+        <i class="fa fa-user-lock ms-2"></i> الحساب
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-8">
+    <div id="authNotice" class="glass p-6 mb-6 hidden">
+      <div class="flex items-center gap-3 text-slate-300">
+        <i class="fa fa-circle-info text-sky-400"></i>
+        <p>الرجاء تسجيل الدخول لمشاهدة مساهماتك. <a class="text-sky-400 underline" href="auth.html">تسجيل الدخول</a></p>
+      </div>
+    </div>
+
+    <section id="summary" class="glass p-6 mb-8">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h2 class="text-2xl font-bold">لوحة المساهمات</h2>
+          <p id="userName" class="text-slate-400 mt-1"></p>
+        </div>
+        <div id="badge" class="badge"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+        <div class="glass p-4">
+          <div class="text-slate-400">عدد المساهمات</div>
+          <div id="count" class="text-3xl font-extrabold mt-1">0</div>
+        </div>
+        <div class="glass p-4">
+          <div class="text-slate-400">آخر تحديث</div>
+          <div id="lastUpdated" class="text-lg mt-1">—</div>
+        </div>
+        <div class="glass p-4">
+          <div class="text-slate-400">مستواك</div>
+          <div id="levelLabel" class="text-lg mt-1">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-bold">المواد التي أضفتها</h3>
+        <input id="filterInput" type="text" placeholder="ابحث في مساهماتك" class="w-64 py-2 px-3 rounded bg-slate-800 text-slate-200 border border-slate-700 outline-none" />
+      </div>
+      <div id="empty" class="text-slate-400 text-center py-10 hidden">
+        <i class="fa fa-folder-open text-4xl mb-3 opacity-60"></i>
+        <div>لا توجد مساهمات حتى الآن</div>
+      </div>
+      <div id="list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+  </main>
+
+  <!-- Firebase (optional: used if available like other pages) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="contributions.js"></script>
+  <script>
+    (function init() {
+      const localUser = Contrib.getCurrentUser();
+      if (!localUser) {
+        document.getElementById('authNotice').classList.remove('hidden');
+        // Keep going; user might be logged with Firebase
+      } else {
+        document.getElementById('userName').textContent = localUser.fullName || localUser.username || '';
+      }
+
+      // Try to init Firebase if available (mirrors index.html config)
+      let db = null, auth = null;
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyCen8J6HuLOj3d1tpEA8aF13XVmGxiG9BY",
+          authDomain: "seu-subjects.firebaseapp.com",
+          projectId: "seu-subjects",
+          storageBucket: "seu-subjects.firebasestorage.app",
+          messagingSenderId: "552315681734",
+          appId: "1:552315681734:web:d7ae70e54e7e2bf7b290c7",
+          measurementId: "G-Y2FL6V8X3L"
+        };
+        if (window.firebase && firebase.apps && !firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.firestore();
+        auth = firebase.auth();
+      } catch (_) { /* optional */ }
+
+      const list = document.getElementById('list');
+      const empty = document.getElementById('empty');
+      const filterInput = document.getElementById('filterInput');
+
+      function render(items) {
+        list.innerHTML = '';
+        if (!items.length) { empty.classList.remove('hidden'); return; }
+        empty.classList.add('hidden');
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'glass p-4';
+          const when = item.createdAt ? Contrib.formatDate(item.createdAt) : '';
+          const name = item.subject_name || item.title || item.id || '—';
+          const desc = item.description || item.desc || '';
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="text-lg font-bold text-white">${name}</div>
+                ${desc ? `<div class="text-slate-400 mt-1">${desc}</div>` : ''}
+              </div>
+              <div class="text-slate-400 text-sm">${when}</div>
+            </div>
+          `;
+          list.appendChild(card);
+        });
+      }
+
+      async function loadAll() {
+        const localUid = localUser && localUser.id;
+        const localItems = localUid ? Contrib.getUserContributions(localUid) : [];
+
+        let remoteItems = [];
+        try {
+          const fbUser = auth ? auth.currentUser : null;
+          if (auth && !fbUser) {
+            await new Promise(resolve => auth.onAuthStateChanged(() => resolve()));
+          }
+          const user = auth ? auth.currentUser : null;
+          if (db && user) {
+            const snap = await db.collection('userCourses').where('addedBy','==', user.uid).orderBy('createdAt','desc').get();
+            remoteItems = snap.docs.map(d => ({ id: d.id, ...d.data(), createdAt: d.data().createdAt ? d.data().createdAt.toDate().toISOString() : undefined }));
+            if (!document.getElementById('userName').textContent) {
+              document.getElementById('userName').textContent = user.displayName || user.email || '';
+            }
+          }
+        } catch (_) { /* ignore */ }
+
+        const all = [...localItems, ...remoteItems];
+        const last = all.reduce((acc, it) => it.createdAt && (!acc || it.createdAt > acc) ? it.createdAt : acc, null);
+        const total = all.length;
+        const badge = Contrib.computeBadge(total);
+
+        document.getElementById('count').textContent = String(total);
+        document.getElementById('lastUpdated').textContent = last ? Contrib.formatDate(last) : '—';
+        document.getElementById('levelLabel').textContent = badge.label;
+        const badgeEl = document.getElementById('badge');
+        badgeEl.style.border = '1px solid rgba(255,255,255,.1)';
+        badgeEl.style.background = 'rgba(255,255,255,.05)';
+        badgeEl.innerHTML = `<i class="fa ${badge.icon}" style="color:${badge.color}"></i><span>وسام: ${badge.label}</span>`;
+
+        render(all);
+
+        filterInput.addEventListener('input', () => {
+          const q = filterInput.value.trim().toLowerCase();
+          const filtered = all.filter(c => {
+            const name = (c.subject_name || c.title || c.id || '').toLowerCase();
+            const desc = (c.description || c.desc || '').toLowerCase();
+            return name.includes(q) || desc.includes(q);
+          });
+          render(filtered);
+        });
+      }
+
+      loadAll();
+    })();
+  </script>
+  <script src="language-toggle.js"></script>
+</body>
+</html>
