@@ -122,6 +122,9 @@
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="29472e96ca04e76d">
     
+    <!-- Google AdSense Account -->
+    <meta name="google-adsense-account" content="ca-pub-2328454723041188">
+    
     <!-- Web App Manifest -->
     <link rel="manifest" href="manifest.json">
     
@@ -2094,6 +2097,11 @@ ul {
                     <a href="#it" class="text-stardust hover:text-white transition duration-300">تقنية المعلومات</a>
                     <a href="all-colleges.html" class="text-aurora hover:text-white transition duration-300 font-medium">جميع الكليات</a>
                     <a href="blogs.html" class="text-stardust hover:text-white transition duration-300" data-i18n="blogs">المدونة</a>
+                    <!-- Admin link (hidden by default, shown if admin) -->
+                    <a href="admin.html" data-admin-link class="hidden text-aurora hover:text-white transition duration-300 font-semibold">
+                        <i class="fas fa-shield-halved ml-1"></i>
+                        لوحة الإدارة
+                    </a>
                     
                     <!-- User Authentication Section -->
                     <div class="flex items-center gap-3">
@@ -2151,6 +2159,10 @@ ul {
                     <a href="#it" class="block text-stardust hover:text-white transition duration-300 py-2">تقنية المعلومات</a>
                     <a href="all-colleges.html" class="block text-aurora hover:text-white transition duration-300 py-2 font-medium">جميع الكليات</a>
                     <a href="blogs.html" class="block text-stardust hover:text-white transition duration-300 py-2" data-i18n="blogs">المدونة</a>
+                    <a href="admin.html" data-admin-link class="hidden block text-aurora hover:text-white transition duration-300 py-2 font-semibold">
+                        <i class="fas fa-shield-halved ml-1"></i>
+                        لوحة الإدارة
+                    </a>
                     
                     <!-- Mobile Language Toggle -->
                     <div class="pt-2 border-t border-nebula/10 mt-2">
@@ -2282,6 +2294,8 @@ ul {
             }
         }
     </script>
+    <!-- Admin link visibility controller -->
+    <script src="admin-access.js"></script>
 
     <!-- Majors Overview -->
     <main class="flex-grow container mx-auto py-16 px-4">
@@ -6653,13 +6667,7 @@ ul {
             pointer-events: none;
         }
     </style> 
-    دليل المواد الأكاديمية الرقمي الشامل للطلاب السعوديين 
-    منصة تعليمية متطورة لكلية الحوسبة جامعة الشرق الأوسط 
-    نظام فهرسة المقررات الدراسية الذكي والمتقدم
-    CS230 البرمجة الشيئية DS230 تحليل البيانات IT240 أمن المعلومات
-    موقع طلاب الحاسوب السعودية - دليل شامل للمواد الجامعية
-    تطوير: fxrg.github.io/subject-search - المرجع الأكاديمي الشامل
-    -->
+   
     
     <!-- Language Toggle Script -->
     <script src="language-toggle.js"></script>

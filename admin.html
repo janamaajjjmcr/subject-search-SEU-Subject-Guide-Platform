@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة | SEU Subjects</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- Firebase CDN (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <!-- Initialize Firebase app with existing config and globals (auth, db) -->
+  <script src="firebase-auth.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-white">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 backdrop-blur bg-slate-900/70 border-b border-white/10">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="inline-flex items-center gap-2 text-slate-200 hover:text-white">
+        <i class="fas fa-arrow-right"></i>
+        <span>العودة للرئيسية</span>
+      </a>
+      <div class="flex items-center gap-3">
+        <span id="adminUserEmail" class="text-slate-300 text-sm hidden"></span>
+        <button id="logoutBtn" class="px-3 py-1.5 rounded-lg bg-red-600/20 text-red-300 border border-red-500/30 hover:bg-red-600/30">
+          <i class="fas fa-sign-out-alt"></i>
+          خروج
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Access states -->
+  <main class="container mx-auto px-4 py-6">
+    <div id="state-not-initialized" class="hidden">
+      <div class="state-card">
+        <i class="fas fa-plug-circle-exclamation text-amber-400 text-3xl"></i>
+        <h2 class="text-xl font-semibold">تعذّر تهيئة Firebase</h2>
+        <p class="text-slate-300">تأكد من الاتصال بالإنترنت ثم أعد تحميل الصفحة.</p>
+      </div>
+    </div>
+
+    <div id="state-unauthenticated" class="hidden">
+      <div class="state-card">
+        <i class="fas fa-user-lock text-sky-400 text-3xl"></i>
+        <h2 class="text-xl font-semibold">يتطلب تسجيل الدخول</h2>
+        <p class="text-slate-300">سجّل الدخول للوصول إلى لوحة الإدارة.</p>
+        <a href="account.html" class="btn-primary inline-flex items-center gap-2">
+          <i class="fas fa-sign-in-alt"></i>
+          تسجيل الدخول
+        </a>
+      </div>
+    </div>
+
+    <div id="state-forbidden" class="hidden">
+      <div class="state-card">
+        <i class="fas fa-ban text-rose-400 text-3xl"></i>
+        <h2 class="text-xl font-semibold">صلاحية غير كافية</h2>
+        <p class="text-slate-300">هذه الصفحة مخصّصة للمشرفين فقط.</p>
+        <a href="index.html" class="btn-secondary inline-flex items-center gap-2">
+          <i class="fas fa-home"></i>
+          الرجوع للرئيسية
+        </a>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="dashboard" class="hidden space-y-6">
+      <!-- Stats -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="card">
+          <div class="card-title">إجمالي المواد</div>
+          <div class="card-value" id="statTotalCourses">—</div>
+        </div>
+        <div class="card">
+          <div class="card-title">نشطة</div>
+          <div class="card-value" id="statActive">—</div>
+        </div>
+        <div class="card">
+          <div class="card-title">مخفية</div>
+          <div class="card-value" id="statHidden">—</div>
+        </div>
+        <div class="card">
+          <div class="card-title">آخر تحديث</div>
+          <div class="card-value text-base" id="statUpdated">—</div>
+        </div>
+      </section>
+
+      <!-- Filters: College / Major -->
+      <section class="card">
+        <div class="flex flex-col md:flex-row gap-3 md:items-end">
+          <div class="flex-1">
+            <label class="block text-sm text-slate-300 mb-1">اختر الكلية</label>
+            <select id="collegeSelect" class="input w-full"></select>
+          </div>
+          <div class="flex-1">
+            <label class="block text-sm text-slate-300 mb-1">اختر التخصص</label>
+            <select id="majorSelect" class="input w-full"></select>
+          </div>
+          <div class="flex gap-2">
+            <button id="applyFilterBtn" class="btn-primary"><i class="fas fa-filter ml-1"></i> تطبيق</button>
+            <button id="clearFilterBtn" class="btn-secondary"><i class="fas fa-asterisk ml-1"></i> الكل</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Moderation table -->
+      <section class="card p-0 overflow-hidden">
+        <div class="p-4 border-b border-white/10 flex items-center justify-between">
+          <h3 class="text-lg font-semibold">أحدث المواد المضافة من المستخدمين</h3>
+          <div class="flex items-center gap-2">
+            <input id="searchInput" type="text" placeholder="بحث بعنوان المادة..." class="input">
+            <button id="refreshBtn" class="btn-secondary"><i class="fas fa-rotate"></i></button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>العنوان</th>
+                <th>التخصص</th>
+                <th>المستوى</th>
+                <th>الحالة</th>
+                <th>أضيفت بواسطة</th>
+                <th>تاريخ</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="coursesTbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Admins management (optional) -->
+      <section class="card">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold">إدارة المشرفين</h3>
+          <span class="text-xs text-slate-400">تجريبي</span>
+        </div>
+        <form id="addAdminForm" class="flex flex-col sm:flex-row gap-2">
+          <input id="adminUidInput" type="text" class="input flex-1" placeholder="UID إدخال">
+          <button class="btn-primary" type="submit"><i class="fas fa-user-shield mr-1"></i> إضافة</button>
+        </form>
+        <p class="text-xs text-slate-400 mt-2">ملاحظة: يجب ضبط قواعد Firestore لتقييد الوصول الحقيقي.</p>
+      </section>
+    </div>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

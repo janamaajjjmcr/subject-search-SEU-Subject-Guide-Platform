@@ -1,0 +1,61 @@
+/* Minimal admin styles aligned with site */
+:root {
+  --card-bg: rgba(15,15,25,0.6);
+  --card-border: rgba(148,163,184,0.2);
+  --muted: #cbd5e1;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.card-title { color: var(--muted); font-size: 12px; }
+.card-value { font-size: 28px; font-weight: 700; margin-top: 6px; }
+
+.state-card {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  outline: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #6c63ff 0%, #00d1b2 100%);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.06);
+  color: #e2e8f0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid var(--card-border); text-align: right; }
+.admin-table th { font-size: 12px; color: var(--muted); font-weight: 600; }
+.admin-table tr:hover { background: rgba(255,255,255,0.04); }
+
+.badge { font-size: 12px; padding: 2px 8px; border-radius: 9999px; }
+.badge-green { background: rgba(16,185,129,.18); color: #34d399; border: 1px solid rgba(16,185,129,.25); }
+.badge-yellow { background: rgba(245,158,11,.18); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
+.badge-slate { background: rgba(100,116,139,.18); color: #94a3b8; border: 1px solid rgba(100,116,139,.25); }
