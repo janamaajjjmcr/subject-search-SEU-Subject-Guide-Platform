@@ -702,6 +702,13 @@ service cloud.firestore {
   pointer-events: auto;
 }
 
+/* Ensure icon moves when input is focused, matching business behavior even if JS is blocked */
+.input:focus + .icon,
+.input.expanded + .icon {
+    right: 15px;
+    transform: translateX(0);
+}
+
 .icon:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
@@ -1254,6 +1261,72 @@ ul {
             
             .resource-card.default-card h3 {
                 font-size: 16px;
+            }
+        }
+
+        /* Mobile Course Cards Optimization (parity with business page) */
+        @media (max-width: 768px) {
+            .course-card {
+                transform: scale(1) !important;
+                padding: 1.5rem !important;
+                margin-bottom: 1rem !important;
+                background: linear-gradient(135deg, rgba(26, 31, 44, 0.15) 0%, rgba(40, 46, 69, 0.08) 100%) !important;
+                border: 1px solid rgba(156, 163, 175, 0.15) !important;
+                border-radius: 1rem !important;
+                transition: all 0.4s ease !important;
+            }
+
+            .course-card:hover {
+                transform: translateY(-2px) !important;
+                border-color: rgba(156, 163, 175, 0.4) !important;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+            }
+
+            .course-card .w-14 {
+                width: 3rem !important;
+                height: 3rem !important;
+            }
+
+            .course-card h3 {
+                font-size: 1.125rem !important;
+                line-height: 1.4 !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            .course-card p {
+                font-size: 0.875rem !important;
+                line-height: 1.5 !important;
+                margin-bottom: 1.25rem !important;
+            }
+
+            .level-badge {
+                font-size: 0.75rem !important;
+                padding: 0.25rem 0.75rem !important;
+            }
+
+            .grid {
+                grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+                gap: 1.25rem !important;
+            }
+
+            .course-card i {
+                font-size: 1.25rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .course-card {
+                padding: 1.25rem !important;
+                border-radius: 0.875rem !important;
+            }
+
+            .course-card h3 {
+                font-size: 1rem !important;
+            }
+
+            .course-card p {
+                font-size: 0.8125rem !important;
+                margin-bottom: 1rem !important;
             }
         }
 
@@ -4940,8 +5013,8 @@ ul {
                 return;
             }
             
-            // Hide all original sections
-            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='overview']").forEach(section => {
+            // Hide all original sections (aligned with business page)
+            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='ecommerce'], section[id='overview']").forEach(section => {
                 section.classList.add("hidden");
             });
             
@@ -5021,7 +5094,7 @@ ul {
         function clearSearch() {
             document.getElementById("courseSearch").value = '';
             document.getElementById("search-results").classList.add("hidden");
-            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='overview']").forEach(section => {
+            document.querySelectorAll("section[id='cs'], section[id='ds'], section[id='it'], section[id='ecommerce'], section[id='overview']").forEach(section => {
                 section.classList.remove("hidden");
             });
         }
@@ -5041,48 +5114,54 @@ ul {
     <script>
         // Search icon positioning functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const icon = document.querySelector('.icon');
-            const input = document.querySelector('.input');
+            const wrapper = document.querySelector('.input-wrapper');
+            if (!wrapper) return;
+            const input = wrapper.querySelector('.input');
+            const icon = wrapper.querySelector('button.icon');
             let isExpanded = false;
             
             // Handle icon click
-            icon.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (!isExpanded) {
-                    // Expand the input
-                    input.focus();
-                    expandInput();
-                } else if (input.value.trim() !== '') {
-                    // If already expanded and has text, perform search
-                    searchCourses();
-                } else {
-                    // Just focus if no text
-                    input.focus();
-                }
-            });
+            if (icon && input) {
+                icon.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (!isExpanded) {
+                        // Expand the input
+                        input.focus();
+                        expandInput();
+                    } else if (input.value.trim() !== '') {
+                        // If already expanded and has text, perform search
+                        searchCourses();
+                    } else {
+                        // Just focus if no text
+                        input.focus();
+                    }
+                });
+            }
             
             // Handle input focus
-            input.addEventListener('focus', function() {
-                expandInput();
-            });
-            
-            // Handle input blur
-            input.addEventListener('blur', function() {
-                if (input.value === '') {
-                    collapseInput();
-                }
-            });
-            
-            // Handle input value change
-            input.addEventListener('input', function() {
-                if (input.value !== '' && !isExpanded) {
+            if (input) {
+                input.addEventListener('focus', function() {
                     expandInput();
-                }
-                // Trigger search as user types
-                searchCourses();
-            });
+                });
+            
+                // Handle input blur
+                input.addEventListener('blur', function() {
+                    if (input.value === '') {
+                        collapseInput();
+                    }
+                });
+            
+                // Handle input value change
+                input.addEventListener('input', function() {
+                    if (input.value !== '' && !isExpanded) {
+                        expandInput();
+                    }
+                    // Trigger search as user types
+                    searchCourses();
+                });
+            }
             
             // Function to expand input
             function expandInput() {
