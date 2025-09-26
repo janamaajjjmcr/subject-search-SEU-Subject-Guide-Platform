@@ -1,5 +1,5 @@
 ﻿﻿<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,17 +16,21 @@
     <meta property="og:title" content="كلية الحوسبة | الجامعة السعودية الإلكترونية - بحث المواد والمقررات الدراسية">
     <meta property="og:description" content="محرك بحث شامل لمواد كلية الحوسبة في الجامعة السعودية الإلكترونية. ابحث عن مقررات علوم الحاسب، تقنية المعلومات، علوم البيانات والمواد العامة">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://fxrg.github.io/subject-search">
+    <meta property="og:url" content="https://subjectsearch.tech/">
     <meta property="og:site_name" content="كلية الحوسبة - الجامعة السعودية الإلكترونية">
     <meta property="og:locale" content="ar_SA">
+    <meta property="og:image" content="https://subjectsearch.tech/assets/national_day.jpg">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="كلية الحوسبة | الجامعة السعودية الإلكترونية">
     <meta name="twitter:description" content="محرك بحث شامل لمواد كلية الحوسبة في الجامعة السعودية الإلكترونية">
+    <meta name="twitter:image" content="https://subjectsearch.tech/assets/national_day.jpg">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://fxrg.github.io/subject-search">
+    <link rel="canonical" href="https://subjectsearch.tech/">
+    <link rel="alternate" href="https://subjectsearch.tech/" hreflang="ar">
+    <link rel="alternate" href="https://subjectsearch.tech/" hreflang="x-default">
     
    <!-- Schema.org Structured Data -->
 <script type="application/ld+json">
@@ -35,9 +39,9 @@
   "@type": "EducationalOrganization",
   "name": "كلية الحوسبة - الجامعة السعودية الإلكترونية",
   "description": "كلية الحوسبة في جامعة الشرق الأوسط توفر تخصصات علوم الحاسب وتقنية المعلومات وعلوم البيانات",
-  "url": "https://fxrg.github.io/subject-search",
+    "url": "https://subjectsearch.tech/",
   "sameAs": [
-    "https://fxrg.github.io/subject-search"
+    "https://subjectsearch.tech/"
   ],
   "address": {
     "@type": "PostalAddress",
@@ -146,7 +150,7 @@
     <script>
         // Website configuration
         const SITE_CONFIG = {
-            PRODUCTION_URL: 'https://fxrg.github.io/subject-search-/',
+            PRODUCTION_URL: 'https://subjectsearch.tech/',
             SITE_NAME: 'كلية الحوسبة - الجامعة السعودية الإلكترونية',
             SITE_DESCRIPTION: 'محرك بحث شامل لمواد كلية الحوسبة في الجامعة السعودية الإلكترونية'
         };
@@ -2164,10 +2168,10 @@ ul {
             <div class="flex items-center gap-3 md:gap-5">
                 <img src="assets/national_day.jpg" alt="شعار اليوم الوطني السعودي 95 - عزّنا بطبعنا" class="h-10 md:h-12 w-auto rounded-sm" fetchpriority="high" onerror="this.style.display='none'">
                 <div class="leading-tight">
-                    <div class="font-bold nd95-kufi text-lg md:text-xl">اليوم الوطني السعودي 95</div>
-                    <div class="text-white/90 nd95-text-sm">عزّنا بطبعنا — كل عام ووطنا بخير 🇸🇦</div>
+                    <div id="nd95-title" class="font-bold nd95-kufi text-lg md:text-xl">اليوم الوطني السعودي</div>
+                    <div id="nd95-subtitle" class="text-white/90 nd95-text-sm">عزّنا بطبعنا — كل عام ووطنا بخير 🇸🇦</div>
                 </div>
-                <span class="hidden md:inline-flex nd95-badge text-xs md:text-sm px-2.5 py-1 rounded-full ml-2">23 سبتمبر</span>
+                <span id="nd95-badge" class="hidden md:inline-flex nd95-badge text-xs md:text-sm px-2.5 py-1 rounded-full ml-2">23 سبتمبر</span>
             </div>
             <div class="flex items-center gap-3">
                 <a href="#materials" class="hidden sm:inline-flex items-center text-white/90 hover:text-white underline underline-offset-4" title="الانتقال إلى البحث والمواد">استكشف مواد الكلية</a>
@@ -3394,20 +3398,27 @@ ul {
             if (!banner) return;
 
             const url = new URL(window.location.href);
-            const force = url.searchParams.get('nd95');
+            const force = url.searchParams.get('nd') || url.searchParams.get('nd95');
             const now = new Date();
             const year = now.getFullYear();
-            const target = new Date(year, 8, 23); // Sep 23
-            const start = new Date(year, 8, 18); // Sep 18
-            const end = new Date(year, 8, 27, 23, 59, 59); // Sep 27
+            const isSep23 = now.getMonth() === 8 && now.getDate() === 23; // Sep=8
             const LS_KEY = `nd95Dismissed-${year}`;
             const dismissed = localStorage.getItem(LS_KEY) === '1';
 
-            const inWindow = now >= start && now <= end;
-            if ((inWindow || force === '1') && !dismissed) {
+            // Compute National Day number (e.g., 2025 -> 95)
+            const ndNumber = year - 1930;
+
+            const shouldShow = (!dismissed && (isSep23 || force === '1'));
+            if (shouldShow) {
                 banner.classList.remove('hidden');
                 const heroLogo = document.getElementById('nd95-hero-logo');
                 if (heroLogo) heroLogo.classList.remove('hidden');
+
+                // Update title with the dynamic number
+                const titleEl = document.getElementById('nd95-title');
+                if (titleEl) {
+                    titleEl.textContent = `اليوم الوطني السعودي ${ndNumber}`;
+                }
             }
 
             const btn = document.getElementById('nd95-dismiss');
@@ -3427,6 +3438,138 @@ ul {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
+        })();
+
+        // Seasonal events (Ramadan, Eid al-Fitr, Developer Birthday)
+        (function() {
+            const banner = document.getElementById('nd95-banner');
+            const titleEl = document.getElementById('nd95-title');
+            const subtitleEl = document.getElementById('nd95-subtitle');
+            const badgeEl = document.getElementById('nd95-badge');
+            const imgEl = banner ? banner.querySelector('img') : null;
+            if (!banner || !titleEl || !subtitleEl || !badgeEl) return;
+
+            // If banner already shown by National Day logic, do nothing
+            if (!banner.classList.contains('hidden')) return;
+
+            const url = new URL(window.location.href);
+            const forceRam = url.searchParams.get('ram') === '1' || url.searchParams.get('ramadan') === '1';
+            const forceEid = url.searchParams.get('eid') === '1';
+            const forceBday = url.searchParams.get('bday') === '1' || url.searchParams.get('birthday') === '1';
+
+            const now = new Date();
+            const y = now.getFullYear();
+            const d = now.getDate();
+            const m = now.getMonth(); // 0-based
+
+            // Ramadan start dates (Gregorian)
+            const ramadanStarts = {
+                2026: new Date(2026, 1, 18), // 18 Feb 2026
+                2027: new Date(2027, 1, 8),  // 8 Feb 2027
+                2028: new Date(2028, 0, 28), // 28 Jan 2028
+                2029: new Date(2029, 0, 16), // 16 Jan 2029
+                2030: new Date(2030, 0, 5)   // 5 Jan 2030
+            };
+
+            function sameDay(a, b) {
+                return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+            }
+
+            function applyTheme(variant) {
+                // Remove previous gradient classes
+                banner.classList.remove('from-emerald-700','via-green-700','to-emerald-600','from-indigo-700','via-purple-700','to-indigo-600','from-teal-700','via-emerald-700','to-teal-600','from-blue-600','via-fuchsia-600','to-rose-500');
+                if (variant === 'ramadan') {
+                    banner.classList.add('from-indigo-700','via-purple-700','to-indigo-600');
+                } else if (variant === 'eid') {
+                    banner.classList.add('from-teal-700','via-emerald-700','to-teal-600');
+                } else if (variant === 'bday') {
+                    banner.classList.add('from-blue-600','via-fuchsia-600','to-rose-500');
+                } else {
+                    banner.classList.add('from-emerald-700','via-green-700','to-emerald-600');
+                }
+            }
+
+            function setDismiss(key) {
+                const btn = document.getElementById('nd95-dismiss');
+                if (!btn) return;
+                // Replace previous handlers by cloning technique
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', () => {
+                    banner.classList.add('hidden');
+                    try { localStorage.setItem(key, '1'); } catch (e) {}
+                });
+            }
+
+            // Determine Ramadan window (full month) and Eid dates
+            const ramStart = ramadanStarts[y];
+            // Eid al-Fitr: potentially 29 or 30 days after Ramadan start
+            let eidDates = [];
+            if (ramStart) {
+                const eid29 = new Date(ramStart); eid29.setDate(eid29.getDate() + 29);
+                const eid30 = new Date(ramStart); eid30.setDate(eid30.getDate() + 30);
+                eidDates = [eid29, eid30];
+            }
+
+            // First, show Eid if today matches a potential Eid day (Eid takes precedence)
+            const isEid = eidDates.some(dt => sameDay(now, dt));
+            const EID_KEY = `eventDismissed-eid-${y}`;
+            const eidDismissed = localStorage.getItem(EID_KEY) === '1';
+
+            if ((isEid || forceEid) && !eidDismissed) {
+                applyTheme('eid');
+                if (imgEl) imgEl.style.display = 'none';
+                titleEl.textContent = 'عيد فطر مبارك';
+                subtitleEl.textContent = 'تقبّل الله طاعاتكم وكل عام وأنتم بخير 🌙🎉';
+                badgeEl.textContent = 'عيد الفطر';
+                badgeEl.classList.remove('hidden');
+                banner.classList.remove('hidden');
+                setDismiss(EID_KEY);
+                return;
+            }
+
+            // Ramadan: show for the entire month window (from start day through day 30)
+            const RAM_KEY = `eventDismissed-ramadan-${y}`;
+            const ramDismissed = localStorage.getItem(RAM_KEY) === '1';
+
+            let inRamadanWindow = false;
+            if (ramStart) {
+                // Compare using date-only (midnight) to avoid time component issues
+                const stripTime = (d) => { const x = new Date(d); x.setHours(0,0,0,0); return x; };
+                const today = stripTime(now);
+                const start = stripTime(ramStart);
+                // Show through Ramadan day 30 (end at start+29). Eid check above takes precedence on Eid day.
+                const endAt = new Date(start); endAt.setDate(endAt.getDate() + 29);
+                inRamadanWindow = today >= start && today <= endAt;
+            }
+
+            if ((inRamadanWindow || forceRam) && !ramDismissed) {
+                applyTheme('ramadan');
+                if (imgEl) imgEl.style.display = 'none';
+                titleEl.textContent = 'رمضان مبارك';
+                subtitleEl.textContent = 'بلغنا الله وإياكم صيامه وقيامه ✨';
+                badgeEl.textContent = 'رمضان';
+                badgeEl.classList.remove('hidden');
+                banner.classList.remove('hidden');
+                setDismiss(RAM_KEY);
+                return;
+            }
+
+            // Developer Birthday: 12 July every year
+            const isBday = (m === 6 && d === 12); // July=6
+            const BDAY_KEY = `eventDismissed-bday-${y}`;
+            const bdayDismissed = localStorage.getItem(BDAY_KEY) === '1';
+
+            if ((isBday || forceBday) && !bdayDismissed) {
+                applyTheme('bday');
+                if (imgEl) imgEl.style.display = 'none';
+                titleEl.textContent = 'عيد ميلاد سعيد للمطوّر 🎂';
+                subtitleEl.textContent = '12 يوليو 2004 — نتمنى لك عاماً مليئاً بالنجاح!';
+                badgeEl.textContent = '12 يوليو';
+                badgeEl.classList.remove('hidden');
+                banner.classList.remove('hidden');
+                setDismiss(BDAY_KEY);
+            }
         })();
 
         // Debug function to check what's happening

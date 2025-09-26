@@ -4,8 +4,8 @@
   
   <!-- الصفحة الرئيسية -->
   <url>
-    <loc>https://fxrg.github.io/subject-search/</loc>
-    <lastmod>2025-01-16</lastmod>
+    <loc>https://subjectsearch.tech/</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/"/>
@@ -13,8 +13,8 @@
   
   <!-- صفحة جميع الكليات -->
   <url>
-    <loc>https://fxrg.github.io/subject-search/all-colleges.html</loc>
-    <lastmod>2025-01-16</lastmod>
+    <loc>https://subjectsearch.tech/all-colleges.html</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/all-colleges.html"/>
@@ -22,8 +22,8 @@
   
   <!-- صفحة كلية إدارة الأعمال -->
   <url>
-    <loc>https://fxrg.github.io/subject-search/business.html</loc>
-    <lastmod>2025-01-16</lastmod>
+    <loc>https://subjectsearch.tech/business.html</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/business.html"/>
@@ -31,8 +31,8 @@
   
   <!-- صفحة كلية العلوم الصحية -->
   <url>
-    <loc>https://fxrg.github.io/subject-search/health.html</loc>
-    <lastmod>2025-01-16</lastmod>
+    <loc>https://subjectsearch.tech/health.html</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://fxrg.github.io/subject-search/health.html"/>

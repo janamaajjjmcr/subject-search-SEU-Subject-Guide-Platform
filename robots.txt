@@ -1,5 +1,5 @@
 # Robots.txt for كلية الحوسبة - جامعة SEU
-# https://fxrg.github.io/subject-search
+# Primary site: https://subjectsearch.tech
 
 User-agent: *
 Allow: /
@@ -16,7 +16,7 @@ Disallow: /README.md
 Disallow: /*.md
 
 # Sitemap location
-Sitemap: https://fxrg.github.io/subject-search/sitemap.xml
+Sitemap: https://subjectsearch.tech/sitemap.xml
 
 # Crawl-delay (optional - 1 second delay between requests)
 Crawl-delay: 1
